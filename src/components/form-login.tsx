@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { loginAction } from "@/actions/auth-actions";
 
 const formLogin = () => {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -27,8 +28,8 @@ const formLogin = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    await loginAction(values);
   }
 
   return (
