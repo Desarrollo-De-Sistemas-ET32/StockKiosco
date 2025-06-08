@@ -82,8 +82,8 @@ model stock {
 model usuarios {
   id_usuario          Int              @id @default(autoincrement())
   nombre              String           @db.VarChar(45)
-  email               String           @unique @db.VarChar(45)
-  password            String           @db.VarChar(45)
+  email               String           @unique @db.VarChar(70)
+  password            String           @db.VarChar(255)
   fecha_creacion      DateTime         @default(now())
   fecha_actualizacion DateTime
   usuarios_roles      usuarios_roles[]

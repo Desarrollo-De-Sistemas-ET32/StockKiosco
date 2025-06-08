@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useTransition } from "react";
 
 import { z } from "zod";
 import { loginSchema, registerSchema } from "../lib/zod";
@@ -18,8 +18,14 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { loginAction } from "@/actions/auth-actions";
+import { useRouter } from "next/navigation";
+
 
 const formLogin = () => {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -29,8 +35,19 @@ const formLogin = () => {
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    await loginAction(values);
+    setError(null)
+    startTransition(async () => {
+      const response = await loginAction(values);
+      console.log(response);
+      if (response.error) {
+        setError(response.error);
+      } else {
+        router.push("/dashboard")
+      }
+
+    });
   }
+
 
   return (
     <Form {...form}>
@@ -48,7 +65,7 @@ const formLogin = () => {
             </FormItem>
           )}
         />
-         <FormField
+        <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
@@ -61,8 +78,10 @@ const formLogin = () => {
             </FormItem>
           )}
         />
-
-        <Button type="submit">Submit</Button>
+        {
+          error && <FormMessage>{error}</FormMessage>
+        }
+        <Button type="submit" disabled={isPending}>Submit</Button>
       </form>
     </Form>
   );
