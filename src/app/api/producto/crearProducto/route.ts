@@ -1,4 +1,4 @@
-import { createProduct } from "@/actions/productos"; // ✅ ruta correcta
+import { createProduct } from "@/actions/addProductos"; 
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

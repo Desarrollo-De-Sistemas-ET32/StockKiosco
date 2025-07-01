@@ -1,12 +1,12 @@
 "use server";
-import { db } from "@/lib/db";
+import db from "@/lib/db";
 
 type CreateProductValues = {
   nombre: string;
   precio: string;
   codigo_barra: number;
   fecha_actualizacion: Date;
-  proveedores: { connect: { id_proveedor: number } }; // 🔧 CORREGIDO
+  proveedores: { connect: { id_proveedor: number } }; 
 };
 
 export const createProduct = async (values: CreateProductValues) => {
