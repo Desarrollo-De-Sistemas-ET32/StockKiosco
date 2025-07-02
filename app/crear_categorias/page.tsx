@@ -6,21 +6,17 @@ import { Button } from '@/components/ui/button';
 
 export default function CrearCategoria() {
   const [nombre, setNombre] = useState<string>('');
-  const [cuit, setCuit] = useState<string>('');
-  const [razonSocial, setRazonSocial] = useState<string>('');
   const [mensaje, setMensaje] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nombre || !cuit || !razonSocial) {
-      setMensaje('Por favor, completá todos los campos.');
+    if (!nombre) {
+      setMensaje('Por favor, completá el campo nombre.');
       return;
     }
-    console.log({ nombre, cuit, razonSocial });
+    console.log({ nombre });
     setMensaje('Categoría creada con éxito.');
     setNombre('');
-    setCuit('');
-    setRazonSocial('');
   };
 
   return (
@@ -36,18 +32,6 @@ export default function CrearCategoria() {
             type="text"
             value={nombre}
             onChange={e => setNombre(e.target.value)}
-          />
-          <Input
-            label="CUIT"
-            type="text"
-            value={cuit}
-            onChange={e => setCuit(e.target.value)}
-          />
-          <Input
-            label="Razón social"
-            type="text"
-            value={razonSocial}
-            onChange={e => setRazonSocial(e.target.value)}
           />
 
           <div className="flex justify-center">
