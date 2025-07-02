@@ -32,13 +32,13 @@ export default function RegisterPage() {
             label="Contraseña"
             type="password"
             name="password"
-            placeholder="••••••••"
+            placeholder="•••••••••"
           />
           <Input
             label="Repite la contraseña"
             type="password"
             name="confirmPassword"
-            placeholder="••••••••"
+            placeholder="•••••••••"
           />
 
           <p className="text-center text-sm text-gray-600">
