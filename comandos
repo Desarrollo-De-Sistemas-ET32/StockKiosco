@@ -1,7 +1,7 @@
 cmd1:
 npx create-next-app prueba --use-npm
 
-cd C:\Users\Sebastian\Documents\prueba
+cd C:\Users\Sebastian\Documents\GitHub\stockkiosco
 cd C:\Users\Redes-20\Documents\GitHub\Pruebas
 
 npm install

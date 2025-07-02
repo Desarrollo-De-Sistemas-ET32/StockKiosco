@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export default function RegisterPage() {
   return (
@@ -47,12 +48,14 @@ export default function RegisterPage() {
             </a>
           </p>
 
-          <button
+          <Button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="green"
+            size="default"
+            className="w-full"
           >
             Crear
-          </button>
+          </Button>
         </form>
       </div>
     </div>

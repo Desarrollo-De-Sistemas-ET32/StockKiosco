@@ -28,13 +28,12 @@ export default function Home() {
           <li className="tracking-[-.01em]">Save and see your changes instantly.</li>
         </ol>
 
-        {/* Botón para ir a VistaGestionarCategoria */}
         <div className="flex gap-4 mt-6">
           <button
-            onClick={() => router.push("/VistaGestionarCategoria")}
+            onClick={() => router.push("/register")}
             className="px-6 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition"
           >
-            Ir a Gestionar Categorías
+            Ir a Register
           </button>
         </div>
 

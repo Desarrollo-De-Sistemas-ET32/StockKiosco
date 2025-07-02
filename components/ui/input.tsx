@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useId } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
@@ -29,12 +30,12 @@ export interface InputProps
 export const Input: React.FC<InputProps> = ({
   label,
   id,
-  variant,
   size,
   className,
   ...props
 }) => {
-  const inputId = id ?? `input-${Math.random().toString(36).slice(2)}`;
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
 
   return (
     <div className="w-full">
@@ -46,7 +47,7 @@ export const Input: React.FC<InputProps> = ({
       </label>
       <input
         id={inputId}
-        className={cn(inputVariants({ variant, size, className }))}
+        className={cn(inputVariants({ size, className }))}
         {...props}
       />
     </div>
