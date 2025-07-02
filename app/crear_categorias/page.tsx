@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';  // <-- Ruta basada en el alias "@" apuntando a /components
+import { Input } from '@/components/ui/input';   
+import { Button } from '@/components/ui/button'; 
 
 export default function CrearCategoria() {
   const [nombre, setNombre] = useState<string>('');
@@ -17,7 +18,9 @@ export default function CrearCategoria() {
     }
     console.log({ nombre, cuit, razonSocial });
     setMensaje('Categoría creada con éxito.');
-    setNombre(''); setCuit(''); setRazonSocial('');
+    setNombre('');
+    setCuit('');
+    setRazonSocial('');
   };
 
   return (
@@ -46,16 +49,24 @@ export default function CrearCategoria() {
             value={razonSocial}
             onChange={e => setRazonSocial(e.target.value)}
           />
+
           <div className="flex justify-center">
-            <button
+            <Button
               type="submit"
-              className="w-full sm:w-auto mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-md transition duration-200"
+              variant="green"
+              size="default"
+              className="w-full sm:w-auto mt-4"
             >
               Crear
-            </button>
+            </Button>
           </div>
+
           {mensaje && (
-            <p className="text-sm text-center text-blue-600 mt-2" role="alert" aria-live="polite">
+            <p
+              className="text-sm text-center text-blue-600 mt-2"
+              role="alert"
+              aria-live="polite"
+            >
               {mensaje}
             </p>
           )}
