@@ -1,26 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';   
 import { Button } from '@/components/ui/button'; 
 
 export default function CrearCategoria() {
-  const [nombre, setNombre] = useState<string>('');
-  const [mensaje, setMensaje] = useState<string>('');
+  const [nombre, setNombre] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [categorias, setCategorias] = useState<string[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nombre) {
+    if (!nombre.trim()) {
       setMensaje('Por favor, completá el campo nombre.');
       return;
     }
-    console.log({ nombre });
+    setCategorias([...categorias, nombre.trim()]);
     setMensaje('Categoría creada con éxito.');
     setNombre('');
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-10 w-full max-w-md sm:max-w-lg">
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold mb-1">Crear</h1>
@@ -56,6 +62,19 @@ export default function CrearCategoria() {
           )}
         </form>
       </div>
+
+      {mounted && categorias.length > 0 && (
+        <div className="w-full max-w-md sm:max-w-lg mt-8 bg-gray-50 rounded-lg p-6 shadow">
+          <h2 className="text-xl font-semibold mb-4 text-center">Categorías creadas</h2>
+          <ul className="divide-y divide-gray-300">
+            {categorias.map((cat, i) => (
+              <li key={i} className="py-2">
+                {cat}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
