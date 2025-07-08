@@ -1,4 +1,3 @@
-// app/productos/[id]/editar/page.tsx
 'use client'
 
 import { useState, ChangeEvent, FormEvent } from 'react'
@@ -10,7 +9,7 @@ export default function EditarProductoPage() {
   const [nombre, setNombre] = useState('')
   const [codigoBarras, setCodigoBarras] = useState('')
   const [vencimiento, setVencimiento] = useState('')
-  const [categoria, setCategoria] = useState('')
+  const [categoria, setCategoria] =  useState('')
   const [marca, setMarca] = useState('')
   const [precioCompra, setPrecioCompra] = useState('')
   const [precioPublico, setPrecioPublico] = useState('')
@@ -24,7 +23,7 @@ export default function EditarProductoPage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    // aquí tu llamada a la API para guardar
+  
     console.log({ nombre, codigoBarras, vencimiento, categoria, marca, precioCompra, precioPublico })
   }
 
@@ -33,7 +32,6 @@ export default function EditarProductoPage() {
       <div className="bg-gray-100 rounded-2xl p-8 w-full max-w-4xl flex flex-col">
         <h1 className="text-center text-2xl font-bold mb-6">EDITAR PRODUCTO</h1>
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Formulario */}
           <form onSubmit={handleSubmit} className="flex-1 space-y-4">
             <Input 
               label="Nombre del producto" 
@@ -106,7 +104,7 @@ export default function EditarProductoPage() {
             </div>
           </form>
 
-          {/* Preview de imagen y cambio */}
+
           <div className="flex-1 flex flex-col items-center gap-4">
             <div className="w-full h-48 bg-white rounded-lg overflow-hidden flex items-center justify-center">
               <Image
