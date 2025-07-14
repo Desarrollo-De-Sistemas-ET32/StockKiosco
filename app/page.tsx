@@ -32,10 +32,10 @@ export default function Home() {
 
         <div className="flex gap-4 mt-6">
           <button
-            onClick={() => router.push("/crear_productos")}
+            onClick={() => router.push("/actualizar_proveedor")}
             className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
           >
-            Ir a Crear productos
+            Ir a Actualizar proveedor
           </button>
 
         </div>
