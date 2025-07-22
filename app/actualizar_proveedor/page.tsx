@@ -29,10 +29,9 @@ export default function ActualizarProveedorPage() {
       <div className="bg-gray-100 rounded-2xl p-10 w-full max-w-6xl">
         <h1 className="text-2xl font-bold mb-6">ACTUALIZAR PROVEEDOR</h1>
         <div className="flex flex-col md:flex-row gap-10 items-center">
-          {/* Imagen */}
           <div className="flex-1 w-full h-full max-w-md">
             <Image
-              src="/proveedor.png" // Reemplazá con tu ruta de imagen real
+              src="/proveedor.png"
               alt="Proveedor"
               width={400}
               height={300}
@@ -40,7 +39,7 @@ export default function ActualizarProveedorPage() {
             />
           </div>
 
-          {/* Formulario */}
+
           <form onSubmit={handleSubmit} className="flex-1 space-y-4 w-full">
             <Input
               label="Nombre"
@@ -80,7 +79,12 @@ export default function ActualizarProveedorPage() {
             />
 
             <div className="flex gap-4 pt-2">
-              <Button variant="secondary" type="button" onClick={() => window.history.back()}>
+              <Button
+                variant="secondary"
+                type="button"
+                className="bg-gray-500 hover:bg-gray-600 text-white"
+                onClick={() => window.history.back()}
+              >
                 Cancelar
               </Button>
               <Button type="submit">Actualizar</Button>
