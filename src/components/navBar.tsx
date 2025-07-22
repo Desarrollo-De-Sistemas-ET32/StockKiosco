@@ -11,15 +11,29 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Avatar } from "@/components/ui/avatar"
-import { AvatarFallback } from "@/components/ui/avatar"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { Button } from "./ui/button"
+
+//fix
+const mail = "castro.benjamin@gmail.com"
+const placeholder = "BC";//acá en realidad toma las iniciales del primer ombre y primer apellido del usuario actual
+const nombre = "Benjamin" + " " + "Castro";
+
 
 export function NavigationMenuDemo() {
-  const placeholder = "BC";//acá en realidad toma las iniciales del primer ombre y primer apellido del usuario actual
-  return (
+    return (
     <NavigationMenu viewport={false} className="mx-auto mt-4 py-5">
       <NavigationMenuList className="flex gap-4">
-        <Avatar><AvatarFallback>{placeholder}</AvatarFallback></Avatar>
-
+        <Popover> 
+          <PopoverTrigger><Avatar>{placeholder}</Avatar></PopoverTrigger>
+          <PopoverContent>
+            <p>{mail}</p>
+            <Avatar className="bg-card align-middle hover:bg-card">{placeholder}</Avatar>
+            <p className="text-lg p-1 border-b-1 border-accent">{nombre}</p>
+            <Button>Log Out <img src="LogoutIcon.ico"/></Button>
+          </PopoverContent>
+        </Popover>
+        
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
             <Link href="/homePage">Página Principal</Link>

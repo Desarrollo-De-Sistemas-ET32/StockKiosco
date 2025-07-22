@@ -12,7 +12,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "text-primary shadow-xs border-2 border-primary hover:bg-gradient-to-b from-accent to-muted-foreground/10",
+          "text-primary shadow-xs border-1 border-primary hover:bg-gradient-to-b from-accent/30 to-muted-foreground/10",
         filled:
           "bg-gradient-to-b from-accent to-muted-foreground text-white shadow-xs hover:bg-primary-foreground/20",//hover no funciona
         gray:

@@ -4,7 +4,7 @@ import Script from "../../node_modules/next/script";
 
 export default function Home() {
   return (
-    <main>
+    <main className="bg-foreground">
       <h1 className="flex justify-center italic text-xs">Here goes everythig else</h1>
       <p className="text-base flex justify-center font-semibold">Acá va todo lo demás</p>
       
