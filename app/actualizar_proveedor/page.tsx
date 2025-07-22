@@ -27,7 +27,7 @@ export default function ActualizarProveedorPage() {
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
       <div className="bg-gray-100 rounded-2xl p-10 w-full max-w-6xl">
-        <h1 className="text-2xl font-bold mb-6">ACTUALIZAR PROVEEDOR</h1>
+        <h1 className="text-3xl font-bold mb-6">ACTUALIZAR PROVEEDOR</h1>
         <div className="flex flex-col md:flex-row gap-10 items-center">
           <div className="flex-1 w-full h-full max-w-md">
             <Image
