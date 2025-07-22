@@ -26,113 +26,43 @@ export const registerSchema = object({
 
 // Actualizar producto
 
-export const updateProductSchema: ZodObject<{
-  id_producto: z.ZodNumber,
-  data: z.ZodObject<{
-    id_producto: z.ZodNumber,
-    id_marca: z.ZodNumber,
-    id_proveedor: z.ZodNumber,
-    nombre: z.ZodString,
-    codigo_barra: z.ZodNumber,
-    precio: z.ZodNumber,
-    fecha_actualizacion: z.ZodDate,
-  }>
-}> = object({
+export const updateProductSchema = z.object({
   id_producto: z.number().int().positive(),
-  data: object({
-    id_producto: z.number().int().positive(),
-    id_marca: z.number().int().positive(),
-    id_proveedor: z.number().int().positive(),
-    nombre: z.string().min(1, "Nombre es requerido"),
-    codigo_barra: z.number().int().positive(),
-    precio: z.number().positive(),
-    fecha_actualizacion: z.date(),
-  })
-});
+  nombre: z.string().min(1, "Nombre es requerido"),
+  descripcion: z.string().optional().default(""),
+  precio: z.number().int().positive(),
+  stock: z.number().int().nonnegative(),
+  categoria: z.string().min(1, "Categoria es requerida"),
+  imagen: z.string().optional().default(""),
+  fecha_creacion: z.date().optional().default(new Date()),
+  fecha_actualizacion: z.date().optional().default(new Date()),
+  id_proveedor: z.number().int().positive().optional(),
+  id_categoria: z.number().int().positive().optional()
+})
 
 // Crear producto
 
-export const createProductSchema: ZodObject<{
-  data: z.ZodObject<{
-    id_marca: z.ZodNumber,
-    id_proveedor: z.ZodNumber,
-    nombre: z.ZodString,
-    codigo_barra: z.ZodNumber,
-    precio: z.ZodNumber,
-    fecha_creacion: z.ZodDate,
-  }>
-}> = object({
-  data: object({
-    id_marca: z.number().int().positive(),
-    id_proveedor: z.number().int().positive(),
-    nombre: z.string().min(1, "Nombre es requerido"),
-    codigo_barra: z.number().int().positive(),
-    precio: z.number().positive(),
-    fecha_creacion: z.date(),
-  })
-});
+export const createProductSchema = z.object({
+  nombre: z.string().min(1, "Nombre es requerido"),
+  descripcion: z.string().optional().default(""),
+  precio: z.number().int().positive(),
+  stock: z.number().int().nonnegative(),
+  categoria: z.string().min(1, "Categoria es requerida"),
+  imagen: z.string().optional().default(""),
+  fecha_creacion: z.date().optional().default(new Date()),
+  fecha_actualizacion: z.date().optional().default(new Date()),
+  id_proveedor: z.number().int().positive().optional(),
+  id_categoria: z.number().int().positive().optional()
+})
 
 // Eliminar producto
 
-export const deleteProductSchema: ZodObject<{
-  id_producto: z.ZodNumber,
-}> = object({
-  id_producto: z.number().int().positive(),
-}); 
-
-export const getProductSchema: ZodObject<{
-  id_producto: z.ZodNumber,
-}> = object({
-  id_producto: z.number().int().positive(),
+export const delProductSchema = object({
+  name: string({ required_error: "Se necesita un nombre" })
+    .min(1, "No puede estar vacío")
+    .max(32, "El nombre debe tener menos de 32 caracteres")
+    .regex(
+      /^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$/,
+      "El nombre no puede contener caracteres especiales"
+    ),
 });
-
-// Obtener productos
-
-export const getProductsSchema: ZodObject<{
-  page: z.ZodNumber,
-  limit: z.ZodNumber,
-}> = object({
-  page: z.number().int().positive(),
-  limit: z.number().int().positive(),
-});
-
-export const getProductsByBrandSchema: ZodObject<{
-  id_marca: z.ZodNumber,
-}> = object({
-  id_marca: z.number().int().positive(),
-});
-
-export const getProductsByProviderSchema: ZodObject<{
-  id_proveedor: z.ZodNumber,
-}> = object({
-  id_proveedor: z.number().int().positive(),
-});
-
-export const getProductsByNameSchema: ZodObject<{
-  nombre: z.ZodString,
-}> = object({
-  nombre: z.string().min(1, "Nombre es requerido"),
-});
-
-export const getProductsByBarcodeSchema: ZodObject<{
-  codigo_barra: z.ZodNumber,
-}> = object({
-  codigo_barra: z.number().int().positive(),
-});
-
-export const getProductsByPriceRangeSchema: ZodObject<{
-  min_price: z.ZodNumber,
-  max_price: z.ZodNumber,
-}> = object({
-  min_price: z.number().int().positive(),
-  max_price: z.number().int().positive(),
-});
-
-export const getProductsByDateRangeSchema: ZodObject<{
-  start_date: z.ZodDate,
-  end_date: z.ZodDate,
-}> = object({
-  start_date: z.date(),
-  end_date: z.date(),
-});
-
