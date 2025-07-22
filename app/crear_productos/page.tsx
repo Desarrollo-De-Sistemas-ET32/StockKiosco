@@ -30,7 +30,7 @@ export default function EditarProductoPage() {
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
       <div className="bg-gray-100 rounded-2xl p-8 w-full max-w-4xl flex flex-col">
-        <h1 className="text-center text-2xl font-bold mb-6">EDITAR PRODUCTO</h1>
+        <h1 className="text-center text-2xl font-bold mb-6">CREAR PRODUCTO</h1>
         <div className="flex flex-col lg:flex-row gap-8">
           <form onSubmit={handleSubmit} className="flex-1 space-y-4">
             <Input 
@@ -99,7 +99,11 @@ export default function EditarProductoPage() {
             </div>
 
             <div className="flex gap-4 mt-6">
-              <Button type="submit" className="flex-1">Siguiente</Button>
+              <Button
+                type="submit"
+                className="flex-1 bg-gradient-to-b from-gray-700 to-gray-500 text-white hover:from-gray-600 hover:to-gray-400">
+                Siguiente
+              </Button>
               <Button variant="outline" className="flex-1" onClick={() => history.back()}>Volver</Button>
             </div>
           </form>
@@ -127,7 +131,7 @@ export default function EditarProductoPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h.582M20 20v-6h-.581M4 10V4h6M20 14v6h-6" />
                   </svg>
-                  Cambiar imagen de producto
+                  Subir imagen de producto
                 </div>
               </Button>
             </label>
