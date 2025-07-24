@@ -13,6 +13,7 @@ import {
 import { Avatar } from "@/components/ui/avatar"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Button } from "./ui/button"
+import { SlLogout } from "react-icons/sl"
 
 //fix
 const mail = "castro.benjamin@gmail.com"
@@ -23,14 +24,14 @@ const nombre = "Benjamin" + " " + "Castro";
 export function NavigationMenuDemo() {
     return (
     <NavigationMenu viewport={false} className="mx-auto mt-4 py-5">
-      <NavigationMenuList className="flex gap-4">
+      <NavigationMenuList className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
         <Popover> 
           <PopoverTrigger><Avatar>{placeholder}</Avatar></PopoverTrigger>
-          <PopoverContent>
+          <PopoverContent className="bg-foreground text-background text-sm mt-2">
             <p>{mail}</p>
             <Avatar className="bg-card align-middle hover:bg-card">{placeholder}</Avatar>
             <p className="text-lg p-1 border-b-1 border-accent">{nombre}</p>
-            <Button>Log Out <img src="LogoutIcon.ico"/></Button>
+            <Button>Log Out <SlLogout /></Button>
           </PopoverContent>
         </Popover>
         
