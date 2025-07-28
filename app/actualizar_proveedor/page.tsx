@@ -25,13 +25,14 @@ export default function ActualizarProveedorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#212529] flex items-center justify-center p-4">
       <div className="bg-gray-100 rounded-2xl p-10 w-full max-w-6xl">
-        <h1 className="text-3xl font-bold mb-6">ACTUALIZAR PROVEEDOR</h1>
         <div className="flex flex-col md:flex-row gap-10 items-center">
-          <div className="flex-1 w-full h-full max-w-md">
+          {/* Columna izquierda: título + imagen */}
+          <div className="flex-1 w-full h-full max-w-md flex flex-col items-start gap-6">
+            <h1 className="text-3xl font-bold">ACTUALIZAR PROVEEDOR</h1>
             <Image
-              src="/proveedor.png"
+              src="/img/proveedor.jpg"
               alt="Proveedor"
               width={400}
               height={300}
@@ -39,7 +40,7 @@ export default function ActualizarProveedorPage() {
             />
           </div>
 
-
+          {/* Columna derecha: formulario */}
           <form onSubmit={handleSubmit} className="flex-1 space-y-4 w-full">
             <Input
               label="Nombre"
