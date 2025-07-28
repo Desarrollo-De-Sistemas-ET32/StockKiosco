@@ -1,9 +1,10 @@
 cmd1:
 npx create-next-app prueba --use-npm
 
-cd C:\Users\Sebastian\Documents\GitHub\stockkiosco
+
 cd C:\Users\Redes-20\Documents\GitHub\stockkiosco
 
+cd C:\Users\Sebastian\Documents\GitHub\stockkiosco
 npm install
 npm install class-variance-authority
 npm install typescript@latest --save-dev
