@@ -28,7 +28,7 @@ export default function ActualizarProveedorPage() {
     <div className="min-h-screen bg-[#212529] flex items-center justify-center p-4">
       <div className="bg-gray-100 rounded-2xl p-10 w-full max-w-6xl">
         <div className="flex flex-col md:flex-row gap-10 items-center">
-          {/* Columna izquierda: título + imagen */}
+
           <div className="flex-1 w-full h-full max-w-md flex flex-col items-start gap-6">
             <h1 className="text-3xl font-bold">ACTUALIZAR PROVEEDOR</h1>
             <Image
@@ -40,7 +40,7 @@ export default function ActualizarProveedorPage() {
             />
           </div>
 
-          {/* Columna derecha: formulario */}
+
           <form onSubmit={handleSubmit} className="flex-1 space-y-4 w-full">
             <Input
               label="Nombre"
