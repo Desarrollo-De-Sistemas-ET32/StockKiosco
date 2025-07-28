@@ -76,7 +76,7 @@ export default function ActualizarProveedorPage() {
               name="telefono"
               value={form.telefono}
               onChange={handleChange}
-              placeholder="1123456789"
+              placeholder="0123456789"
             />
 
             <div className="flex gap-4 pt-2">
@@ -84,8 +84,7 @@ export default function ActualizarProveedorPage() {
                 variant="secondary"
                 type="button"
                 className="bg-gray-500 hover:bg-gray-600 text-white"
-                onClick={() => window.history.back()}
-              >
+                onClick={() => window.history.back()}>
                 Cancelar
               </Button>
               <Button type="submit">Actualizar</Button>
