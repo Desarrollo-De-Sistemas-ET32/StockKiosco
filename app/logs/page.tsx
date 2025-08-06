@@ -22,7 +22,7 @@ export default function LogsPage() {
               >
                 <FaUser className="text-xl" />
                 <span>
-                  <strong>{log.name}</strong>, creó el producto <strong>{log.producto}</strong> a las {log.hora}
+                  <strong>{log.name}</strong>, creo el producto <strong>{log.producto}</strong> a las {log.hora}
                 </span>
               </div>
             ))}
@@ -30,10 +30,11 @@ export default function LogsPage() {
         </div>
 
         <Button
-          onClick={() => window.history.back()}
-          className="mt-10 bg-[#6c757d] hover:bg-[#5a6268] text-white px-8 py-2"
-        >
-          Volver
+                variant="secondary"
+                type="button"
+                className= "mt-10 bg-[#6c757d] hover:bg-[#5a6268] text-white px-8 py-2"
+                onClick={() => window.history.back()}>
+                Volver
         </Button>
       </div>
     </div>
