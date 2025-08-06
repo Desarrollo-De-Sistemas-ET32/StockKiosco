@@ -2,44 +2,44 @@
 
 import * as React from "react"
 import { ProductCard } from "@/components/ui/productCard"
-
-const products = [
-  {
-    id: "0000000000001",
-    name: "Alfajor de chocolate",
-    brand: "Jorgito",
-    price: 129999,
-  },
-  {
-    id: "0000000000002",
-    name: "Zzzz",
-    brand: "aDormir",
-    price: 19999,
-  },
-  {
-    id: "0000000000003",
-    name: "Producto 200",
-    brand: "omg",
-    price: 2999,
-  },
-  {
-    id: "0000000000004",
-    name: "25 clientes!1!!",
-    brand: "omg",
-    price: 3799,
-  },
-  {
-    id: "0000000000005",
-    name: "Producto 400",
-    brand: "omg",
-    price: 2999,
-  },
-];
+import { useEffect, useState } from "react";
 
 export function ProductList(){
-  //const products = await getProducts();
-  //una vez se tenga la función de getProducts, volver la función un async
 
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try{
+        console.log("Prueba1")
+        const res = await fetch("/productos.json"); //desde el servidor
+        console.log("Prueba2")
+        const data = await res.json()
+        setProducts(data)
+        console.log(data)
+        setIsLoading(false);
+      }catch{
+        console.error("Fallo")
+      }finally{
+        setIsLoading(false)
+      }
+    }
+    fetchProducts();
+  }, []);
+
+
+
+  if (isLoading) {
+    return ( 
+      <ul className="bg-foreground mt-4 w-full h-full overflow-y-auto flex flex-col gap-4">
+        <ProductCard id="............." name="Loading" brand="Loading" price={0}></ProductCard>
+        <ProductCard id="............." name="Loading" brand="Loading" price={0}></ProductCard>
+        <ProductCard id="............." name="Loading" brand="Loading" price={0}></ProductCard>
+      </ul>
+    )
+  }
 
     return (
         <ul className="bg-foreground mt-4 w-full h-full overflow-y-auto flex flex-col gap-4">
