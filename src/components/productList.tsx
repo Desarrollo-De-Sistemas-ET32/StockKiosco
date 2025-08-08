@@ -12,19 +12,10 @@ export function ProductList(){
 
   useEffect(() => {
     async function fetchProducts() {
-      try{
-        console.log("Prueba1")
-        const res = await fetch("/productos.json"); //desde el servidor
-        console.log("Prueba2")
+        const res = await fetch("/productos.json");
         const data = await res.json()
         setProducts(data)
-        console.log(data)
         setIsLoading(false);
-      }catch{
-        console.error("Fallo")
-      }finally{
-        setIsLoading(false)
-      }
     }
     fetchProducts();
   }, []);
