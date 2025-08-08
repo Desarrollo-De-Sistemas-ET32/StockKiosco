@@ -34,9 +34,9 @@ export function ProductCard({
             </div>
           </div>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-7 items-center">
                 <Button variant="filled" size="lg"><Link href="/editProduct">Editar</Link></Button>
-              <Button size="lg">Eliminar</Button>
+              <Button className="mr-10" size="lg">Eliminar</Button>
             </div>
         </li>
   )
