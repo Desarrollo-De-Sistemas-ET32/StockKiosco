@@ -14,7 +14,7 @@ const buttonVariants = cva(
         default:
           "text-primary shadow-xs border-1 border-primary hover:bg-gradient-to-b from-accent/30 to-muted-foreground/10",
         filled:
-          "bg-gradient-to-b from-accent to-muted-foreground text-white shadow-xs hover:bg-primary-gradient-to-b hover:from-accent/80 hover:to-muted-foreground/80",//hover no funciona
+          "bg-gradient-to-b from-accent to-muted-foreground text-white shadow-xs hover:bg-primary-gradient-to-b hover:from-accent/80 hover:to-muted-foreground/80",
         gray:
           "bg-card text-primary hover:bg-card/60",
       },
