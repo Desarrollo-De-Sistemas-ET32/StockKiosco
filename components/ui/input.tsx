@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import * as React from 'react'
-import { useId } from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import * as React from 'react';
+import { useId } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
 const inputVariants = cva(
-  'block w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black-400',
+  'bg-foreground text-muted-foreground text-sm border-2 border-accent px-3 block w-full py-2 rounded-md hover:border-muted-foreground focus:outline-none focus:ring-2 focus:ring-black-400',
   {
     variants: {
       size: {
@@ -19,39 +19,36 @@ const inputVariants = cva(
       size: 'default',
     },
   }
-)
+);
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {
-  label: string
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
 }
 
 export const Input: React.FC<InputProps> = ({
   label,
   id,
-  variant,
   size,
   className,
   ...props
 }) => {
-  const generatedId = useId()
-  const inputId = id ?? generatedId
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
 
   return (
     <div className="w-full">
       <label
         htmlFor={inputId}
-        className="block text-sm font-medium text-gray-700 mb-1"
+        className="block text-sm font-medium text-card-foreground mb-1"
       >
         {label}
       </label>
       <input
         id={inputId}
-        name={props.name}
-        className={cn(inputVariants({ variant, size, className }))}
+        className={cn(inputVariants({ className }))}
         {...props}
       />
     </div>
-  )
-}
+  );
+};

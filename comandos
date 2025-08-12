@@ -10,7 +10,11 @@ npm install typescript@latest --save-dev
 npm install --save-dev typescript @types/react @types/node
 npm install tailwind-merge
 npm install @radix-ui/react-navigation-menu lucide-react
+npm install @radix-ui/react-avatar
 npm install react-icons
+npm install class-variance-authority
+
+
 
 npm install prisma --save-dev
 npm install @prisma/client

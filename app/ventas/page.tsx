@@ -19,7 +19,7 @@ export default function VentaPage() {
   const [metodoPago, setMetodoPago] = useState('efectivo')
 
   useEffect(() => {
-    fetch('/ventas/venta.json')
+    fetch('/ventas/ventas.json')
       .then((res) => res.json())
       .then((data) => setProductos(data))
       .catch((err) => console.error('Error cargando productos:', err))
