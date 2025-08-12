@@ -1,42 +1,26 @@
 [
   {
     "id": 1,
-    "name": "Galletitas Oreo",
-    "stock": 20,
-    "precio": 150,
-    "cantidad": 2,
-    "imagen": "/img/oreo.png"
+    "name": "Milka Oreo",
+    "cant": 2,
+    "stock": 10,
+    "precio": 1500,
+    "image": "/milka.png"
   },
   {
     "id": 2,
-    "name": "Chocolate Milka",
-    "stock": 15,
-    "precio": 250,
-    "cantidad": 1,
-    "imagen": "/img/milka.png"
+    "name": "Milka Almendras",
+    "cant": 1,
+    "stock": 8,
+    "precio": 1400,
+    "image": "/milka.png"
   },
   {
     "id": 3,
-    "name": "messi",
-    "stock": 15,
-    "precio": 250,
-    "cantidad": 1,
-    "imagen": "/img/milka.png"
-  },
-  {
-    "id": 4,
-    "name": "la mama de juan",
-    "stock": 15,
-    "precio": 1,
-    "cantidad": 1,
-    "imagen": "/img/milka.png"
-  },
-  {
-    "id": 5,
-    "name": ":D",
-    "stock": 15,
-    "precio": 250,
-    "cantidad": 1,
-    "imagen": "/img/milka.png"
+    "name": "Milka Triple",
+    "cant": 3,
+    "stock": 12,
+    "precio": 1600,
+    "image": "/milka.png"
   }
 ]
