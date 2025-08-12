@@ -1,0 +1,19 @@
+cmd1:
+npx create-next-app prueba --use-npm
+
+cd C:\Users\Sebastian\Documents\GitHub\StockKiosco
+cd C:\Users\Redes-20\Documents\GitHub\stockkiosco
+
+npm install
+npm install class-variance-authority
+npm install typescript@latest --save-dev
+npm install --save-dev typescript @types/react @types/node
+npm install tailwind-merge
+npm install @radix-ui/react-navigation-menu lucide-react
+npm install react-icons
+
+npm install prisma --save-dev
+npm install @prisma/client
+
+npm run dev
+localhost:3000
