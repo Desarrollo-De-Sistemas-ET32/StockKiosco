@@ -1,26 +1,34 @@
 [
   {
     "id": 1,
-    "name": "Milka Oreo",
+    "name": "Oreo",
     "cant": 2,
     "stock": 10,
     "precio": 1500,
-    "image": "/milka.png"
+    "image": "/img/sino.jpeg"
   },
   {
     "id": 2,
-    "name": "Milka Almendras",
+    "name": "Cindor",
     "cant": 1,
     "stock": 8,
     "precio": 1400,
-    "image": "/milka.png"
+    "image": "/img/talvez.jpeg"
   },
   {
     "id": 3,
-    "name": "Milka Triple",
-    "cant": 3,
-    "stock": 12,
-    "precio": 1600,
-    "image": "/milka.png"
+    "name": "Coca Cola",
+    "cant": 2,
+    "stock": 15,
+    "precio": 500,
+    "image": "/img/no.jpeg"
+  },
+  {
+    "id": 4,
+    "name": "Martin",
+    "cant": 1,
+    "stock": "∞",
+    "precio": 10000,
+    "image": "/img/si.jpeg"
   }
 ]

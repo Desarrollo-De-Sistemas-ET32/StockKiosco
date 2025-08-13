@@ -14,7 +14,9 @@ npm install @radix-ui/react-avatar
 npm install react-icons
 npm install class-variance-authority
 
+npx next dev
 
+npm install next@latest
 
 npm install prisma --save-dev
 npm install @prisma/client

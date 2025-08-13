@@ -1,8 +1,8 @@
 'use client'
 
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
+import {Button}  from '@/components/ui/button'
+import ProductCard from '@/components/ui/productCard'
 
 interface Product {
   id: number
@@ -30,67 +30,23 @@ export default function VentaPage() {
 
   return (
     <div className="bg-gray-900 min-h-screen text-white p-4">
-      {/* navegación */}
+
       <nav className="flex items-center gap-4 bg-gray-800 p-3 rounded-md mb-6">
         <div className="w-10 h-10 bg-gray-600 rounded-full" />
-        <Button variant="outline" className="bg-white text-black">
-          Página Principal
-        </Button>
-        <Button variant="outline" className="bg-white text-black">
-          Estadísticas
-        </Button>
-        <Button variant="outline" className="bg-white text-black">
-          Configuración
-        </Button>
-        <Button variant="outline" className="bg-white text-black">
-          Registros
-        </Button>
+        <Button variant="outline" className="bg-white text-black">Página Principal</Button>
+        <Button variant="outline" className="bg-white text-black">Estadísticas</Button>
+        <Button variant="outline" className="bg-white text-black">Configuración</Button>
+        <Button variant="outline" className="bg-white text-black">Registros</Button>
       </nav>
 
+
       <div className="flex gap-6">
-        {/* lista */}
+
         <div className="flex-1 bg-gray-100 rounded-lg p-6">
           <div className="flex flex-col gap-4 bg-gray-400 p-4 rounded-lg">
             {products.length > 0 ? (
               products.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex items-start gap-4 bg-gray-500 p-3 rounded-lg"
-                >
-                  {/* imagen */}
-                  <div className="flex-shrink-0">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      width={64}
-                      height={64}
-                      className="rounded-md object-cover"
-                    />
-                  </div>
-
-                  {/* info */}
-                  <div className="flex-1">
-                    {/* nombre */}
-                    <div className="text-base font-semibold text-white">
-                      {product.name}
-                    </div>
-
-                    {/* cant y stock */}
-                    <div className="mt-1 text-sm text-gray-200">
-                      <span className="mr-3">
-                        <strong>cant:</strong> {product.cant}
-                      </span>
-                      <span>
-                        <strong>stock:</strong> {product.stock}
-                      </span>
-                    </div>
-
-                    {/* precio*/}
-                    <div className="mt-2 text-sm text-gray-100">
-                      <strong>precio:</strong> ${formatMoney(product.precio)}
-                    </div>
-                  </div>
-                </div>
+                <ProductCard key={product.id} {...product} formatMoney={formatMoney} />
               ))
             ) : (
               <p className="text-center text-white">Cargando productos...</p>
@@ -98,7 +54,7 @@ export default function VentaPage() {
           </div>
         </div>
 
-        {/* total y pago */}
+
         <div className="w-72 bg-gray-100 rounded-lg p-4 flex flex-col justify-between">
           <div className="bg-gray-500 p-4 rounded-lg text-lg font-semibold">
             Total: ${formatMoney(totalPrice)}
@@ -121,12 +77,12 @@ export default function VentaPage() {
             </label>
           </div>
 
-      <Button 
-        variant="default" 
-        className="mt-4 w-full bg-gray-500 text-white hover:bg-gray-600 border-0">
-        Siguiente
-      </Button>
-
+          <Button
+            variant="default"
+            className="mt-4 w-full bg-gray-500 text-white hover:bg-gray-600 border-0"
+          >
+            Siguiente
+          </Button>
         </div>
       </div>
     </div>
