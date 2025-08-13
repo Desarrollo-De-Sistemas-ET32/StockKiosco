@@ -14,6 +14,9 @@ export interface DescuentoCardProps {
   fecha_inicio: string;
   fecha_fin: string;
   className?: string;
+  sortBy: "nombre" | "valor" | "fecha_inicio";
+  sortOrder: "asc" | "desc";
+  searchTerm?: string;
 }
 
 export function ProductCard({
@@ -27,7 +30,6 @@ export function ProductCard({
   fecha_inicio,
   fecha_fin,
 }: DescuentoCardProps) {
-
   return (
     <li className={`bg-card text-card-foreground w-full p-4 flex flex-col gap-2 rounded-md font-medium ${className ?? ""}`}>
       <div className="flex justify-between items-center">
@@ -46,11 +48,11 @@ export function ProductCard({
         </div>
         <div className="text-right">
           {tipo === "PORCENTAJE" ? (
-            <p><strong>Valor:</strong> %{valor}</p>
+            <p><strong>Valor: </strong>{valor}%</p>
           ) : (
-            <p><strong>Valor:</strong> ${valor.toFixed(2)}</p>
+            <p><strong>Valor: </strong>${valor.toFixed(2)}</p>
           )}
-          <p><strong>Vigencia:</strong> {new Date(fecha_inicio).toLocaleDateString()} - {new Date(fecha_fin).toLocaleDateString()}</p>
+          <p><strong>Vigencia: </strong> {new Date(fecha_inicio).toLocaleDateString()} - {new Date(fecha_fin).toLocaleDateString()}</p>
         </div>
       </div>
 
@@ -58,8 +60,8 @@ export function ProductCard({
         <Button variant="filled" size="lg">
           <Link href={`/editProduct/${id_descuento}`}>Editar</Link>
         </Button>
-        <Button size="lg" variant="destructive">Eliminar</Button>
+        <Button size="lg" variant="default">Eliminar</Button>
       </div>
     </li>
-  )
+  );
 }
