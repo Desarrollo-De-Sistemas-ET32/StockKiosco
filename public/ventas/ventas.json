@@ -33,14 +33,6 @@
   },
   {
     "id": 5,
-    "name": "Martin",
-    "cant": 1,
-    "stock": "∞",
-    "precio": 10000,
-    "image": "/img/si.jpeg"
-  },
-  {
-    "id": 6,
     "name": "Violencia de genero",
     "cant": 5,
     "stock": "∞",
@@ -48,35 +40,59 @@
     "image": "/img/si.jpeg"
   },
   {
-    "id": 7,
-    "name": "Martin",
+    "id": 6,
+    "name": "Cañete",
     "cant": 1,
     "stock": "∞",
     "precio": 10000,
-    "image": "/img/si.jpeg"
+    "image": "/img/espero.jpeg"
+  },
+  {
+    "id": 7,
+    "name": "Oliverio",
+    "cant": 1,
+    "stock": "∞",
+    "precio": 10000,
+    "image": "/img/nose.jpeg"
   },
   {
     "id": 8,
-    "name": "Martin",
+    "name": "Saf",
     "cant": 1,
     "stock": "∞",
     "precio": 10000,
-    "image": "/img/si.jpeg"
+    "image": "/img/seguro.jpeg"
   },
   {
     "id": 9,
-    "name": "Martin",
+    "name": "Kevin",
     "cant": 1,
     "stock": "∞",
     "precio": 10000,
-    "image": "/img/si.jpeg"
+    "image": "/img/veneco.jpeg"
   },
   {
     "id": 10,
-    "name": "Martin",
+    "name": "Juan",
     "cant": 1,
     "stock": "∞",
     "precio": 10000,
-    "image": "/img/si.jpeg"
+    "image": "/img/juan.jpeg"
+  },
+  {
+    "id": 11,
+    "name": "Albarro",
+    "cant": 1,
+    "stock": "∞",
+    "precio": 10000,
+    "image": "/img/quisas.jpeg"
+  },
+  {
+    "id": 12,
+    "name": "Benja",
+    "cant": 1,
+    "stock": "∞",
+    "precio": 10000,
+    "image": "/img/chilena.jpeg"
   }
 ]
