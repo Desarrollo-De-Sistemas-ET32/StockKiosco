@@ -47,7 +47,7 @@ export default function VentaPage() {
       </nav>
 
       <div className="flex gap-6">
-        {/* Lista de productos con scroll */}
+        
         <div className="flex-1 bg-gray-100 rounded-lg p-6">
           <div className="flex flex-col gap-4 bg-gray-400 p-4 rounded-lg max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-300">
             {products.length > 0 ? (
@@ -92,7 +92,7 @@ export default function VentaPage() {
           </div>
         </div>
 
-        {/* total y pago */}
+
         <div className="w-72 bg-gray-100 rounded-lg p-4 flex flex-col justify-between">
           <div className="bg-gray-500 p-4 rounded-lg text-lg font-semibold">
             Total: ${formatMoney(totalPrice)}

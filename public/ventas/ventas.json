@@ -33,18 +33,18 @@
   },
   {
     "id": 5,
-    "name": "Violencia de genero",
-    "cant": 5,
-    "stock": "∞",
-    "precio": 0.10,
-    "image": "/img/si.jpeg"
-  },
-  {
-    "id": 6,
     "name": "Martin",
     "cant": 1,
     "stock": "∞",
     "precio": 10000,
+    "image": "/img/si.jpeg"
+  },
+  {
+    "id": 6,
+    "name": "Violencia de genero",
+    "cant": 5,
+    "stock": "∞",
+    "precio": 0.10,
     "image": "/img/si.jpeg"
   },
   {
@@ -57,6 +57,22 @@
   },
   {
     "id": 8,
+    "name": "Martin",
+    "cant": 1,
+    "stock": "∞",
+    "precio": 10000,
+    "image": "/img/si.jpeg"
+  },
+  {
+    "id": 9,
+    "name": "Martin",
+    "cant": 1,
+    "stock": "∞",
+    "precio": 10000,
+    "image": "/img/si.jpeg"
+  },
+  {
+    "id": 10,
     "name": "Martin",
     "cant": 1,
     "stock": "∞",
