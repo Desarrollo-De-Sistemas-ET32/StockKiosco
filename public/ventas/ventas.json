@@ -94,5 +94,13 @@
     "stock": "∞",
     "precio": 10000,
     "image": "/img/chilena.jpeg"
+  },
+  {
+    "id": 13,
+    "name": "Maxi",
+    "cant": 1,
+    "stock": "∞",
+    "precio": 2,
+    "image": "/img/maxikiosco.jpeg"
   }
 ]
