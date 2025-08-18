@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import ProductCard from '@/components/ui/productCard' // asegúrate del path y nombre real
+import ProductCard from '@/components/ui/productCard' 
 
 interface Product {
   id: number
@@ -64,6 +64,8 @@ export default function VentaPage() {
             <div className="lg:mt-[60px] mt-4">
               <select className="w-full p-2 rounded-md bg-gray-400 text-white">
                 <option>Aplicar Descuento</option>
+                <option>Robar</option>
+                <option>Si</option>
               </select>
             </div>
 

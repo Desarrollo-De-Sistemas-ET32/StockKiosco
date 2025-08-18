@@ -30,7 +30,7 @@ export default function ProductCard({ name, cant, stock, precio, image, formatMo
           <span className="mr-3"><strong>cant:</strong> {cant}</span>
           <span><strong>stock:</strong> {stock}</span>
         </div>
-        <div className="mt-2 text-sm text-gray-100">
+        <div className="mt-1 text-sm text-gray-100">
           <strong>precio:</strong> ${formatMoney(precio)}
         </div>
       </div>
