@@ -24,6 +24,25 @@
       "usuario": "admin",
       "accion": "Cierre de sesión",
       "ip": "192.168.0.10"
+    },
+    {
+      "hora": "4:05",
+      "usuario": "admin",
+      "accion": "Inicio de sesión",
+      "ip": "192.168.0.10"
+    },
+    {
+      "hora": "14:02",
+      "usuario": "admin",
+      "accion": "Cierre de sesión",
+      "ip": "192.168.0.10"
+    },
+    {
+      "hora": "11:02",
+      "usuario": "Juan",
+      "accion": "Agregó producto",
+      "producto":"Chicle",
+      "cantidad":7
     }
   ]
   
