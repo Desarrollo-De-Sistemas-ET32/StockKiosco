@@ -31,11 +31,11 @@ export function ProductCard({
   fecha_fin,
 }: DescuentoCardProps) {
   return (
-    <li className={`bg-card text-card-foreground w-full p-4 flex flex-col gap-2 rounded-md font-medium ${className ?? ""}`}>
+    <li className={`bg-card text-card-foreground 2xl:w-full lg:w-full md:w-full sm:w-full p-4 flex flex-col sm:gap-full md:gap-full lg:gap-full rounded-md font-medium ${className ?? ""}`}>
       <div className="flex justify-between items-center">
         <h3 className="text-2xl font-bold">{nombre}</h3>
-        <span className={`px-2 py-1 rounded text-sm font-semibold ${activo ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>
-          {activo ? "Activo" : "Inactivo"}
+        <span className={`px-2 py-1 rounded text-sm font-semibold ${activo.valueOf() && (new Date(fecha_fin) < new Date()) ? "bg-red-500 text-white" : "bg-green-500 text-white"}`}>
+          {activo.valueOf() && (new Date(fecha_fin) < new Date()) ? "Vencido" : "Activo"}
         </span>
       </div>
 
@@ -43,7 +43,6 @@ export function ProductCard({
 
       <div className="flex justify-between text-sm text-muted-foreground">
         <div>
-          {/* <p><strong>ID:</strong> {id_descuento}</p> */}
           <p><strong>Tipo:</strong> {tipo}</p>
         </div>
         <div className="text-right">
@@ -56,7 +55,7 @@ export function ProductCard({
         </div>
       </div>
 
-      <div className="flex gap-3 mt-2">
+      <div className="relative flex gap-3 mt-2">
         <Button variant="filled" size="lg">
           <Link href={`/editProduct/${id_descuento}`}>Editar</Link>
         </Button>

@@ -13,7 +13,7 @@ export default function DiscountManagement() {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <main className="bg-foreground rounded-xl shadow-lg p-6 sm:p-8 w-450 max-h-[84vh] mx-auto flex flex-col items-center justify-center">
+    <main className="bg-foreground rounded-xl shadow-lg p-6 sm:p-6 2xl:max-w-450 sm:max-w-200 m-auto flex flex-col items-center justify-center">
       <h2 className="text-background text-center text-3xl font-bold mb-6">DESCUENTOS</h2>
 
       <div className="flex flex-col sm:flex-row w-full gap-4">

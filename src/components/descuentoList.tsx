@@ -98,7 +98,7 @@ export function DescuentoList({
   }
 
   return (
-    <ul className="bg-foreground mt-4 w-full h-full overflow-y-auto flex flex-col gap-4">
+    <ul className="bg-foreground mt-6 w-full overflow-y-auto grid 2xl:grid-cols-2 flex-col gap-x-6 gap-y-6 justify-center sm:grid-cols-1">
       {sortedDescuentos.map((desc) => (
         <ProductCard
           key={desc.id_descuento}

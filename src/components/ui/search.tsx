@@ -17,7 +17,7 @@ export const Search: React.FC<SearchProps> = ({
   const searchId = id ?? generatedId;
 
   return (
-    <div className="w-full">
+    <div className="sm:w-200 xl:w-378">
       <input
         id={searchId}
         className={`bg-foreground text-background text-sm h-10 border-2 border-accent px-3 block w-full py-2 rounded-md hover:border-muted-foreground focus:outline-none focus:ring-2 focus:ring-black-400 ${className ?? ''}`}
