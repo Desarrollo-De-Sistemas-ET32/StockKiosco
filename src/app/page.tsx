@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import Link from "@/../node_modules/next/link";
-import Script from "../../node_modules/next/script";
+import Script from "next/script";
 
 export default function Home() {
   return (

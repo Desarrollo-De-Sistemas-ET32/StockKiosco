@@ -9,9 +9,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-import { Avatar } from "@/components/ui/avatar"
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+} from "./ui/navigation-menu"
+import { Avatar } from "./ui/avatar"
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover"
 import { Button } from "./ui/button"
 import { SlLogout } from "react-icons/sl"
 

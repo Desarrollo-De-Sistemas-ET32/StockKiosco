@@ -14,14 +14,14 @@ const buttonVariants = cva(
         default:
           "text-primary shadow-xs border-1 border-primary hover:bg-gradient-to-b from-accent/30 to-muted-foreground/10",
         filled:
-          "bg-gradient-to-b from-accent to-muted-foreground text-white shadow-xs hover:bg-primary-foreground/20",//hover no funciona
+          "bg-gradient-to-b from-accent to-muted-foreground text-white shadow-xs hover:bg-primary-gradient-to-b hover:from-accent/80 hover:to-muted-foreground/80",
         gray:
           "bg-card text-primary hover:bg-card/60",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        lg: "h-18 text-[20px] rounded-md px-12 has-[>svg]:px-4",
         icon: "size-9",
       },
     },
