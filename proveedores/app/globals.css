@@ -1,72 +1,36 @@
 * {
   font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
-
-html, body {
-  height: 100%;
-  overflow: hidden; /* elimina la scrollbar global */
-}
-
-h1 {
+h1{
   text-align: center; 
   margin-bottom: 15px;
 }
-
 /* ---- CONTENEDOR ---- */
 .contenedor-lista {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  align-items: flex-start;
+  gap: 20px;
   width: fit-content;
-  margin: 20px auto;
-}
-
-/* ---- BARRA SUPERIOR (busqueda + botón) ---- */
-.barra-superior {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 700px;
-  margin: 0 auto;
-}
-
-.input-busqueda {
-  width: 400px;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border 0.2s, box-shadow 0.2s;
-}
-
-.input-busqueda:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 6px rgba(74,144,226,0.3);
-  outline: none;
+  margin: 40px auto;
 }
 
 /* ---- LISTA ---- */
 .lista-proveedores {
-  height: 80vh;
+  max-height: 600px;
   background-color: #f5f5f5;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 16px;
   border-radius: 10px;
-  width: 700px;
-  display: flex;
-  flex-direction: column;
+  width: 900px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
 }
 
 /* ---- BOTÓN AGREGAR ---- */
 .btn-agregar {
-  width: 200px;
   height: fit-content;
   align-self: flex-start;
   background: #28a745; /* verde */
@@ -92,10 +56,6 @@ h1 {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
   overflow: hidden;
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 50px;
-  flex: 0 0 auto;
 }
 
 .card-proveedor:hover {
@@ -120,10 +80,6 @@ h1 {
   color: #2c3e50;
   font-size: 16px;
   font-weight: 600;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .btn-mostrar {
@@ -148,7 +104,6 @@ h1 {
   margin-top: 8px;
   padding-top: 8px;
   animation: fadeIn 0.2s ease-out;
-  flex-wrap: wrap;
 }
 
 .card-datos p {
@@ -157,7 +112,6 @@ h1 {
   color: #555;
   display: flex;
   align-items: center;
-  word-break: break-word;
 }
 
 .card-datos p strong {
@@ -202,6 +156,7 @@ h1 {
 }
 
 /* --------- MODAL --------- */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -226,6 +181,7 @@ h1 {
   animation: slideUp 0.3s ease-in-out;
 }
 
+/* Título */
 .modal-content h2 {
   margin-bottom: 20px;
   font-size: 22px;
@@ -235,17 +191,20 @@ h1 {
   letter-spacing: 0.3px;
 }
 
+/* Formulario */
 .modal-content form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
+/* Cada campo */
 .modal-content form div {
   display: flex;
   flex-direction: column;
 }
 
+/* Labels */
 .modal-content label {
   margin-bottom: 6px;
   font-weight: 500;
@@ -253,6 +212,7 @@ h1 {
   font-size: 13px;
 }
 
+/* Inputs */
 .modal-content input {
   width: 100%;
   padding: 10px 12px;
@@ -268,6 +228,7 @@ h1 {
   outline: none;
 }
 
+/* Botones del modal */
 .modal-actions {
   display: flex;
   justify-content: flex-end;
