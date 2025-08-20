@@ -37,6 +37,12 @@ export default function Home() {
           >
             Ir a Crear productos
           </button>
+          <button
+            onClick={() => router.push("/crear_productos_bd")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Ir a prueba de imagen
+          </button>
 
         </div>
 
