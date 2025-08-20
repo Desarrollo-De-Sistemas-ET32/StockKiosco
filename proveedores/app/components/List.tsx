@@ -6,12 +6,31 @@ import CardProveedor from "./card";
 
 export default function ListaProveedores() {
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const proveedoresFiltrados = proveedores.filter((p) =>
+    p.nombre.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="contenedor-lista">
+      {/* Barra de búsqueda + botón */}
+      <div className="barra-superior">
+        <input
+          type="text"
+          className="input-busqueda"
+          placeholder="Buscar proveedor..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button className="btn-primary btn-agregar" onClick={() => setIsOpen(true)}>
+          Agregar
+        </button>
+      </div>
+
       {/* Lista de proveedores */}
       <div className="lista-proveedores">
-        {proveedores.map((p) => (
+        {proveedoresFiltrados.map((p) => (
           <CardProveedor
             key={p.id}
             nombre={p.nombre}
@@ -20,11 +39,6 @@ export default function ListaProveedores() {
           />
         ))}
       </div>
-
-      {/* Botón al costado derecho */}
-      <button className="btn-primary btn-agregar" onClick={() => setIsOpen(true)}>
-        Agregar
-      </button>
 
       {/* Modal */}
       {isOpen && (
@@ -44,7 +58,7 @@ export default function ListaProveedores() {
                 <label>CUIL</label>
                 <input type="text" />
               </div>
-              <div style={{ textAlign: "right" }}>
+              <div className="modal-actions">
                 <button type="submit" className="btn-primary">
                   Guardar
                 </button>
