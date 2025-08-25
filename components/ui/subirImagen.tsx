@@ -1,102 +1,189 @@
-// components/ui/subirImagen.tsx
-'use client'
-import React, { useState, ChangeEvent } from 'react';
-import { supabase } from '@/supabase/supabase.js'; // ajustá ruta si no usás alias @/
+"use client"
 
-type Props = {
-  onUploadComplete: (publicUrl: string) => void;
-  bucketName?: string;
-  folder?: string;
-  maxSizeBytes?: number;
-};
+import { useState, useEffect, useRef, ChangeEvent } from "react"
+import { createClient } from "@supabase/supabase-js"
+import { Button } from "@/components/ui/button"
 
-export default function SubirImagen({
-  onUploadComplete,
-  bucketName = 'productos',
-  folder = 'uploads',
-  maxSizeBytes = 10 * 1024 * 1024,
-}: Props) {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+const supabase = createClient(
+  "https://vqkilvejuwcsxufssdvx.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa2lsdmVqdXdjc3h1ZnNzZHZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2NjA2MzEsImV4cCI6MjA2MzIzNjYzMX0.qO5W9toOEze0NPtJiV6E1aDTput2MSWy6Mzf38AjYK8"
+)
 
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    setMsg(null);
-    const f = e.target.files?.[0] ?? null;
-    if (!f) return;
-    if (!f.type.startsWith('image/')) {
-      setMsg('Solo se permiten imágenes');
-      return;
+interface UploadImageProps {
+  productoId?: string | number
+  initialPreview?: string
+  onUpload?: (dataUrl: string) => void
+  maxSizeMB?: number
+}
+
+export const UploadImage: React.FC<UploadImageProps> = ({
+  productoId,
+  initialPreview,
+  onUpload,
+  maxSizeMB = 5,
+}) => {
+  const [file, setFile] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | undefined>(initialPreview)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    if (!file) return
+    const url = URL.createObjectURL(file)
+    setPreview(url)
+    return () => URL.revokeObjectURL(url)
+  }, [file])
+
+  // debug helper
+  const dbg = (...args: any[]) => {
+    // visible in console
+    console.log("[UploadImage]", ...args)
+  }
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dbg("file input change event")
+    const f = e.target.files?.[0] ?? null
+    if (!f) {
+      dbg("no file selected")
+      return
     }
-    if (f.size > maxSizeBytes) {
-      setMsg(`Archivo muy grande. Máx ${Math.round(maxSizeBytes / 1024 / 1024)} MB`);
-      return;
+    dbg("selected file:", f.name, f.size, f.type)
+    if (f.size > maxSizeMB * 1024 * 1024) {
+      const msg = `El archivo supera el límite de ${maxSizeMB} MB`
+      setError(msg)
+      dbg(msg)
+      return
     }
-    setFile(f);
-    setPreview(URL.createObjectURL(f)); // solo en cliente, está bien
-  };
+    setFile(f)
+    setError(null)
+  }
 
-  const handleUpload = async () => {
-    if (!file) { setMsg('Seleccioná una imagen'); return; }
-    setLoading(true);
-    setMsg(null);
+  // File -> data URL
+  const fileToDataUrl = (f: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const result = reader.result as string | null
+        if (!result) return reject(new Error("No se pudo leer el archivo"))
+        resolve(result)
+      }
+      reader.onerror = (e) => {
+        dbg("FileReader error", e)
+        reject(new Error("Error leyendo el archivo"))
+      }
+      reader.readAsDataURL(f)
+    })
+
+  const upload = async () => {
+    dbg("upload() called")
+    if (!file) {
+      setError("No hay archivo seleccionado")
+      dbg("no file, aborting")
+      return
+    }
+    setLoading(true)
+    setError(null)
     try {
-      const ext = file.name.split('.').pop() ?? 'png';
-      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
-      const path = `${folder}/${fileName}`;
+      dbg("convirtiendo archivo a data URL...")
+      const dataUrl = await fileToDataUrl(file)
+      dbg("dataUrl length:", dataUrl.length)
 
-      console.log('Subiendo al bucket', bucketName, 'ruta', path);
+      if (onUpload) {
+        dbg("llamando onUpload callback")
+        onUpload(dataUrl)
+      }
 
-      const { error: uploadError } = await supabase.storage
-        .from(bucketName)
-        .upload(path, file, { cacheControl: '3600', upsert: false });
+      if (productoId !== undefined && productoId !== null) {
+        dbg("actualizando tabla productos id=", productoId)
+        const { data, error } = await supabase
+          .from("productos")
+          .update({ images: dataUrl })
+          .eq("id", productoId)
 
-      if (uploadError) throw uploadError;
-
-      const { data: publicData } = supabase.storage.from(bucketName).getPublicUrl(path);
-      const publicUrl = publicData?.publicUrl ?? null;
-
-      if (!publicUrl) throw new Error('No se obtuvo URL pública (bucket privado?)');
-
-      setMsg('Subida OK');
-      onUploadComplete(publicUrl);
+        if (error) {
+          dbg("supabase update error:", error)
+          throw error
+        }
+        dbg("update success:", data)
+      } else {
+        dbg("productoId no provisto — no se actualiza DB, solo devuelve dataUrl")
+      }
     } catch (err: any) {
-      console.error('Upload error', err);
-      setMsg('Error: ' + (err.message ?? String(err)));
-      alert('Error al subir imagen: ' + (err.message ?? String(err)));
+      dbg("upload error:", err)
+      setError(err?.message || "Error al procesar/subir la imagen")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="p-2 w-full">
-      <input type="file" accept="image/*" onChange={handleFile} className="mb-2" />
-      {preview && (
-        <div className="mb-2">
-          <img src={preview} alt="preview" className="w-40 h-40 object-contain rounded" />
-        </div>
-      )}
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={handleUpload}
-          disabled={loading || !file}
-          className="px-3 py-1 bg-blue-600 text-white rounded disabled:opacity-60"
-        >
-          {loading ? 'Subiendo...' : 'Subir imagen'}
-        </button>
-        <button
-          type="button"
-          onClick={() => { setFile(null); setPreview(null); setMsg(null); }}
-          disabled={loading}
-          className="px-3 py-1 border rounded"
-        >
-          Limpiar
-        </button>
+    <div className="w-full">
+      <div className="w-full h-56 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden flex items-center justify-center mb-3">
+        {preview ? (
+          <img src={preview} alt="preview" className="max-h-full max-w-full object-contain" />
+        ) : (
+          <div className="text-sm text-gray-500">No hay imagen seleccionada</div>
+        )}
       </div>
-      {msg && <div className="mt-2 text-sm">{msg}</div>}
+
+      <div className="flex gap-3">
+        {/* Hidden input, referenciado por inputRef. El botón Subir imagen dispara inputRef.current.click() */}
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+
+        {/* botón que abre el file picker */}
+        <Button
+          type="button"
+          variant="outline"
+          className="flex-1"
+          onClick={() => {
+            dbg("Subir imagen button clicked -> trigger file input")
+            inputRef.current?.click()
+          }}
+        >
+          <span className="flex items-center justify-center gap-2 px-4 py-2">Subir imagen</span>
+        </Button>
+
+        <Button
+          type="button"
+          variant="ghost"
+          className="px-4 py-2"
+          onClick={() => {
+            dbg("Reset clicked")
+            setFile(null)
+            setPreview(initialPreview)
+            setError(null)
+            // clear native input value so change fires next time same file chosen
+            if (inputRef.current) inputRef.current.value = ""
+          }}
+        >
+          Reset
+        </Button>
+
+        <Button
+          type="button"
+          className="px-4 py-2"
+          disabled={loading || !file}
+          onClick={upload}
+        >
+          {loading ? "Subiendo..." : "Confirmar subida"}
+        </Button>
+      </div>
+
+      {/* filename + errors + debug hints */}
+      <div className="mt-2">
+        {file && <div className="text-sm text-gray-700 dark:text-gray-300">Archivo: {file.name} ({Math.round(file.size / 1024)} KB)</div>}
+        {error && <div className="text-sm text-red-500 mt-1">{error}</div>}
+        <div className="text-xs text-gray-500 mt-1">Abre la consola del navegador (F12) si algo no funciona — ahí verás logs del proceso.</div>
+      </div>
     </div>
-  );
+  )
 }
+
+export default UploadImage
