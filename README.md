@@ -1,86 +1,36 @@
-# StockKiosco
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Aplicación web construida con [Next.js/React], TypeScript, Prisma y NextAuth.js.
+## Getting Started
 
-## 🚀 Comenzando
+First, run the development server:
 
-### Prerrequisitos
-
-Asegúrate de tener instalado: Node.js, npm, Git, y tu [Base de Datos] (ej. PostgreSQL).
-
-### Instalación
-    
-1.  **Instala dependencias:**
-    
-    Bash
-    
-    ```
-    npm i
-    
-    ```
-    
-2.  **Configura `.env`:** Crea un archivo `.env` con:
-    
-    Fragmento de código
-    
-    ```
-    DATABASE_URL="tu_url_de_base_de_datos"
-    NEXTAUTH_SECRET="GENERADO_CON_npx_auth_secret"
-    NEXTAUTH_URL="http://localhost:3000"
-    
-    ```
-    
-
-### Configuración de la Base de Datos
-
-1.  **Genera el Prisma Client:**
-    
-    Bash
-    
-    ```
-    npx prisma generate
-    
-    ```
-    
-2.  **Sincroniza el esquema (opcional, si partes de una BD existente):**
-    
-    Bash
-    
-    ```
-    npx prisma db pull
-    
-    ```
-    
-    _(Usa `npx prisma db push` o `npx prisma migrate dev` si aplicas cambios de `schema.prisma` a la BD)._
-
-### Generar Secreto de Autenticación
-
-1.  **Genera un `NEXTAUTH_SECRET` para tu `.env`:**
-    
-    Bash
-    
-    ```
-    npx auth secret
-    
-    ```
-    
-    Copia el resultado y pégalo en tu `.env`.
-
-### Ejecutar la Aplicación
-
-Bash
-
-```
+```bash
 npm run dev
-
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-La aplicación estará disponible en `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 🛠️ Tecnologías Clave
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
--   [Next.js]
--   TypeScript
--   Prisma ORM
--   NextAuth.js
--   [Zod, Tailwind CSS, etc.]
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
