@@ -1,267 +1,238 @@
-'use client'
-
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
-import { Input } from '@/components/ui/input'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import SubirImagenSimple from '@/components/ui/subirImagen'
 
-// Configura tu cliente de Supabase
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
+interface SubirImagenProps {
+  onImageReady: (base64: string) => void
+  onPreview: (previewUrl: string) => void
+  onError?: (error: string) => void
+  disabled?: boolean
+  maxSizeMB?: number
+}
 
-export default function EditarProductoPage() {
-  const router = useRouter()
-
-  const [nombre, setNombre] = useState('')
-  const [codigoBarras, setCodigoBarras] = useState('')
-  const [precio, setPrecio] = useState('')
-  const [idProveedor, setIdProveedor] = useState('')
-  const [idMarca, setIdMarca] = useState('')
-
-  // Estado para manejar la imagen
-  const [imagenPreview, setImagenPreview] = useState<string>('/milka.png')
-  const [imagenBase64, setImagenBase64] = useState<string>('') // Base64 para guardar en BD
+export default function SubirImagen({
+  onImageReady,
+  onPreview,
+  onError,
+  disabled = false,
+  maxSizeMB = 2
+}: SubirImagenProps) {
+  const [isLoading, setIsLoading] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [processError, setProcessError] = useState<string>('')
-  const [isProcessing, setIsProcessing] = useState(false)
 
-  // Limpiar blob URLs al desmontar
-  useEffect(() => {
-    return () => {
-      if (imagenPreview.startsWith('blob:')) {
-        URL.revokeObjectURL(imagenPreview)
-      }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    console.log('📁 Archivo seleccionado:', file.name, '|', (file.size / 1024).toFixed(1), 'KB')
+
+    // Validaciones
+    if (!file.type.startsWith('image/')) {
+      const error = 'Solo se permiten archivos de imagen (JPG, PNG, GIF, WebP)'
+      console.error('❌', error)
+      onError?.(error)
+      return
     }
-  }, [imagenPreview])
 
-  const handleImageReady = (base64: string) => {
-    setImagenBase64(base64)
-    setImagenPreview(base64)
-    setIsProcessing(false)
-    setProcessError('')
-    console.log('✅ Imagen lista para guardar')
-  }
-
-  const handleImagePreview = (previewUrl: string) => {
-    if (imagenPreview.startsWith('blob:')) {
-      URL.revokeObjectURL(imagenPreview)
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      const error = `La imagen debe ser menor a ${maxSizeMB}MB. Tamaño actual: ${(file.size / 1024 / 1024).toFixed(1)}MB`
+      console.error('❌', error)
+      onError?.(error)
+      return
     }
-    setImagenPreview(previewUrl)
-  }
 
-  const handleImageError = (error: string) => {
-    setProcessError(error)
-    setIsProcessing(false)
-  }
+    setSelectedFile(file)
 
-  const resetImage = () => {
-    if (imagenPreview.startsWith('blob:')) {
-      URL.revokeObjectURL(imagenPreview)
-    }
-    setImagenPreview('/milka.png')
-    setImagenBase64('')
-    setSelectedFile(null)
-    setProcessError('')
-  }
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    // Crear preview inmediatamente
+    const previewUrl = URL.createObjectURL(file)
+    console.log('👁️ Preview creado:', previewUrl)
+    onPreview(previewUrl)
     
-    try {
-      setIsProcessing(true)
-      
-      // Preparar datos del producto según tu esquema
-      const productoData = {
-        nombre,
-        codigo_barra: codigoBarras || null,
-        precio: parseFloat(precio),
-        images: imagenBase64 || null,
-        id_proveedor: idProveedor ? parseInt(idProveedor) : null,
-        id_marca: idMarca ? parseInt(idMarca) : null,
-        fecha_creacion: new Date().toISOString(),
-        fecha_actualizacion: new Date().toISOString()
-      }
+    // Limpiar errores previos
+    onError?.('')
+  }
 
-      console.log('Enviando producto:', {
-        nombre,
-        codigo_barra: codigoBarras,
-        precio: parseFloat(precio),
-        id_proveedor: idProveedor ? parseInt(idProveedor) : null,
-        id_marca: idMarca ? parseInt(idMarca) : null,
-        images: imagenBase64 ? `Base64 de ${(imagenBase64.length / 1024).toFixed(1)}KB` : null
+  const convertToBase64 = async () => {
+    if (!selectedFile) {
+      onError?.('No hay archivo seleccionado')
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      console.log('🔄 Iniciando conversión a Base64...', selectedFile.name)
+      
+      const reader = new FileReader()
+      
+      const base64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            console.log('✅ Conversión exitosa. Tamaño Base64:', (reader.result.length / 1024).toFixed(1), 'KB')
+            resolve(reader.result)
+          } else {
+            reject(new Error('Error en la conversión: resultado no es string'))
+          }
+        }
+        reader.onerror = () => {
+          console.error('❌ Error del FileReader:', reader.error)
+          reject(new Error('Error al leer el archivo'))
+        }
+        reader.readAsDataURL(selectedFile)
       })
 
-      // Insertar en la tabla de productos
-      const { data, error } = await supabase
-        .from('productos')
-        .insert([productoData])
-        .select()
-
-      if (error) {
-        throw error
+      // Verificar que el Base64 sea válido
+      if (!base64.startsWith('data:image/')) {
+        throw new Error('Base64 generado no es válido para imagen')
       }
 
-      console.log('Producto creado exitosamente:', data)
-      
-      // Mostrar mensaje de éxito o redireccionar
-      alert('Producto creado exitosamente!')
-      // router.push('/productos') // descomenta para redireccionar
+      onImageReady(base64)
 
     } catch (error: any) {
-      console.error('Error creando producto:', error)
-      setProcessError(error.message || 'Error al crear el producto')
+      console.error('❌ Error procesando imagen:', error)
+      onError?.(error.message || 'Error al procesar la imagen')
     } finally {
-      setIsProcessing(false)
+      setIsLoading(false)
+    }
+  }
+
+  const resetSelection = () => {
+    console.log('🔄 Reseteando selección...')
+    setSelectedFile(null)
+    setIsLoading(false)
+    onError?.('')
+    
+    // Resetear el input file
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+    if (input) {
+      input.value = ''
+      console.log('✅ Input file reseteado')
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-6">
-      <div className="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-        <div className="p-6 md:p-8">
-          <h1 className="text-center text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-6">
-            CREAR PRODUCTO
-          </h1>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* FORM */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                label="Nombre del producto"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                placeholder="Nombre del producto"
-                className="dark:placeholder-gray-300"
-                required
+    <div className="flex flex-col gap-3">
+      {/* Botón seleccionar archivo */}
+      <label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+          disabled={disabled || isLoading}
+        />
+        <Button 
+          asChild 
+          variant="outline" 
+          className="w-full cursor-pointer"
+          disabled={disabled || isLoading}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="16" 
+              height="16" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
               />
+            </svg>
+            {selectedFile ? 'Cambiar imagen' : 'Seleccionar imagen'}
+          </span>
+        </Button>
+      </label>
 
-              <Input
-                label="Código de barras"
-                value={codigoBarras}
-                onChange={(e) => setCodigoBarras(e.target.value)}
-                placeholder="0000000000000"
-                className="dark:placeholder-gray-300"
-              />
-
-              <Input
-                label="Precio"
-                type="number"
-                step="0.01"
-                value={precio}
-                onChange={(e) => setPrecio(e.target.value)}
-                placeholder="$0,00"
-                required
-              />
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                    Proveedor
-                  </label>
-                  <select
-                    value={idProveedor}
-                    onChange={(e) => setIdProveedor(e.target.value)}
-                    className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="">Seleccionar proveedor</option>
-                    {/* Aquí puedes cargar proveedores desde tu tabla proveedores */}
-                    <option value="1">Proveedor 1</option>
-                    <option value="2">Proveedor 2</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                    Marca
-                  </label>
-                  <select
-                    value={idMarca}
-                    onChange={(e) => setIdMarca(e.target.value)}
-                    className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="">Seleccionar marca</option>
-                    {/* Aquí puedes cargar marcas desde tu tabla marcas */}
-                    <option value="1">Milka</option>
-                    <option value="2">Arcor</option>
-                    <option value="3">Pepsi</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex gap-4 mt-4">
-                <Button
-                  type="submit"
-                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? 'Procesando...' : 'Crear Producto'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
-                  onClick={() => router.back()}
-                  disabled={isProcessing}
-                >
-                  Volver
-                </Button>
-              </div>
-            </form>
-
-            {/* PREVIEW / UPLOAD */}
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-full h-56 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden flex items-center justify-center">
-                <img
-                  src={imagenPreview}
-                  alt="Preview"
-                  className="max-h-full max-w-full object-contain"
-                />
-              </div>
-
-              {/* Componente de procesamiento de imagen */}
-              <SubirImagenSimple
-                onImageReady={handleImageReady}
-                onPreview={handleImagePreview}
-                onError={handleImageError}
-                disabled={isProcessing}
-              />
-
-              {/* Botón de reset */}
-              <Button
-                type="button"
-                variant="ghost"
-                className="px-4 py-2"
-                onClick={resetImage}
-                disabled={isProcessing}
-              >
-                Reset
-              </Button>
-
-              {/* Mostrar errores */}
-              {processError && (
-                <p className="text-sm text-red-600 dark:text-red-400 mt-2 text-center">
-                  {processError}
-                </p>
-              )}
-
-              {/* Mostrar información de imagen procesada */}
-              {imagenBase64 && !isProcessing && (
-                <div className="text-xs text-green-600 dark:text-green-400 mt-2 text-center">
-                  <p>✅ Imagen lista para guardar</p>
-                  <p>Tamaño: {(imagenBase64.length / 1024).toFixed(1)} KB</p>
-                </div>
-              )}
-
-              {/* Info sobre límites */}
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                Máximo 1MB. Se comprime automáticamente si es necesario.
-              </p>
-            </div>
+      {/* Información y botones cuando hay archivo */}
+      {selectedFile && (
+        <div className="space-y-3">
+          {/* Info del archivo */}
+          <div className="text-sm text-gray-600 dark:text-gray-400 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border">
+            <p className="font-medium">📁 {selectedFile.name}</p>
+            <p>📏 Tamaño: {(selectedFile.size / 1024).toFixed(1)} KB ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)</p>
+            <p>🖼️ Tipo: {selectedFile.type}</p>
+            <p>📅 Modificado: {new Date(selectedFile.lastModified).toLocaleString()}</p>
           </div>
+
+          {/* Botones de acción */}
+          <div className="flex gap-2">
+            <Button
+              onClick={convertToBase64}
+              disabled={isLoading || disabled}
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Procesando...
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="16" 
+                    height="16" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" 
+                    />
+                  </svg>
+                  Convertir a Base64
+                </div>
+              )}
+            </Button>
+
+            <Button
+              onClick={resetSelection}
+              variant="ghost"
+              disabled={isLoading}
+              className="px-4"
+            >
+              <div className="flex items-center gap-1">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="14" 
+                  height="14" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M6 18L18 6M6 6l12 12" 
+                  />
+                </svg>
+                Cancelar
+              </div>
+            </Button>
+          </div>
+
+          {/* Barra de progreso visual (solo cuando está procesando) */}
+          {isLoading && (
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="bg-green-600 h-2 rounded-full animate-pulse" style={{width: '100%'}}></div>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* Límites y ayuda */}
+      <div className="text-xs text-gray-500 dark:text-gray-400 text-center space-y-1">
+        <p>📎 Formatos: JPG, PNG, GIF, WebP</p>
+        <p>📏 Máximo {maxSizeMB}MB por imagen</p>
+        <p>💾 Se convierte a Base64 para almacenar en Supabase</p>
       </div>
     </div>
   )
