@@ -1,239 +1,130 @@
-import { useState } from 'react'
+// components/ui/SubirImagen.tsx
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 
 interface SubirImagenProps {
-  onImageReady: (base64: string) => void
-  onPreview: (previewUrl: string) => void
-  onError?: (error: string) => void
-  disabled?: boolean
-  maxSizeMB?: number
+  imagenPreview: string
+  setImagenPreview: (url: string) => void
+  productoId?: string
+  onImagenSubida?: (url: string) => void
 }
 
 export default function SubirImagen({
-  onImageReady,
-  onPreview,
-  onError,
-  disabled = false,
-  maxSizeMB = 2
+  imagenPreview,
+  setImagenPreview,
+  productoId,
+  onImagenSubida
 }: SubirImagenProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [blobUrl, setBlobUrl] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (blobUrl) setImagenPreview(blobUrl)
+    return () => {
+      if (blobUrl) URL.revokeObjectURL(blobUrl)
+    }
+  }, [blobUrl, setImagenPreview])
+
+  const fileToDataUrl = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => (typeof reader.result === 'string' ? resolve(reader.result) : reject('No string'))
+      reader.onerror = () => reject('FileReader error')
+      reader.readAsDataURL(file)
+    })
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-
-    console.log('📁 Archivo seleccionado:', file.name, '|', (file.size / 1024).toFixed(1), 'KB')
-
-    // Validaciones
-    if (!file.type.startsWith('image/')) {
-      const error = 'Solo se permiten archivos de imagen (JPG, PNG, GIF, WebP)'
-      console.error('❌', error)
-      onError?.(error)
-      return
-    }
-
-    if (file.size > maxSizeMB * 1024 * 1024) {
-      const error = `La imagen debe ser menor a ${maxSizeMB}MB. Tamaño actual: ${(file.size / 1024 / 1024).toFixed(1)}MB`
-      console.error('❌', error)
-      onError?.(error)
-      return
-    }
-
-    setSelectedFile(file)
-
-    // Crear preview inmediatamente
-    const previewUrl = URL.createObjectURL(file)
-    console.log('👁️ Preview creado:', previewUrl)
-    onPreview(previewUrl)
-    
-    // Limpiar errores previos
-    onError?.('')
-  }
-
-  const convertToBase64 = async () => {
-    if (!selectedFile) {
-      onError?.('No hay archivo seleccionado')
-      return
-    }
-
-    setIsLoading(true)
+    setUploadError(null)
 
     try {
-      console.log('🔄 Iniciando conversión a Base64...', selectedFile.name)
-      
-      const reader = new FileReader()
-      
-      const base64 = await new Promise<string>((resolve, reject) => {
-        reader.onload = () => {
-          if (typeof reader.result === 'string') {
-            console.log('✅ Conversión exitosa. Tamaño Base64:', (reader.result.length / 1024).toFixed(1), 'KB')
-            resolve(reader.result)
-          } else {
-            reject(new Error('Error en la conversión: resultado no es string'))
-          }
-        }
-        reader.onerror = () => {
-          console.error('❌ Error del FileReader:', reader.error)
-          reject(new Error('Error al leer el archivo'))
-        }
-        reader.readAsDataURL(selectedFile)
-      })
-
-      // Verificar que el Base64 sea válido
-      if (!base64.startsWith('data:image/')) {
-        throw new Error('Base64 generado no es válido para imagen')
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl)
+        setBlobUrl(null)
       }
 
-      onImageReady(base64)
+      const previewUrl = URL.createObjectURL(file)
+      setBlobUrl(previewUrl)
 
-    } catch (error: any) {
-      console.error('❌ Error procesando imagen:', error)
-      onError?.(error.message || 'Error al procesar la imagen')
+      const dataUrl = await fileToDataUrl(file)
+
+      setIsUploading(true)
+
+      // POST al endpoint server (/api/upload)
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataUrl, fileName: file.name, productoId })
+      })
+
+      const json = await res.json()
+      if (!res.ok) throw new Error(json?.error || 'Upload failed')
+
+      const publicUrl = json.publicUrl
+      setImagenPreview(publicUrl)
+      if (onImagenSubida) onImagenSubida(publicUrl)
+    } catch (err: any) {
+      console.error('Error handleImageChange', err)
+      setUploadError(err?.message || 'Error al procesar imagen')
     } finally {
-      setIsLoading(false)
+      setIsUploading(false)
     }
   }
 
-  const resetSelection = () => {
-    console.log('🔄 Reseteando selección...')
-    setSelectedFile(null)
-    setIsLoading(false)
-    onError?.('')
-    
-    // Resetear el input file
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement
-    if (input) {
-      input.value = ''
-      console.log('✅ Input file reseteado')
+  const handleReset = () => {
+    if (blobUrl) {
+      URL.revokeObjectURL(blobUrl)
+      setBlobUrl(null)
     }
+    setImagenPreview('/milka.png')
+    setUploadError(null)
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Botón seleccionar archivo */}
-      <label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-          disabled={disabled || isLoading}
-        />
-        <Button 
-          asChild 
-          variant="outline" 
-          className="w-full cursor-pointer"
-          disabled={disabled || isLoading}
-        >
-          <span className="flex items-center justify-center gap-2">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="16" 
-              height="16" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
-              />
-            </svg>
-            {selectedFile ? 'Cambiar imagen' : 'Seleccionar imagen'}
-          </span>
-        </Button>
-      </label>
-
-      {/* Información y botones cuando hay archivo */}
-      {selectedFile && (
-        <div className="space-y-3">
-          {/* Info del archivo */}
-          <div className="text-sm text-gray-600 dark:text-gray-400 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border">
-            <p className="font-medium">📁 {selectedFile.name}</p>
-            <p>📏 Tamaño: {(selectedFile.size / 1024).toFixed(1)} KB ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)</p>
-            <p>🖼️ Tipo: {selectedFile.type}</p>
-            <p>📅 Modificado: {new Date(selectedFile.lastModified).toLocaleString()}</p>
-          </div>
-
-          {/* Botones de acción */}
-          <div className="flex gap-2">
-            <Button
-              onClick={convertToBase64}
-              disabled={isLoading || disabled}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-            >
-              {isLoading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Procesando...
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="16" 
-                    height="16" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" 
-                    />
-                  </svg>
-                  Convertir a Base64
-                </div>
-              )}
-            </Button>
-
-            <Button
-              onClick={resetSelection}
-              variant="ghost"
-              disabled={isLoading}
-              className="px-4"
-            >
-              <div className="flex items-center gap-1">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="14" 
-                  height="14" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M6 18L18 6M6 6l12 12" 
-                  />
-                </svg>
-                Cancelar
-              </div>
-            </Button>
-          </div>
-
-          {/* Barra de progreso visual (solo cuando está procesando) */}
-          {isLoading && (
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-green-600 h-2 rounded-full animate-pulse" style={{width: '100%'}}></div>
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-full h-56 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden flex items-center justify-center relative">
+        {isUploading && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+              <p className="text-sm">Subiendo imagen...</p>
             </div>
-          )}
+          </div>
+        )}
+        <img src={imagenPreview} alt="Preview" className="max-h-full max-w-full object-contain" />
+      </div>
+
+      <div className="flex w-full gap-3">
+        <label className="flex-1">
+          <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} disabled={isUploading} />
+          <Button asChild variant="outline" className="w-full" disabled={isUploading}>
+            <span className="flex items-center justify-center gap-2 px-4 py-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-current">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h.582M20 20v-6h-.581M4 10V4h6M20 14v6h-6" />
+              </svg>
+              {isUploading ? 'Subiendo...' : 'Subir imagen'}
+            </span>
+          </Button>
+        </label>
+
+        <Button type="button" variant="ghost" className="px-4 py-2" onClick={handleReset} disabled={isUploading}>
+          Reset
+        </Button>
+      </div>
+
+      {uploadError && (
+        <div className="w-full p-3 bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 rounded-md">
+          <p className="text-sm text-red-700 dark:text-red-300">Error: {uploadError}</p>
         </div>
       )}
 
-      {/* Límites y ayuda */}
-      <div className="text-xs text-gray-500 dark:text-gray-400 text-center space-y-1">
-        <p>📎 Formatos: JPG, PNG, GIF, WebP</p>
-        <p>📏 Máximo {maxSizeMB}MB por imagen</p>
-        <p>💾 Se convierte a Base64 para almacenar en Supabase</p>
-      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 text-center">
+        {isUploading ? 'Subiendo imagen a servidor...' : 'La imagen se subirá automáticamente al servidor'}
+      </p>
     </div>
   )
 }
