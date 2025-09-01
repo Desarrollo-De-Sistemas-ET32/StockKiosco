@@ -2,8 +2,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+export const runtime = 'nodejs' // importante para usar Buffer
+
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 function parseDataUrl(dataUrl: string) {
   const match = dataUrl.match(/^data:(.*?);base64,(.*)$/)
@@ -16,11 +18,12 @@ function parseDataUrl(dataUrl: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    // Si faltan variables de entorno, respondemos con JSON y no hacemos throw en import-time
-    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
       console.error('Missing supabase env variables', {
-        NEXT_PUBLIC_SUPABASE_URL: Boolean(SUPABASE_URL),
-        SUPABASE_SERVICE_ROLE_KEY: Boolean(SUPABASE_SERVICE_ROLE_KEY)
+        SUPABASE_URL: Boolean(process.env.SUPABASE_URL),
+        SUPABASE_SERVICE_ROLE_KEY: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+        NEXT_PUBLIC_SUPABASE_URL: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
       })
       return NextResponse.json(
         { error: 'Missing supabase env variables on server. Revisa .env.local y reinicia el servidor.' },
@@ -28,8 +31,11 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Creamos el cliente DENTRO de la función para evitar problemas en import-time
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.warn('WARNING: usando NEXT_PUBLIC_SUPABASE_ANON_KEY como fallback (solo para DEV). No usar en producción.')
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
       auth: { persistSession: false }
     })
 
@@ -40,15 +46,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing dataUrl or fileName' }, { status: 400 })
     }
 
-    // parseamos data URL
     const { buffer, contentType } = parseDataUrl(dataUrl)
-
     const timestamp = Date.now()
-    const ext = fileName.split('.').pop() || 'jpg'
+    const ext = (fileName.split('.').pop() || 'jpg').replace(/\?.*$/, '')
     const uniqueFileName = `producto_${timestamp}.${ext}`
     const pathInBucket = `productos/${uniqueFileName}`
 
-    // SUBIR al bucket 'productos'
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('productos')
       .upload(pathInBucket, buffer, {
@@ -61,19 +64,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: uploadError.message || 'Upload error' }, { status: 500 })
     }
 
-    // OBTENER PUBLIC URL del MISMO bucket
-    const { data: urlData, error: urlError } = supabase.storage
+    const { data: urlData } = supabase.storage
       .from('productos')
       .getPublicUrl(pathInBucket)
 
-    if (urlError) {
-      console.error('urlError', urlError)
-      return NextResponse.json({ error: urlError.message || 'Public URL error' }, { status: 500 })
+    const publicUrl = (urlData as any)?.publicUrl
+    if (!publicUrl) {
+      return NextResponse.json({ error: 'No public URL returned. Revisa permisos del bucket.' }, { status: 500 })
     }
 
-    const publicUrl = (urlData as any).publicUrl
-
-    // SI VIENE productoId -> actualizar fila en tabla 'productos'
+    // si llega productoId, actualizamos la columna `images` en la tabla `productos`
     if (productoId) {
       const { error: updateError } = await supabase
         .from('productos')

@@ -1,4 +1,4 @@
-// app/crear_productos/page.tsx   (o src/app/crear_productos/page.tsx según tu estructura)
+// app/crear_productos/page.tsx
 'use client'
 
 import { useState, FormEvent } from 'react'
@@ -13,7 +13,7 @@ export default function CrearProductoPage() {
   const [nombre, setNombre] = useState('')
   const [codigoBarras, setCodigoBarras] = useState('')
   const [vencimiento, setVencimiento] = useState('')
-  const [categoria, setCategoria] = useState('')
+  //const [categoria, setCategoria] = useState('')
   const [marca, setMarca] = useState('')
   const [precioCompra, setPrecioCompra] = useState('')
   const [precioPublico, setPrecioPublico] = useState('')
@@ -30,6 +30,12 @@ export default function CrearProductoPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
+
+    if (!nombre.trim()) {
+      setError('El nombre es requerido')
+      return
+    }
+
     setIsSaving(true)
 
     try {
@@ -37,11 +43,11 @@ export default function CrearProductoPage() {
         nombre,
         codigoBarras,
         vencimiento,
-        categoria,
+        //categoria,
         marca,
         precioCompra,
         precioPublico,
-        images: imagenUrl || null
+        images: imagenUrl || null // <-- aquí: images
       }
 
       const res = await fetch('/api/productos', {
@@ -50,11 +56,10 @@ export default function CrearProductoPage() {
         body: JSON.stringify(payload)
       })
 
-      const json = await res.json()
+      const json = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(json?.error || 'Error creando producto')
 
-      // opcional: redirigir a listado o limpiar
-      router.push('/productos') // cambia a la ruta que tengas para listar
+      router.push('/productos')
     } catch (err: any) {
       console.error('Error guardar producto', err)
       setError(err?.message || 'Error desconocido')
@@ -106,7 +111,7 @@ export default function CrearProductoPage() {
                 <Button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white" disabled={isSaving}>
                   {isSaving ? 'Guardando...' : 'Guardar'}
                 </Button>
-                <Button type="button" variant="outline" className="flex-1" onClick={() => router.back()}>
+                <Button type="button" variant="outline" className="flex-1" onClick={() => window.history.back()}>
                   Volver
                 </Button>
               </div>

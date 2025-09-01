@@ -1,4 +1,4 @@
-// components/ui/SubirImagen.tsx
+// components/ui/subirImagen.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -54,17 +54,18 @@ export default function SubirImagen({
 
       setIsUploading(true)
 
-      // POST al endpoint server (/api/upload)
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dataUrl, fileName: file.name, productoId })
       })
 
-      const json = await res.json()
+      const json = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(json?.error || 'Upload failed')
 
       const publicUrl = json.publicUrl
+      if (!publicUrl) throw new Error('No publicUrl returned from upload')
+
       setImagenPreview(publicUrl)
       if (onImagenSubida) onImagenSubida(publicUrl)
     } catch (err: any) {

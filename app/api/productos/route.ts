@@ -2,57 +2,63 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
+// Cliente del lado del servidor con la service_role key
+const supabaseServer = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error('Missing supabase env variables')
-}
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: { persistSession: false }
-})
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await req.json()
-    // Ajustá los campos segun tu tabla (aquí un ejemplo)
-    const {
-      nombre,
-      codigoBarras,
-      vencimiento,
-      categoria,
-      marca,
-      precioCompra,
-      precioPublico,
-      images // url ya subida
-    } = body || {}
+    const body = await request.json().catch(() => ({}))
+
+    const nombre = (body.nombre || '').toString().trim()
+    const images = body.images || null
 
     if (!nombre) {
-      return NextResponse.json({ error: 'Falta nombre' }, { status: 400 })
+      return NextResponse.json({ error: 'El nombre del producto es requerido' }, { status: 400 })
     }
 
-    const newRow: any = {
-      nombre,
-      codigo_barras: codigoBarras || null,
-      vencimiento: vencimiento || null,
-      categoria: categoria || null,
-      marca: marca || null,
-      precio_compra: precioCompra ? Number(precioCompra) : null,
-      precio_publico: precioPublico ? Number(precioPublico) : null,
-      images: images || null
-    }
+    const insertPayload = { nombre, images }
 
-    const { data, error } = await supabase.from('productos').insert([newRow]).select().limit(1)
+    const { data, error } = await supabaseServer
+      .from('productos')
+      .insert([insertPayload])
+      .select('id, nombre, images')
+      .single()
 
     if (error) {
-      console.error('insert error', error)
-      return NextResponse.json({ error: error.message || 'Insert error' }, { status: 500 })
+      console.error('Error al insertar producto:', error)
+      return NextResponse.json({ error: 'Error al crear producto: ' + error.message }, { status: 500 })
     }
 
-    return NextResponse.json({ producto: data?.[0] ?? null })
-  } catch (err: any) {
-    console.error('Server productos error', err)
-    return NextResponse.json({ error: err.message || 'Unknown error' }, { status: 500 })
+    return NextResponse.json({
+      message: 'Producto creado exitosamente',
+      producto: data
+    })
+  } catch (error: any) {
+    console.error('Error en API productos:', error)
+    return NextResponse.json({ error: 'Error interno del servidor: ' + error.message }, { status: 500 })
+  }
+}
+
+export async function GET() {
+  try {
+    const { data, error } = await supabaseServer
+      .from('productos')
+      .select('*')
+      .order('id', { ascending: false })
+
+    if (error) {
+      console.error('Error al obtener productos:', error)
+      return NextResponse.json({ error: 'Error al obtener productos: ' + error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({
+      productos: data || []
+    })
+  } catch (error: any) {
+    console.error('Error en API productos GET:', error)
+    return NextResponse.json({ error: 'Error interno del servidor: ' + error.message }, { status: 500 })
   }
 }
