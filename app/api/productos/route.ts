@@ -1,64 +1,62 @@
 // app/api/productos/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-// Cliente del lado del servidor con la service_role key
-const supabaseServer = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}))
 
     const nombre = (body.nombre || '').toString().trim()
-    const images = body.images || null
+    const images = (body.images || '').toString().trim()
+    const id_proveedor = Number(body.id_proveedor) || 1  // Ajusta según tu lógica
+    const precio = Number(body.precio) || 0
 
     if (!nombre) {
       return NextResponse.json({ error: 'El nombre del producto es requerido' }, { status: 400 })
     }
 
-    const insertPayload = { nombre, images }
-
-    const { data, error } = await supabaseServer
-      .from('productos')
-      .insert([insertPayload])
-      .select('id, nombre, images')
-      .single()
-
-    if (error) {
-      console.error('Error al insertar producto:', error)
-      return NextResponse.json({ error: 'Error al crear producto: ' + error.message }, { status: 500 })
-    }
+    // Crear nuevo producto
+    const nuevoProducto = await prisma.productos.create({
+      data: {
+        nombre,
+        images: images || null,
+        id_proveedor,
+        precio,
+        fecha_actualizacion: new Date(),
+      },
+      select: {
+        id_producto: true,
+        nombre: true,
+        images: true,
+        precio: true,
+      },
+    })
 
     return NextResponse.json({
       message: 'Producto creado exitosamente',
-      producto: data
+      producto: nuevoProducto,
     })
   } catch (error: any) {
-    console.error('Error en API productos:', error)
-    return NextResponse.json({ error: 'Error interno del servidor: ' + error.message }, { status: 500 })
+    console.error('Error en POST /api/productos:', error)
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
   }
 }
 
 export async function GET() {
   try {
-    const { data, error } = await supabaseServer
-      .from('productos')
-      .select('*')
-      .order('id', { ascending: false })
-
-    if (error) {
-      console.error('Error al obtener productos:', error)
-      return NextResponse.json({ error: 'Error al obtener productos: ' + error.message }, { status: 500 })
-    }
-
-    return NextResponse.json({
-      productos: data || []
+    const productos = await prisma.productos.findMany({
+      orderBy: { id_producto: 'desc' },
+      select: {
+        id_producto: true,
+        nombre: true,
+        images: true,
+        precio: true,
+      },
     })
+
+    return NextResponse.json({ productos })
   } catch (error: any) {
-    console.error('Error en API productos GET:', error)
-    return NextResponse.json({ error: 'Error interno del servidor: ' + error.message }, { status: 500 })
+    console.error('Error en GET /api/productos:', error)
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
   }
 }
