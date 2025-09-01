@@ -13,7 +13,7 @@ npm install tailwind-merge
 npm install @radix-ui/react-navigation-menu lucide-react
 npm install @supabase/supabase-js
 
-npm install uuid @types/uuid
+npx prisma generate
 
 npm install prisma --save-dev
 npm install @prisma/client
