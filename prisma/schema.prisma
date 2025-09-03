@@ -55,11 +55,12 @@ model productos {
   id_producto         Int              @id @default(autoincrement())
   nombre              String           @db.VarChar(36)
   id_proveedor        Int
-  codigo_barra        Int?             @unique
+  codigo_barras       Int?             @unique(map: "productos_codigo_barra_key")
   precio              Decimal          @db.Decimal(10, 2)
   fecha_creacion      DateTime         @default(now())
   fecha_actualizacion DateTime
   id_marca            Int?
+  images              String?
   detalles_venta      detalles_venta[]
   marcas              marcas?          @relation(fields: [id_marca], references: [id_marca])
   proveedores         proveedores      @relation(fields: [id_proveedor], references: [id_proveedor])

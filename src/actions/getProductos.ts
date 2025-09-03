@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 
-export async function GET() {
+export default async function getProducts() {
     try {
         const products = await db.productos.findMany({
             orderBy: {
-                id_descuento: 'asc',
+                id_producto: 'asc',
             },
         });
 

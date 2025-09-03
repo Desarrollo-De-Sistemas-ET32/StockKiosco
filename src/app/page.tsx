@@ -1,6 +1,5 @@
 import { Button } from "../components/ui/button";
 import Link from "@/../node_modules/next/link";
-import Script from "next/script";
 
 export default function Home() {
   return (
@@ -13,8 +12,6 @@ export default function Home() {
       </Button>
 
         <Button variant="gray"><Link href="/productManagement">Go to products</Link></Button>
-        <Script src="https://example.com/script.js">Yippie!</Script>
-
       <Button>
         <Link href="@/otherPage">Yippie!</Link>
       </Button>

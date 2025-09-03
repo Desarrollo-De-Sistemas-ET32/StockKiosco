@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import * as React from "react"
@@ -21,39 +22,19 @@ export function ProductList({
   useEffect(() => {
     async function fetchProductos() {
       try {
-        setIsLoading(true);
-        setError(null);
-        
-        // Try API first, fallback to JSON file if API fails
-        let res;
-        let data;
-        
-        try {
-          res = await fetch("/api/producto/consultaProducto");
-          if (res.ok) {
-            const json = await res.json();
-            if (json.success) {
-              data = json.data || [];
-            } else {
-              throw new Error(json.message || "API returned error");
-            }
-          } else {
-            throw new Error(`API responded with status ${res.status}`);
-          }
-        } catch (apiError) {
-          console.log("API failed, try again", apiError);
+        const res = await fetch("/api/producto/consultaProducto");
+        const result = await res.json();
+        if (result.success) {
+          setProductos(result.data);
+        } else {
+          setError(result.message || "Error al cargar los productos");
         }
-        
-        setProductos(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setError("Failed to load products");
-        setProductos([]);
-      } finally {
-        setIsLoading(false);
+      } catch (err) {
+        setError("Error al cargar los productos");
       }
+      setIsLoading(false);
     }
-    
+
     fetchProductos();
   }, []);
 
@@ -71,7 +52,8 @@ export function ProductList({
 
       if (res.ok) {
         // Remove the deleted product from state
-        setProductos(prev => prev.filter(p => p.id !== productId));
+        console.log("Before deletion:", productos);
+        setProductos(prev => prev.filter(p => p.id_producto !== productId));
         console.log("Product deleted successfully");
         alert('Se eliminó el producto correctamente');
 
@@ -91,9 +73,8 @@ export function ProductList({
   };
 
   // Filter products by search term
-  const filteredProductos = productos.filter((producto) =>
-    producto.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    producto.brand.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProductos = productos.filter(producto =>
+    producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Sort products after filtering
@@ -103,20 +84,20 @@ export function ProductList({
 
     switch (sortBy) {
       case "nombre":
-        fieldA = a.name;
-        fieldB = b.name;
+        fieldA = a.nombre;
+        fieldB = b.nombre;
         break;
       case "valor":
-        fieldA = a.price;
-        fieldB = b.price;
+        fieldA = a.precio;
+        fieldB = b.precio;
         break;
       case "fecha_inicio":
-        fieldA = a.fecha_creacion;
-        fieldB = b.fecha_creacion;
+        fieldA = a.fecha_creacion ?? "";
+        fieldB = b.fecha_creacion ?? "";
         break;
       default:
-        fieldA = a.name;
-        fieldB = b.name;
+        fieldA = a.nombre;
+        fieldB = b.nombre;
     }
 
     // Handle date sorting
@@ -174,21 +155,12 @@ export function ProductList({
   return (
     <ul className="bg-foreground mt-4 w-full h-full overflow-y-auto flex flex-col gap-4">
       {sortedProductos.map((producto) => (
-        <ProductCard 
-          key={producto.id}
-          id={producto.id}
-          name={producto.name}
-          brand={producto.brand}
-          codigo_barra={producto.codigo_barra}
-          price={producto.price}
-          id_proveedor={producto.id_proveedor}
-          fecha_creacion={producto.fecha_creacion}
-          fecha_actualizacion={producto.fecha_actualizacion}
-          proveedores={producto.proveedores}
-          stock={producto.stock}
+        <ProductCard
+          key={producto.id_producto}
+          {...producto}
           onDelete={handleDelete}
           onEdit={handleEdit}
-        />
+        ></ProductCard>
       ))}
     </ul>
   );
