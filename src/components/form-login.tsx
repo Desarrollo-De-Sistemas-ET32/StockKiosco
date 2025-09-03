@@ -42,7 +42,7 @@ const formLogin = () => {
       if (response.error) {
         setError(response.error);
       } else {
-        router.push("/dashboard")
+        router.push("/main")
       }
 
     });

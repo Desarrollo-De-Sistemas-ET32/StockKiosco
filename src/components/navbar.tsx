@@ -1,26 +1,45 @@
-// components/Navbar.tsx
-import Link from "next/link";
+"use client"
 
-export default function Navbar() {
+import * as React from "react"
+import Link from "next/link"
+
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+
+export function NavigationMenuDemo() {
   return (
-    <nav className="bg-gray-800 text-white p-4">
-      <ul className="flex gap-6">
-        <li>
-          <Link href="/" className="hover:underline">
-            Inicio
-          </Link>
-        </li>
-        <li>
-          <Link href="/about" className="hover:underline">
-            Acerca de
-          </Link>
-        </li>
-        <li>
-          <Link href="/contact" className="hover:underline">
-            Contacto
-          </Link>
-        </li>
-      </ul>
-    </nav>
-  );
+    <NavigationMenu viewport={false} className="mx-auto mt-4 py-5">
+      <NavigationMenuList className="flex gap-4">
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <Link href="/homePage">Página Principal</Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <Link href="/statsPage">Estadísticas</Link> 
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <Link href="/confPage">Configuración</Link> 
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <Link href="/registerPage">Registros</Link> 
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+      </NavigationMenuList>
+    </NavigationMenu>
+  )
 }
