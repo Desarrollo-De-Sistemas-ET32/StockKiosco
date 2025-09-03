@@ -11,7 +11,7 @@ export default async function DashBoardPage() {
   return (
     <div className="container">
       <pre>{JSON.stringify(session, null, 2)}</pre>
-      <h1>Welcome, {session.user.role}!</h1>
+      <h1>Welcome, {session.user.name}!</h1>
       <LogoutButton></LogoutButton>
     </div>
   )
