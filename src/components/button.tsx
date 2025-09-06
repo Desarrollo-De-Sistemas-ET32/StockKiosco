@@ -1,5 +1,5 @@
 "use client"
-import { deleteUser } from "@/actions/eliminarUsuario";
+import { deleteUser } from "@/actions/deleteUsuario";
 import { Button } from "@/components/ui/button";
 
 const Deletebutton=() =>{

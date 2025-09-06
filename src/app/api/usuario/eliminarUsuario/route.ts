@@ -1,4 +1,4 @@
-import { deleteUser } from "@/actions/eliminarUsuario";
+import { deleteUser } from "@/actions/deleteUsuario";
 import { NextResponse } from "next/server";
 
 export async function DELETE(req: Request) {
