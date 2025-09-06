@@ -124,4 +124,7 @@ enum rolesUser {
 enum TipoDescuento {
   PORCENTAJE
   MONTOFIJO
+
+
+
 }
