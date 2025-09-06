@@ -1,6 +1,5 @@
 'use server';
 import db from "@/lib/db";
-import { Prisma } from "@prisma/client";
 import { updateProductSchema } from "@/schemes/producto_scheme";
 import { z } from "zod";
 
@@ -29,8 +28,10 @@ export const updateProduct = async (values: unknown) => {
           : validatedData.codigo_barra;
     if (validatedData.id_proveedor !== undefined)
       updateData.id_proveedor = validatedData.id_proveedor;
-    if (validatedData.id_marca !== undefined) updateData.id_marca = validatedData.id_marca;
-    if (validatedData.images !== undefined) updateData.images = validatedData.images;
+    if (validatedData.id_marca !== undefined)
+      updateData.id_marca = validatedData.id_marca;
+    if (validatedData.images !== undefined)
+      updateData.images = validatedData.images;
     if (validatedData.fecha_actualizacion)
       updateData.fecha_actualizacion = validatedData.fecha_actualizacion;
     else updateData.fecha_actualizacion = new Date();
@@ -45,9 +46,22 @@ export const updateProduct = async (values: unknown) => {
       updateData.id_categoria = categoriaRecord.id_categoria;
     }
 
+    if (validatedData.stock !== undefined) {
+      updateData.stock = {
+        upsert: {
+          where: { id_producto: validatedData.id_producto },
+          update: { cantidad: validatedData.stock, fecha_actualizacion: new Date() },
+          create: { cantidad: validatedData.stock, fecha_actualizacion: new Date() },
+        },
+      };
+    }
+
     const product = await db.productos.update({
       where: { id_producto: validatedData.id_producto },
       data: updateData,
+      include: {
+        stock: true,
+      },
     });
 
     return { success: true, message: "Producto actualizado correctamente", product: bigintToString(product) };
