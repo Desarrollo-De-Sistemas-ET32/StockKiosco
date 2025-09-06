@@ -2,6 +2,7 @@
 import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { updateProductSchema } from "@/schemes/producto_scheme";
+import { ZodError } from "zod";
 
 export const updateProduct = async (values: unknown) => {
   try {
@@ -28,21 +29,28 @@ export const updateProduct = async (values: unknown) => {
       product: updatedProduct,
     };
   } catch (err: any) {
-    if (err instanceof Error && "errors" in err) {
+    if (err instanceof ZodError) {
+      // Errores de validación claros
+      const readableErrors = err.errors.map(e => ({
+        field: e.path.join("."),
+        message: e.message,
+      }));
       return {
         success: false,
-        message: "Error de validación",
-        errors: err.errors,
+        message: "Error de validación en los datos enviados",
+        errors: readableErrors,
       };
     }
 
     if (err.code === 'P2025') {
+      // Producto no encontrado
       return {
         success: false,
         message: "No se encontró el producto con el ID proporcionado",
       };
     }
 
+    // Otros errores inesperados
     console.error("Error al actualizar el producto:", err);
     return {
       success: false,
