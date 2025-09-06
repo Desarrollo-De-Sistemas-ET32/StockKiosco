@@ -1,4 +1,4 @@
-import { deleteProveedor } from "@/actions/eliminarProveedor"; // Asegúrate que esta ruta sea correcta
+import { deleteProveedor } from "@/actions/deleteProveedor"; // Asegúrate que esta ruta sea correcta
 import { NextResponse } from "next/server";
 
 export async function DELETE(req: Request) {

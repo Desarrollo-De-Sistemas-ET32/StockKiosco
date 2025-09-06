@@ -1,4 +1,4 @@
-import { agregarProveedor } from "@/actions/agregarProveedor";
+import { agregarProveedor } from "@/actions/addProveedor";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

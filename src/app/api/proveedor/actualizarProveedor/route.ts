@@ -1,4 +1,4 @@
-import { updateProveedor } from "@/actions/actualizarProveedor";
+import { updateProveedor } from "@/actions/updateProveedor";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req: Request) {
