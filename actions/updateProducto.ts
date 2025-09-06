@@ -1,56 +1,52 @@
 'use server'
 import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
+import { updateProductSchema } from "@/schemes/producto_scheme";
 
-type filtrado = {
-    id_producto: number,
-    id_marca: number,
-    id_proveedor: number,
-    nombre: string,
-    codigo_barra: number,
-    precio: number,
-    fecha_actualizacion: Date
-}
-
-
-export const updateProduct = async(values: { id_producto: number, data: filtrado }) => {
+export const updateProduct = async (values: unknown) => {
   try {
-    const { id_producto, data } = values;
+    const validatedData = updateProductSchema.parse(values);
 
-    if (typeof id_producto !== "number" || isNaN(id_producto)) {
-      return { 
-        success: false, 
-        message: "El ID del producto debe ser un número válido." 
-      };
-    }
-
-    await db.productos.update({
-        where: { id_producto: values.id_producto },
-        data: {
-            nombre: values.data.nombre,
-            id_marca: values.data.id_marca,
-            id_proveedor: values.data.id_proveedor,
-            codigo_barra: values.data.codigo_barra,
-            precio: new Prisma.Decimal(10.50), // Si lo necesitas explícito
-            fecha_actualizacion: new Date(),
-  }
-});
+    const updatedProduct = await db.productos.update({
+      where: { id_producto: validatedData.id_producto },
+      data: {
+        nombre: validatedData.nombre,
+        id_marca: validatedData.id_marca ?? null,
+        id_proveedor: validatedData.id_proveedor,
+        codigo_barra:
+          typeof validatedData.codigo_barra === "string"
+            ? BigInt(validatedData.codigo_barra)
+            : validatedData.codigo_barra,
+        precio: new Prisma.Decimal(validatedData.precio),
+        fecha_actualizacion: new Date(),
+      },
+    });
 
     return {
       success: true,
-      message: "Producto actualizado correctamente.",
+      message: "Producto actualizado correctamente",
+      product: updatedProduct,
     };
   } catch (err: any) {
+    if (err instanceof Error && "errors" in err) {
+      return {
+        success: false,
+        message: "Error de validación",
+        errors: err.errors,
+      };
+    }
+
     if (err.code === 'P2025') {
       return {
         success: false,
-        message: "No se encontró el producto con el ID proporcionado."
-      }
+        message: "No se encontró el producto con el ID proporcionado",
+      };
     }
+
     console.error("Error al actualizar el producto:", err);
     return {
-      error: "Al actualizar el producto",
-      message: "Ocurrió un error al actualizar el producto."
-    }
+      success: false,
+      message: "Ocurrió un error al actualizar el producto",
+    };
   }
-}
+};
