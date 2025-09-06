@@ -1,6 +1,6 @@
 'use server';
 import db from "@/lib/db";
-import { updateProductSchema } from "@/schemes/producto_scheme";
+import { updateProductSchema } from "@/schemas/producto_scheme";
 import { z } from "zod";
 
 function bigintToString(obj: any): any {

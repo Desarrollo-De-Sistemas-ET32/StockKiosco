@@ -1,6 +1,6 @@
 "use server";
 import db from "@/lib/db";
-import { createProductSchema } from "@/schemes/producto_scheme";
+import { createProductSchema } from "@/schemas/producto_scheme";
 import { z } from "zod";
 
 function normalizeProduct(obj: any): any {

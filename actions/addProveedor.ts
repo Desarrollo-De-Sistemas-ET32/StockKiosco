@@ -1,6 +1,6 @@
 'use server'
 import db from "../src/lib/db";
-import { crearProveedorSchema } from "@/schemes/proveedor_scheme";
+import { crearProveedorSchema } from "@/schemas/proveedor_scheme";
 import { z } from "zod";
 
 export const agregarProveedor = async (values: z.infer<typeof crearProveedorSchema>) => {
