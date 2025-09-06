@@ -1,6 +1,6 @@
 'use server'
 import db from "../src/lib/db";
-import { actualizarProveedorSchema } from "@/lib/zod"; 
+import { actualizarProveedorSchema } from "@/app/schemes/proveedorScheme";
 import { z } from "zod"; 
 
 export const updateProveedor = async (values: z.infer<typeof actualizarProveedorSchema>) => {

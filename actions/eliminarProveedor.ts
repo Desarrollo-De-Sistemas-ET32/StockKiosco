@@ -1,6 +1,6 @@
 'use server';
 import db from "../src/lib/db";
-import { delproveedorSchema } from "@/lib/zod"; 
+import { delproveedorSchema } from "@/app/schemes/proveedorScheme";
 import { z } from "zod"; 
 
 
