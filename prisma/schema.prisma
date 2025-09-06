@@ -39,32 +39,42 @@ model pagos {
 }
 
 model descuentos {
-  id_descuento        Int             @id @default(autoincrement())
-  nombre              String          @db.VarChar(45)
-  descripcion         String?         @db.VarChar(255)
-  fecha_inicio        DateTime        @db.Date()
-  fecha_fin           DateTime        @db.Date()
-  activo              Boolean         @default(true)
-  tipo                TipoDescuento   @default(PORCENTAJE)
-  valor               Decimal         @db.Decimal(10, 2) // Puede ser porcentaje o monto fijo
-  fecha_creacion      DateTime        @default(now())
-  fecha_actualizacion DateTime        @updatedAt
+  id_descuento        Int           @id @default(autoincrement())
+  tipo                TipoDescuento @default(PORCENTAJE)
+  valor               Decimal       @db.Decimal(10, 2)
+  fecha_creacion      DateTime      @default(now())
+  fecha_actualizacion DateTime      @updatedAt
+  activo              Boolean       @default(true)
+  descripcion         String?       @db.VarChar(255)
+  fecha_fin           DateTime
+  fecha_inicio        DateTime
+  nombre              String        @db.VarChar(45)
+}
+
+model categorias {
+  id_categoria Int        @id @default(autoincrement())
+  nombre       String     @unique
+  productos    productos[]
 }
 
 model productos {
-  id_producto         Int              @id @default(autoincrement())
-  nombre              String           @db.VarChar(36)
+  id_producto         Int        @id @default(autoincrement())
+  nombre              String     @db.VarChar(36)
   id_proveedor        Int
-  codigo_barra        Int?             @unique
-  precio              Decimal          @db.Decimal(10, 2)
-  fecha_creacion      DateTime         @default(now())
+  codigo_barra        BigInt     @unique
+  precio              Decimal    @db.Decimal(10, 2)
+  fecha_creacion      DateTime   @default(now())
   fecha_actualizacion DateTime
   id_marca            Int?
+  id_categoria        Int?       // FK a categorias
+  images              String?
   detalles_venta      detalles_venta[]
-  marcas              marcas?          @relation(fields: [id_marca], references: [id_marca])
-  proveedores         proveedores      @relation(fields: [id_proveedor], references: [id_proveedor])
+  marcas              marcas?      @relation(fields: [id_marca], references: [id_marca])
+  proveedores         proveedores  @relation(fields: [id_proveedor], references: [id_proveedor])
+  categoria           categorias?  @relation(fields: [id_categoria], references: [id_categoria])
   stock               stock[]
 }
+
 
 model proveedores {
   id_proveedor        Int         @id @default(autoincrement())
