@@ -1,4 +1,4 @@
-import { deleteProduct } from "@/actions/deleteProductos"; 
+import { deleteProduct } from "@/actions/deleteProducto"; 
 import { NextResponse } from "next/server";
 
 export async function DELETE(req: Request) {

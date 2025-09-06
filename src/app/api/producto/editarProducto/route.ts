@@ -1,4 +1,4 @@
-import { updateProduct } from "@/actions/actualizarProducto";
+import { updateProduct } from "@/actions/updateProducto";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req: Request) {
