@@ -6,14 +6,15 @@ import { z, object, string, ZodObject } from "zod"
 
 export const updateProductSchema = z.object({
   id_producto: z.number().int().positive("ID de producto inválido"),
-  nombre: z.string().min(1, "El nombre es requerido"),
-  codigo_barra: z.union([
-    z.bigint(),
-    z.string().regex(/^\d+$/, "Código de barras inválido"),
-  ]),
-  precio: z.number().positive("El precio debe ser mayor a 0"),
-  id_marca: z.number().int().positive().optional(),
-  id_proveedor: z.number().int().positive("ID de proveedor inválido"),
+  nombre: z.string().min(1, "El nombre es requerido").optional(),
+  codigo_barra: z.union([z.bigint(), z.string().regex(/^\d+$/, "Código de barras inválido")]).optional(),
+  precio: z.number().positive("El precio debe ser mayor a 0").optional(),
+  stock: z.number().int().nonnegative("El stock no puede ser negativo").optional(),
+  categoria: z.string().min(1, "La categoría es requerida").optional(),
+  images: z.string().optional(),
+  id_proveedor: z.number().int().positive("ID de proveedor inválido").optional(),
+  id_marca: z.number().int().positive("ID de marca inválido").optional(),
+  fecha_actualizacion: z.date().optional(),
 });
 
 

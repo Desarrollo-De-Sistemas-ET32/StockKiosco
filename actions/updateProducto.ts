@@ -1,60 +1,76 @@
-'use server'
+'use server';
 import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { updateProductSchema } from "@/schemes/producto_scheme";
-import { ZodError } from "zod";
+import { z } from "zod";
+
+function bigintToString(obj: any): any {
+  if (typeof obj === "bigint") return obj.toString();
+  if (Array.isArray(obj)) return obj.map(bigintToString);
+  if (obj && typeof obj === "object")
+    return Object.fromEntries(
+      Object.entries(obj).map(([k, v]) => [k, bigintToString(v)])
+    );
+  return obj;
+}
 
 export const updateProduct = async (values: unknown) => {
   try {
     const validatedData = updateProductSchema.parse(values);
 
-    const updatedProduct = await db.productos.update({
+    const updateData: any = {};
+
+    if (validatedData.nombre) updateData.nombre = validatedData.nombre;
+    if (validatedData.precio) updateData.precio = validatedData.precio;
+    if (validatedData.codigo_barra)
+      updateData.codigo_barra =
+        typeof validatedData.codigo_barra === "string"
+          ? BigInt(validatedData.codigo_barra)
+          : validatedData.codigo_barra;
+    if (validatedData.id_proveedor !== undefined)
+      updateData.id_proveedor = validatedData.id_proveedor;
+    if (validatedData.id_marca !== undefined) updateData.id_marca = validatedData.id_marca;
+    if (validatedData.images !== undefined) updateData.images = validatedData.images;
+    if (validatedData.fecha_actualizacion)
+      updateData.fecha_actualizacion = validatedData.fecha_actualizacion;
+    else updateData.fecha_actualizacion = new Date();
+
+    if (validatedData.categoria) {
+      const categoriaRecord = await db.categorias.findUnique({
+        where: { nombre: validatedData.categoria.toLowerCase() },
+      });
+      if (!categoriaRecord) {
+        return { success: false, message: `La categoría "${validatedData.categoria}" no existe` };
+      }
+      updateData.id_categoria = categoriaRecord.id_categoria;
+    }
+
+    const product = await db.productos.update({
       where: { id_producto: validatedData.id_producto },
-      data: {
-        nombre: validatedData.nombre,
-        id_marca: validatedData.id_marca ?? null,
-        id_proveedor: validatedData.id_proveedor,
-        codigo_barra:
-          typeof validatedData.codigo_barra === "string"
-            ? BigInt(validatedData.codigo_barra)
-            : validatedData.codigo_barra,
-        precio: new Prisma.Decimal(validatedData.precio),
-        fecha_actualizacion: new Date(),
-      },
+      data: updateData,
     });
 
-    return {
-      success: true,
-      message: "Producto actualizado correctamente",
-      product: updatedProduct,
-    };
+    return { success: true, message: "Producto actualizado correctamente", product: bigintToString(product) };
   } catch (err: any) {
-    if (err instanceof ZodError) {
-      // Errores de validación claros
-      const readableErrors = err.errors.map(e => ({
-        field: e.path.join("."),
-        message: e.message,
-      }));
+    if (err instanceof z.ZodError) {
       return {
         success: false,
         message: "Error de validación en los datos enviados",
-        errors: readableErrors,
+        errors: err.errors.map(e => ({
+          field: e.path.join("."),
+          message: e.message,
+        })),
       };
     }
 
-    if (err.code === 'P2025') {
-      // Producto no encontrado
+    if (err.code === "P2025") {
       return {
         success: false,
         message: "No se encontró el producto con el ID proporcionado",
       };
     }
 
-    // Otros errores inesperados
     console.error("Error al actualizar el producto:", err);
-    return {
-      success: false,
-      message: "Ocurrió un error al actualizar el producto",
-    };
+    return { success: false, message: "Ocurrió un error al actualizar el producto" };
   }
 };
