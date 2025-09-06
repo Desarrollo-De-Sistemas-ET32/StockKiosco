@@ -32,33 +32,38 @@ export default function crearProveedor() {
           >
             <div className="flex flex-col gap-12">
               <div className="grid gap-5">
-                <Label htmlFor="name">Nombre Completo</Label>
-                <div className="flex flex-row gap-5 w-full">
-                  <div className="relative flex items-center">
-                    <Input
-                      className="h-[3rem] rounded-4xl border-none bg-var1 pl-12 w-full"
-                      id="name"
-                      type="text"
-                      placeholder="John"
-                      required
-                    />
-                    <BiUser
-                      className="absolute left-4 text-muted-foreground"
-                      size={20}
-                    />
+                <div className="flex flex-col sm:flex-row gap-5 w-full">
+                  <div className="grid gap-5">
+                    <Label htmlFor="name">Nombre</Label>
+                    <div className="relative flex items-center">
+                      <Input
+                        className="h-[3rem] rounded-4xl border-none bg-var1 pl-12 w-full"
+                        id="name"
+                        type="text"
+                        placeholder="John"
+                        required
+                      />
+                      <BiUser
+                        className="absolute left-4 text-muted-foreground"
+                        size={20}
+                      />
+                    </div>
                   </div>
-                  <div className="relative flex items-center">
-                    <Input
-                      className="h-[3rem] rounded-4xl border-none bg-var1 pl-12 w-full"
-                      id="surname"
-                      type="text"
-                      placeholder="Doe"
-                      required
-                    />
-                    <BiUser
-                      className="absolute left-4 text-muted-foreground"
-                      size={20}
-                    />
+                  <div className="grid gap-5">
+                    <Label htmlFor="name">Apellido</Label>
+                    <div className="relative flex items-center">
+                      <Input
+                        className="h-[3rem] rounded-4xl border-none bg-var1 pl-12 w-full"
+                        id="surname"
+                        type="text"
+                        placeholder="Doe"
+                        required
+                      />
+                      <BiUser
+                        className="absolute left-4 text-muted-foreground"
+                        size={20}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
