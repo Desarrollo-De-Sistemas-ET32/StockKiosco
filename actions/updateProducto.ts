@@ -46,16 +46,6 @@ export const updateProduct = async (values: unknown) => {
       updateData.id_categoria = categoriaRecord.id_categoria;
     }
 
-    if (validatedData.stock !== undefined) {
-      updateData.stock = {
-        upsert: {
-          where: { id_producto: validatedData.id_producto },
-          update: { cantidad: validatedData.stock, fecha_actualizacion: new Date() },
-          create: { cantidad: validatedData.stock, fecha_actualizacion: new Date() },
-        },
-      };
-    }
-
     const product = await db.productos.update({
       where: { id_producto: validatedData.id_producto },
       data: updateData,
@@ -64,7 +54,37 @@ export const updateProduct = async (values: unknown) => {
       },
     });
 
-    return { success: true, message: "Producto actualizado correctamente", product: bigintToString(product) };
+    // Actualización de stock automáticamente
+    if (validatedData.stock !== undefined) {
+      const stockRecord = await db.stock.findFirst({
+        where: { id_producto: validatedData.id_producto },
+      });
+
+      if (stockRecord) {
+        await db.stock.update({
+          where: { id_stock: stockRecord.id_stock },
+          data: {
+            cantidad: validatedData.stock,
+            fecha_actualizacion: new Date(),
+          },
+        });
+      } else {
+        await db.stock.create({
+          data: {
+            id_producto: validatedData.id_producto,
+            cantidad: validatedData.stock,
+            fecha_actualizacion: new Date(),
+          },
+        });
+      }
+    }
+
+    const updatedProduct = await db.productos.findUnique({
+      where: { id_producto: validatedData.id_producto },
+      include: { stock: true },
+    });
+
+    return { success: true, message: "Producto actualizado correctamente", product: bigintToString(updatedProduct) };
   } catch (err: any) {
     if (err instanceof z.ZodError) {
       return {
