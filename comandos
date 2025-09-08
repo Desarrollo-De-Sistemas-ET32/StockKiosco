@@ -18,6 +18,7 @@ npm install @prisma/client
 
 npx prisma generate
 
+npm install react-icons@latest
 
 npm run dev
 localhost:3000
