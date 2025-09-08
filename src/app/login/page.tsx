@@ -22,7 +22,7 @@ export default function Login() {
         height={1080}
         style={{ objectFit: "cover", position: "absolute", top: 0, left: 0, width: "100%", height: "100%", filter: "brightness(50%)"}}
         ></Image>
-      <Card className="w-lg h-[50vh] border-none bg-var3 z-1 m-5 flex flex-col justify-evenly">
+      <Card className="w-lg max-h-[50rem] h-[30rem] border-none bg-var3 z-1 m-5 flex flex-col justify-evenly">
         <CardHeader className="flex justify-center items-center text-center">
           <CardTitle className="text-2xl font-bold text-var">INICIAR SESIÓN</CardTitle>
         </CardHeader>
