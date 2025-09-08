@@ -1,17 +1,11 @@
-// src/app/main/page.tsx
 "use client";
 
-import {
-  NavigationMenu,
-  NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
 import {
   BiBox,
   BiDetail,
   BiErrorCircle,
   BiMoney,
   BiShoppingBag,
-  BiHomeAlt,
   BiError,
   BiShow,
   BiCart,
@@ -22,8 +16,9 @@ import InfoCard from "@/components/info-card";
 import { Button } from "@/components/ui/button";
 import Venta from "@/components/sale-box";
 import StockBajo from "@/components/product-box";
-import { useEffect, useState, useRef } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { NavigationMenuDemo } from "@/components/navbar"; 
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 type Producto = {
@@ -41,7 +36,7 @@ export default function Menu() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // redirigir a login si no hay sesión (esperamos a que termine de cargar)
+  // redirigir a login si no hay sesión
   useEffect(() => {
     if (status === "loading") return;
     if (!session) {
@@ -65,94 +60,16 @@ export default function Menu() {
     );
   }
 
-  // Si no hay sesión (por seguridad), no renderizamos el contenido principal
+  // Si no hay sesión, no renderizamos el contenido principal
   if (!session) {
     return null;
   }
 
-  // Obtener inicial: preferimos nombre, sino email
-  const rawName = session.user?.name ?? session.user?.email ?? "";
-  const initial = rawName ? rawName.trim().charAt(0).toUpperCase() : "?";
-
-  // Estado del dropdown del avatar
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-
-  // Cerrar dropdown al clickear fuera
-  useEffect(() => {
-    function onDocClick(e: MouseEvent) {
-      if (!menuRef.current) return;
-      if (!menuRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
-  }, []);
-
-  async function handleSignOut() {
-    // signOut redirige al callbackUrl
-    await signOut({ callbackUrl: "/login" });
-  }
-
   return (
     <main className="flex justify-start items-center h-screen flex-col p-4 gap-15">
-      <div className="w-full flex justify-center text-sm text-muted-foreground">
-        <NavigationMenu className="flex p-4 flex-col rounded-lg shadow-md bg-var2 gap-10 items-center sm:w-[15vh] sm:flex-row px-15">
-          {/* Avatar con la inicial del usuario + dropdown */}
-          <div className="relative" ref={menuRef}>
-            <button
-              aria-haspopup="menu"
-              aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
-              className="inline-flex h-10 w-10 select-none items-center justify-center rounded-full bg-var1 text-lg font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-offset-2"
-              title={rawName}
-            >
-              {initial}
-            </button>
-
-            {open && (
-              <div
-                role="menu"
-                aria-label="Account"
-                className="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50"
-              >
-                <div className="py-1">
-                  {/* Puedes cambiar el texto a español o adaptar estilos */}
-                  <button
-                    role="menuitem"
-                    onClick={handleSignOut}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                  >
-                    Cerrar sesión
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <NavigationMenuLink
-            className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
-            href="/main"
-          >
-            <BiHomeAlt className="size-4" />
-            Página Principal
-          </NavigationMenuLink>
-          <NavigationMenuLink
-            className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
-            href="/inventario"
-          >
-            <BiBox className="size-4" />
-            Inventario
-          </NavigationMenuLink>
-          <NavigationMenuLink
-            className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
-            href="/registro"
-          >
-            <BiDetail className="size-4" />
-            Registro
-          </NavigationMenuLink>
-        </NavigationMenu>
+      {/* Usar el nuevo navbar que ya incluye el avatar */}
+      <div className="w-full flex justify-center">
+        <NavigationMenuDemo />
       </div>
 
       <div className="max-h-fit w-fit xl:w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 justify-items-center">
