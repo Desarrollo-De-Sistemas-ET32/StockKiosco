@@ -9,7 +9,7 @@ export default function StockBajo({nombreProducto, unidades , minimoUnidades}: {
         unidad = "unidades";
     }
     return(
-        <div className="flex flex-col md:flex-row justify-between items-center bg-var1 p-4 rounded-xl gap-5 w-full">
+        <div className="flex flex-col md:flex-row justify-between items-center bg-var5 dark:bg-var1 p-4 rounded-xl gap-5 w-full">
             <div>
                 <p>{nombreProducto}</p>
                 <p className="text-sm">Minimo requerido: {minimoUnidades}</p>

@@ -93,7 +93,7 @@ export default function Menu() {
                 Productos que deben reponerse lo antes posible
               </p>
             </div>
-            <Button className="bg-var5 dark:bg-var1 text-foreground hover:bg-var1/50 dark:hover:bg-var1/50 border-0">
+            <Button className="bg-var5 dark:bg-var1 text-foreground hover:bg-var5/50 dark:hover:bg-var1/50 border-0">
               <BiShow className="size-5 text-foreground"></BiShow>
               Ver todo
             </Button>
@@ -123,7 +123,7 @@ export default function Menu() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-full xl:w-2/4 h-fit bg-var2 p-5 rounded-2xl">
+        <div className="flex flex-col w-full xl:w-2/4 h-fit bg-var7 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-col justify-start mb-5 gap-1">
             <p className="flex justify-start items-center text-2xl gap-5">
               <BiCart className="text-confirm size-7" />

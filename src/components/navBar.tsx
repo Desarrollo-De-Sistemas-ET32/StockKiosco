@@ -7,7 +7,7 @@ import {
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
 import { BiHomeAlt, BiBox, BiDetail } from "react-icons/bi";
-import Icono from "./avatar";
+import Icono from "./avatarb";
 
 export function NavigationMenuDemo() {
   return (
