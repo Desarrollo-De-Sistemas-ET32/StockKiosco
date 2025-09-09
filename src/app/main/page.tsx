@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import Venta from "@/components/sale-box";
 import StockBajo from "@/components/product-box";
 import { useEffect, useState } from "react";
+import { Separator } from "@/components/ui/separator";
 
 type Producto = {
   name: string;
@@ -110,6 +111,7 @@ export default function Menu() {
                 unidades={productos[1]?.unidades}
                 minimoUnidades={productos[1]?.minimoUnidades}
               ></StockBajo>
+              
               <StockBajo
                 nombreProducto={productos[2]?.name}
                 unidades={productos[2]?.unidades}
@@ -138,30 +140,35 @@ export default function Menu() {
               precio={productos[0]?.price}
               unidades={1}
             ></Venta>
+            <Separator className="bg-var6"></Separator>
             <Venta
               nombreProducto={productos[1]?.name}
               horario="15:00"
               precio={productos[1]?.price}
               unidades={13}
             ></Venta>
+            <Separator className="bg-var6"></Separator>
             <Venta
               nombreProducto={productos[2]?.name}
               horario="15:00"
               precio={productos[2]?.price}
               unidades={15}
             ></Venta>
+            <Separator className="bg-var6"></Separator>
             <Venta
               nombreProducto={productos[3]?.name}
               horario="15:00"
               precio={productos[3]?.price}
               unidades={5}
             ></Venta>
+            <Separator className="bg-var6"></Separator>
             <Venta
               nombreProducto={productos[4]?.name}
               horario="15:00"
               precio={productos[4]?.price}
               unidades={3}
             ></Venta>
+            <Separator className="bg-var6"></Separator>
             <Venta
               nombreProducto={productos[0]?.name}
               horario="15:00"
@@ -171,7 +178,7 @@ export default function Menu() {
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col bg-var2 rounded-2xl p-4">
+      <div className="w-full flex flex-col bg-var7 dark:bg-var2 rounded-2xl p-4">
         <div className="flex flex-col justify-center items-start">
           <p className="text-2xl text-center justify-center items-center flex gap-5">
             <BiMedal className="text-random size-7" />
@@ -179,11 +186,11 @@ export default function Menu() {
           </p>
         </div>
         <div className="grid grid-cols-1 justify-items-center gap-5 mt-5 sm:grid-cols-2">
-          <Button className="bg-var1 w-full h-fit text-xl">
+          <Button className="bg-var6 dark:bg-var1 w-full h-fit text-xl">
             <BiPlus className="size-7" />
             Nuevo Producto
           </Button>
-          <Button className="bg-var1 w-full h-fit text-xl">
+          <Button className="bg-var6 dark:bg-var1 w-full h-fit text-xl">
             <BiCart className="size-7" />
             Nueva Venta
           </Button>
