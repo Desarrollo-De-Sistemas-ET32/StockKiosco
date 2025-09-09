@@ -20,5 +20,7 @@ npx prisma generate
 
 npm install react-icons@latest
 
+npm install zod
+
 npm run dev
 localhost:3000
