@@ -1,45 +1,39 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
 
 import {
   NavigationMenu,
-  NavigationMenuItem,
   NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
+import { BiHomeAlt, BiBox, BiDetail } from "react-icons/bi";
+import Icono from "./avatar";
 
 export function NavigationMenuDemo() {
   return (
-    <NavigationMenu viewport={false} className="mx-auto mt-4 py-5">
-      <NavigationMenuList className="flex gap-4">
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/homePage">Página Principal</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/statsPage">Estadísticas</Link> 
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/confPage">Configuración</Link> 
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link href="/registerPage">Registros</Link> 
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
-      </NavigationMenuList>
-    </NavigationMenu>
-  )
+      <NavigationMenu className="flex p-4 flex-col rounded-lg shadow-md bg-var2 gap-10 items-center sm:w-[15vh] sm:flex-row px-15">
+        <Icono src="/PrincessCard.png"></Icono>
+        <NavigationMenuLink
+          className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
+          href="/main"
+        >
+          <BiHomeAlt className="size-4" />
+          Página Principal
+        </NavigationMenuLink>
+        <NavigationMenuLink
+          className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
+          href="/inventario"
+        >
+          <BiBox className="size-4" />
+          Inventario
+        </NavigationMenuLink>
+        <NavigationMenuLink
+          className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
+          href="/registro"
+        >
+          <BiDetail className="size-4" />
+          Registro
+        </NavigationMenuLink>
+      </NavigationMenu>
+  );
 }

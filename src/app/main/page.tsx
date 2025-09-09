@@ -1,16 +1,11 @@
 //src/app/main/page.tsx
 "use client";
-import {
-  NavigationMenu,
-  NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
+
 import {
   BiBox,
-  BiDetail,
   BiErrorCircle,
   BiMoney,
   BiShoppingBag,
-  BiHomeAlt,
   BiError,
   BiShow,
   BiCart,
@@ -18,8 +13,8 @@ import {
   BiPlus,
 } from "react-icons/bi";
 import InfoCard from "@/components/info-card";
+import { NavigationMenuDemo } from "@/components/navBar";
 import { Button } from "@/components/ui/button";
-import Icono from "@/components/avatar";
 import Venta from "@/components/sale-box";
 import StockBajo from "@/components/product-box";
 import { useEffect, useState } from "react";
@@ -51,30 +46,7 @@ export default function Menu() {
   return (
     <main className="flex justify-start items-center h-screen flex-col p-4 gap-15">
       <div className="w-full flex justify-center text-sm text-muted-foreground">
-        <NavigationMenu className="flex p-4 flex-col rounded-lg shadow-md bg-var2 gap-10 items-center sm:w-[15vh] sm:flex-row px-15">
-          <Icono src="/PrincessCard.png"></Icono>
-          <NavigationMenuLink
-            className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
-            href="/main"
-          >
-            <BiHomeAlt className="size-4" />
-            Página Principal
-          </NavigationMenuLink>
-          <NavigationMenuLink
-            className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
-            href="/inventario"
-          >
-            <BiBox className="size-4" />
-            Inventario
-          </NavigationMenuLink>
-          <NavigationMenuLink
-            className="flex justify-center items-center flex-row hover:bg-var1/80 hover:rounded-md"
-            href="/registro"
-          >
-            <BiDetail className="size-4" />
-            Registro
-          </NavigationMenuLink>
-        </NavigationMenu>
+        <NavigationMenuDemo></NavigationMenuDemo>
       </div>
       <div className="max-h-fit w-fit xl:w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 justify-items-center">
         <InfoCard
