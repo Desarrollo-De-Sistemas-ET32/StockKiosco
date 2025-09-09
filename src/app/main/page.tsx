@@ -1,4 +1,3 @@
-//src/app/main/page.tsx
 "use client";
 
 import {
@@ -43,6 +42,8 @@ export default function Menu() {
     console.log(producto.price);
     console.log("hola");
   });
+
+  
   return (
     <main className="flex justify-start items-center h-screen flex-col p-4 gap-15">
       <div className="w-full flex justify-center text-sm text-muted-foreground">
@@ -55,7 +56,6 @@ export default function Menu() {
           data={1500}
           percentage={50}
           description="Productos"
-          color="bg-var2"
         />
         <InfoCard
           title="Vendido hoy"
@@ -63,7 +63,6 @@ export default function Menu() {
           data={1500}
           percentage={20}
           description="Productos"
-          color="bg-var2"
         />
         <InfoCard
           title="Productos vendidos"
@@ -71,7 +70,6 @@ export default function Menu() {
           data={1500}
           percentage={20}
           description="Productos"
-          color="bg-var2"
         />
         <InfoCard
           title="Stock bajo"
@@ -79,11 +77,10 @@ export default function Menu() {
           data={1500}
           percentage={20}
           description="Productos"
-          color="bg-var2"
         />
       </div>
       <div className="w-full flex flex-col xl:flex-row gap-5 justify-center items-start">
-        <div className="w-full h-fit bg-var2 p-5 rounded-2xl">
+        <div className="w-full h-fit bg-var7 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-row justify-between items-center mb-5">
             <div className="flex flex-col justify-start items-start gap-1">
               <div className="flex justify-center items-center gap-5">
@@ -96,8 +93,8 @@ export default function Menu() {
                 Productos que deben reponerse lo antes posible
               </p>
             </div>
-            <Button className="bg-var1 text-foreground hover:bg-var1/50 border-0">
-              <BiShow className="size-5 text-foreground" />
+            <Button className="bg-var5 dark:bg-var1 text-foreground hover:bg-var1/50 dark:hover:bg-var1/50 border-0">
+              <BiShow className="size-5 text-foreground"></BiShow>
               Ver todo
             </Button>
           </div>
