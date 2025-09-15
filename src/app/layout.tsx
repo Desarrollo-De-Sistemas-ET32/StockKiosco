@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="antialiased">
+      <body className="flex flex-col my-10 xl:mx-100 gap-25">
         <NavigationMenuDemo></NavigationMenuDemo>
         <main>{children}</main>
       </body>
