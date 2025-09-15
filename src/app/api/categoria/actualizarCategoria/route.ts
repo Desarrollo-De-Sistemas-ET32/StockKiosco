@@ -1,4 +1,4 @@
-// src/app/api/actualizarCategoria/route.ts
+// src/app/api/categoria/actualizarCategoria/route.ts
 import { updateCategoria } from "@/actions/updateCategoria";
 import { NextResponse } from "next/server";
 
