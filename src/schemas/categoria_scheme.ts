@@ -1,4 +1,4 @@
-//src/schemas/caegoria_scheme.ts
+// src/schemas/categoria_scheme.ts
 import { z } from "zod";
 
 export const updateCategoriaSchema = z.object({
@@ -32,3 +32,9 @@ export const updateCategoriaSchema = z.object({
   )
 });
 
+export const deleteCategoriaSchema = z.object({
+  id_categoria: z.preprocess((val) => {
+    if (typeof val === "string") return parseInt(val, 10);
+    return val;
+  }, z.number().int().positive("ID de categoría inválido")),
+});
