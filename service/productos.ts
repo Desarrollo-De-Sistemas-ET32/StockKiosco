@@ -8,8 +8,8 @@ interface ProductResponse {
 }
 
 const productService = {
-  getProducts: async () => {
-    const response = await api.get('producto/verProductos');
+  readProducts: async () => {
+    const response = await api.get('producto/leerProductos');
     return response;
   },
 
