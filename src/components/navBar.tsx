@@ -23,7 +23,7 @@ const nombre = "Benjamin" + " " + "Castro";
 
 export function NavigationMenuDemo() {
     return (
-    <NavigationMenu viewport={false} className="mx-auto mt-4 py-5">
+    <NavigationMenu viewport={false} className="mx-auto">
       <NavigationMenuList className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
         <Popover> 
           <PopoverTrigger><Avatar>{placeholder}</Avatar></PopoverTrigger>
