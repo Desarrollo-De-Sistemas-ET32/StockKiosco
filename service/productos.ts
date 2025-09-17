@@ -1,15 +1,15 @@
 import api from './api'
-import { productProps } from '@/types/product'
+//import { productProps } from '@/types/product'
 
-interface ProductResponse {
+/*interface ProductResponse {
   success: boolean;
   data: productProps[];
   message?: string;
-}
+}*/
 
 const productService = {
   readProducts: async () => {
-    const response = await api.get('producto/leerProductos');
+    const response = await api.get('producto/leerProducto');
     return response;
   },
 
@@ -20,12 +20,21 @@ const productService = {
     return response;
   },
 
-  editProduct: async (id: number) => {
-    const response = await api.patch('producto/editarProducto', {
-    data: { id }
-  });
-    return response;
+  editProducto: async (id: number, updateData: {
+    nombre?: string;
+    precio?: string;
+    codigo_barra?: number;
+    fecha_actualizacion?: Date;
+    proveedor?: number;
+  }) => {
+    const response = await api.patch('proveedor/editarProductor', {
+        data: { 
+            id, 
+            ...updateData 
+        }
+    });
   },
+
 
   addProduct: async (
     nombre: string,
@@ -33,7 +42,6 @@ const productService = {
     codigo_barra: number,
     fecha_actualizacion: Date,
     proveedor:  number) => {
-  //proveedor no existe en types, revisar eso en caso de error (o preguntar)
     
       const response = await api.post('producto/crearProducto', {
       data: {

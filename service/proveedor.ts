@@ -1,5 +1,5 @@
 import api from './api';
-import { providerProps } from '@/types/provider';
+//import { providerProps } from '@/types/provider';
 
 const providerService = {
     getProvider: async () => {
@@ -7,39 +7,47 @@ const providerService = {
         return response;
     },
 
-    deleteProvider: async (codigo_bbarra: number) => {
+    deleteProvider: async (nombre: string) => {
         const response = await api.delete('proveedor/eliminarProveedor', {
-        data: { codigo_barra }
+        data: { nombre }
       });
         return response;
       },
     
-      editProvider: async (id: number) => {
+      editProvider: async (id: number, updateData:{
+        nombre?: string,
+        contacto?: string,
+        telefono?: string,
+        email?: string,
+        direccion?: string
+      }) => {
         const response = await api.patch('proveedor/editarProveedor', {
         data: { id }
       });
         return response;
       },
     
-      addProvider: async (
+      addProduct: async (
         nombre: string,
-        precio: string,
-        codigo_barra: number,
-        fecha_actualizacion: Date,
-        proveedor:  number) => {
-      //proveedor no existe en types, revisar eso en caso de error (o preguntar)
-        
-          const response = await api.post('proveedor/crearProveedor', {
-          data: {
-            nombre,
-            precio,
-            codigo_barra,
-            fecha_actualizacion,
-            proveedor,
-          },
-        });
-        return response;
+        fecha_creación: Date,
+        contacto?: string,
+        telefono?: string,
+        email?: string,
+        direccion?: string,
+    ) => {
+    
+      const response = await api.post('producto/crearProducto', {
+      data: {
+        nombre,
+        contacto,
+        telefono,
+        email,
+        direccion,
+        fecha_creación,
       },
+    });
+    return response;
+  },
 };
 
 export default providerService;
