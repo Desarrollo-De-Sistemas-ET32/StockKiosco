@@ -8,19 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model descuentos {
-  id_descuento        Int           @id @default(autoincrement())
-  tipo                TipoDescuento @default(PORCENTAJE)
-  valor               Decimal       @db.Decimal(10, 2)
-  fecha_creacion      DateTime      @default(now())
-  fecha_actualizacion DateTime
-  activo              Boolean       @default(true)
-  descripcion         String?       @db.VarChar(255)
-  fecha_fin           DateTime
-  fecha_inicio        DateTime
-  nombre              String        @db.VarChar(45)
-}
-
 model detalles_venta {
   id_detalle          Int       @id @default(autoincrement())
   id_venta            Int
@@ -51,21 +38,43 @@ model pagos {
   ventas              ventas     @relation(fields: [id_venta], references: [id_venta])
 }
 
+model descuentos {
+  id_descuento        Int           @id @default(autoincrement())
+  tipo                TipoDescuento @default(PORCENTAJE)
+  valor               Decimal       @db.Decimal(10, 2)
+  fecha_creacion      DateTime      @default(now())
+  fecha_actualizacion DateTime      @updatedAt
+  activo              Boolean       @default(true)
+  descripcion         String?       @db.VarChar(255)
+  fecha_fin           DateTime
+  fecha_inicio        DateTime
+  nombre              String        @db.VarChar(45)
+}
+
+model categorias {
+  id_categoria Int        @id @default(autoincrement())
+  nombre       String     @unique
+  productos    productos[]
+}
+
 model productos {
-  id_producto         Int              @id @default(autoincrement())
-  nombre              String           @db.VarChar(36)
+  id_producto         Int        @id @default(autoincrement())
+  nombre              String     @db.VarChar(36)
   id_proveedor        Int
-  codigo_barras       Int?             @unique(map: "productos_codigo_barra_key")
-  precio              Decimal          @db.Decimal(10, 2)
-  fecha_creacion      DateTime         @default(now())
+  codigo_barra        BigInt     @unique
+  precio              Decimal    @db.Decimal(10, 2)
+  fecha_creacion      DateTime   @default(now())
   fecha_actualizacion DateTime
   id_marca            Int?
+  id_categoria        Int?       // FK a categorias
   images              String?
   detalles_venta      detalles_venta[]
-  marcas              marcas?          @relation(fields: [id_marca], references: [id_marca])
-  proveedores         proveedores      @relation(fields: [id_proveedor], references: [id_proveedor])
+  marcas              marcas?      @relation(fields: [id_marca], references: [id_marca])
+  proveedores         proveedores  @relation(fields: [id_proveedor], references: [id_proveedor])
+  categoria           categorias?  @relation(fields: [id_categoria], references: [id_categoria])
   stock               stock[]
 }
+
 
 model proveedores {
   id_proveedor        Int         @id @default(autoincrement())
@@ -81,7 +90,7 @@ model proveedores {
 
 model stock {
   id_stock            Int       @id @default(autoincrement())
-  id_producto         Int
+  id_producto         Int       @unique
   cantidad            Int?
   fecha_actualizacion DateTime
   productos           productos @relation(fields: [id_producto], references: [id_producto])
@@ -117,12 +126,12 @@ enum MetodoPago {
   transferencia
 }
 
-enum TipoDescuento {
-  PORCENTAJE
-  MONTOFIJO
-}
-
 enum rolesUser {
   usuario
   administrador
+}
+
+enum TipoDescuento {
+  PORCENTAJE
+  MONTOFIJO
 }

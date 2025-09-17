@@ -1,56 +1,47 @@
-'use server'
+// src/actions/actualizarProducto.ts
 import db from "@/lib/db";
-import { Prisma } from "@prisma/client";
 
-type filtrado = {
-    id_producto: number,
-    id_marca: number,
-    id_proveedor: number,
-    nombre: string,
-    codigo_barra: number,
-    precio: number,
-    fecha_actualizacion: Date
-}
-
-
-export const updateProduct = async(values: { id_producto: number, data: filtrado }) => {
+export async function updateProduct(id: number, data: any) {
   try {
-    const { id_producto, data } = values;
-
-    if (typeof id_producto !== "number" || isNaN(id_producto)) {
-      return { 
-        success: false, 
-        message: "El ID del producto debe ser un número válido." 
-      };
+    // 1. Validar que el campo 'stock' esté presente
+    if (data.stock === undefined || data.stock === null) {
+      return { success: false, message: "El campo de stock no puede estar vacío." };
     }
 
-    await db.productos.update({
-        where: { id_producto: values.id_producto },
+    // 2. Realizar la actualización en la tabla 'stock'
+    const updatedStock = await db.stock.update({
+        where: {
+            id_producto: id, // Ahora Prisma acepta esto como un filtro único
+        },
         data: {
-            nombre: values.data.nombre,
-            id_marca: values.data.id_marca,
-            id_proveedor: values.data.id_proveedor,
-            codigo_barra: values.data.codigo_barra,
-            precio: new Prisma.Decimal(10.50), // Si lo necesitas explícito
-            fecha_actualizacion: new Date(),
-  }
-});
+            cantidad: Number(data.stock),
+        },
+    });
+
+    // 3. Opcional: Actualizar el producto con otros campos (si los hay)
+    const updatedProduct = await db.productos.update({
+      where: {
+        id_producto: id,
+      },
+      data: {
+        nombre: data.nombre,
+        precio: data.precio,
+        codigo_barra: data.codigo_barra,
+        // No incluyas el stock aquí
+      },
+    });
 
     return {
       success: true,
-      message: "Producto actualizado correctamente.",
+      message: "Producto y stock actualizados con éxito.",
+      body: updatedProduct,
     };
-  } catch (err: any) {
-    if (err.code === 'P2025') {
-      return {
-        success: false,
-        message: "No se encontró el producto con el ID proporcionado."
-      }
-    }
-    console.error("Error al actualizar el producto:", err);
+  } catch (error) {
+    console.error("Error al actualizar el producto:", error);
     return {
-      error: "Al actualizar el producto",
-      message: "Ocurrió un error al actualizar el producto."
-    }
+      success: false,
+      message: "Error al actualizar.",
+      error: String(error),
+    };
   }
 }

@@ -3,17 +3,19 @@ import db from "@/lib/db";
 
 export default async function getProducts() {
     try {
-        const products = await db.productos.findMany({
-            orderBy: {
-                id_producto: 'asc',
-            },
-        });
-
-        return NextResponse.json({
+        const products = await db.productos.findMany(
+            {
+                include: {
+                    proveedores: true,
+                    stock: true,
+                }
+            }
+        );
+        return {
             success: true,
-            message: `Se encontraron ${products.length} registros.`,
-            data: products
-        });
+            message: "Datos obtenidos correctamente.",
+            body: products
+        };
     } catch (error) {
         console.error("Error al obtener los datos:", error);
         return NextResponse.json({

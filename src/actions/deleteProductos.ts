@@ -1,20 +1,21 @@
 "use server"
 import db from "@/lib/db";
 type DeleteProduct = {
-    codigo_barra: number;
+    id_producto: number;
 }
 
 export const deleteProduct = async (values: DeleteProduct) => {
     try {
-        await db.productos.delete({
-            where: {
-                codigo_barra: values.codigo_barra
-            }
-        });
-
-        return { success: true, message: `Producto con código de barra ${values.codigo_barra} eliminado exitosamente.` };
+        const existing = await db.productos.findUnique({ where: { id_producto: values.id_producto } });
+        if (!existing) {
+            return { error: "Producto no encontrado" };
+        }
+        // Primero elimina los registros relacionados en la tabla 'stock'
+        await db.stock.deleteMany({ where: { id_producto: values.id_producto } });
+        const deleted = await db.productos.delete({ where: { id_producto: values.id_producto } });
+        return { success: true, body: deleted };
     } catch (error) {
-        console.error("Error eliminando producto:", error);
-        return { error: "Error deleting producto" };
+        console.error("Error al eliminar el producto:", error);
+        return { error: "Error al eliminar el producto" };
     }
-}
+};
