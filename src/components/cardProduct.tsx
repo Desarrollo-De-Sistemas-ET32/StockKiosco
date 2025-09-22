@@ -18,14 +18,16 @@ import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 // Define las propiedades que el componente espera recibir
 interface ProductCardProps {
   producto: {
-    id_producto: number; // El ID del producto
+    id_producto: number;
     nombre: string;
     precio: number;
     stock: { id_stock: number; cantidad: number }[];
     stock_minimo: number;
     codigo_barra: string;
+    imagen?: string;
+    categoria?: { id_categoria: number; nombre: string }; // 👈 ya no es array
   };
-  onUpdateSuccess: () => void; // Función para notificar a la página principal
+  onUpdateSuccess: () => void;
 }
 
 export default function ProductCard({
@@ -37,6 +39,10 @@ export default function ProductCard({
     codigo_barra: producto.codigo_barra,
     stock: producto.stock.length > 0 ? producto.stock[0].cantidad : 0,
     precio: producto.precio,
+    id_producto: producto.id_producto,
+    stock_minimo: producto.stock_minimo,
+    imagen: producto.imagen,
+    categoria: producto.categoria,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +73,7 @@ export default function ProductCard({
         alert("Producto eliminado con éxito.");
         onUpdateSuccess(); // Llama a la función para refrescar la lista
       }
-    } catch (error) {
+    } catch (error: unknown | ErrorEvent) {
       console.error("Error al eliminar el producto:", error);
       alert(`Error al eliminar el producto: ${error.message}`);
     }
@@ -83,6 +89,10 @@ export default function ProductCard({
       codigo_barra,
       stock: stock ? parseInt(stock.toString(), 10) : 0,
       precio: precio ? parseFloat(precio.toString()) : 0,
+      id_producto: producto.id_producto,
+      stock_minimo: producto.stock_minimo,
+      imagen: producto.imagen,
+      categoria: producto.categoria,
     };
 
     try {
@@ -119,7 +129,7 @@ export default function ProductCard({
               {producto.stock.length > 0 ? "Hay Stock" : "Sin Stock"}
             </Badge>
             <Badge className="bg-neutral text-xs rounded-3xl lg:rounded-4xl">
-              La Campora
+              {producto.categoria ? producto.categoria.nombre : "Sin categoría"}  
             </Badge>
           </div>
           <div className="grid grid-cols-2 items-center justify-items-center lg:flex lg:flex-row gap-10">
@@ -158,55 +168,65 @@ export default function ProductCard({
               <AlertDialogHeader>
                 <AlertDialogTitle>Editar Producto</AlertDialogTitle>
                 <AlertDialogDescription>
-                  <div className="grid grid-cols-1 gap-5">
-                    <div>
+                  <div className="grid grid-cols-2 items-center gap-5">
+                    <div className="flex flex-col col-[1/2] gap-1">
                       <Label htmlFor="nombre">Nombre del Producto</Label>
                       <Input
-                        className="bg-var1 border-2"
+                        className="bg-var1 rounded-4xl border-2"
                         placeholder={producto.nombre}
                         id="nombre"
                         onChange={handleInputChange}
                         value={editedProduct.nombre}
                       />
                     </div>
-                    <div>
+                    <div className="flex flex-col col-[1/2] gap-1">
                       <Label htmlFor="codigo_barra">Código de barras</Label>
                       <Input
-                        className="bg-var1 border-2"
+                        className="bg-var1 rounded-4xl border-2"
                         placeholder={producto.codigo_barra}
                         id="codigo_barra"
                         onChange={handleInputChange}
                         value={editedProduct.codigo_barra}
                       />
                     </div>
-                    <div>
+                    <div className="flex flex-col col-[1/2] gap-1">
                       <Label htmlFor="stock">Stock</Label>
                       <Input
-                        className="bg-var1 border-2"
+                        className="bg-var1 rounded-4xl border-2"
                         placeholder="900"
                         id="stock"
                         onChange={handleInputChange}
                         value={editedProduct.stock}
                       />
                     </div>
-                    <div>
+                    <div className="flex flex-col col-[1/3] gap-1">
                       <Label htmlFor="precio">Precio</Label>
                       <Input
-                        className="bg-var1 border-2"
+                        type="number"
+                        className="bg-var1 rounded-4xl border-2"
                         placeholder={producto.precio.toString()}
                         id="precio"
                         onChange={handleInputChange}
                         value={editedProduct.precio}
                       />
                     </div>
+                      <div className="flex flex-col row-1 col-[2/3] gap-1">
+                      <Label htmlFor="categoria">Categoria</Label>
+                      <Input
+                        type="text"
+                        className="bg-var1 rounded-4xl border-2"
+                        placeholder={producto.categoria ? producto.categoria.nombre : "Sin categoría"}
+                        id="categoria"
+                        onChange={handleInputChange}
+                        value={editedProduct.categoria ? editedProduct.categoria.nombre : ""}
+                      />
+                    </div>
                   </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleEdit}>
-                  Guardar
-                </AlertDialogAction>
+                <AlertDialogCancel className="bg-background hover:bg-background/70 px-5 w-fit border-none text-md">Cancelar</AlertDialogCancel>
+                <AlertDialogAction className="bg-background hover:bg-background/70 px-5 w-fit rounded-md" onClick={handleEdit}>Guardar</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

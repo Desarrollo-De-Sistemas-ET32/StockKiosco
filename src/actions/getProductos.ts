@@ -8,6 +8,7 @@ export default async function getProducts() {
                 include: {
                     proveedores: true,
                     stock: true,
+                    categoria: true,
                 }
             }
         );

@@ -1,7 +1,17 @@
 // src/actions/actualizarProducto.ts
 import db from "@/lib/db";
 
-export async function updateProduct(id: number, data: any) {
+export async function updateProduct(id: number, data: {
+  nombre: string;
+  precio: number;
+  codigo_barra: number;
+  stock: number;
+}): Promise<{
+  success: boolean;
+  message: string;
+  body?: any;
+  error?: string;
+}> {
   try {
     // 1. Validar que el campo 'stock' esté presente
     if (data.stock === undefined || data.stock === null) {
@@ -10,13 +20,10 @@ export async function updateProduct(id: number, data: any) {
 
     // 2. Realizar la actualización en la tabla 'stock'
     const updatedStock = await db.stock.update({
-        where: {
-            id_producto: id, // Ahora Prisma acepta esto como un filtro único
-        },
-        data: {
-            cantidad: Number(data.stock),
-        },
-    });
+      where: {
+        id_producto: id,
+      },
+      data: {}});
 
     // 3. Opcional: Actualizar el producto con otros campos (si los hay)
     const updatedProduct = await db.productos.update({

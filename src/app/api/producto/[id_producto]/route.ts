@@ -3,7 +3,7 @@ import { updateProduct } from "@/actions/actualizarProducto";
 import { deleteProduct } from "@/actions/deleteProductos"; 
 
 // Define un serializador personalizado para BigInt
-function replacer(key: any, value: any) {
+function replacer(key: unknown, value: unknown) {
   if (typeof value === 'bigint') {
     return value.toString();
   }

@@ -19,7 +19,11 @@ export default function ProductManagement() {
         const data = await response.json();
         setProductos(data.body);
       } catch (error) {
-        setError(error.message);
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Ocurrió un error desconocido");
+        }
       } finally {
         setLoading(false);
       }
