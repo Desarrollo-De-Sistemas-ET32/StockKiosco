@@ -1,0 +1,42 @@
+[
+   {
+      "id":"0000000000001",
+      "name":"Alfajor de chocolate",
+      "brand":"Jorgito",
+      "price":129999,
+      "unidades":10,
+      "minimoUnidades":15
+   },
+   {
+      "id":"0000000000002",
+      "name":"Zzzz",
+      "brand":"aDormir",
+      "price":19999,
+      "unidades":8,
+      "minimoUnidades":5
+   },
+   {
+      "id":"0000000000003",
+      "name":"Producto 200",
+      "brand":"omg",
+      "price":2999,
+      "unidades":5,
+      "minimoUnidades":28
+   },
+   {
+      "id":"0000000000004",
+      "name":"Alfajor de Maicena Nestle",
+      "brand":"omg",
+      "price":3799,
+      "unidades":6,
+      "minimoUnidades":3
+   },
+   {
+      "id":"0000000000005",
+      "name":"Producto 400",
+      "brand":"omg",
+      "price":2999,
+      "unidades":1,
+      "minimoUnidades":300
+   }
+]
