@@ -3,18 +3,57 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';   
 import { Button } from '@/components/ui/button'; 
+import { categoriaService } from "../Service/CategoryService"
+
+
+
+
 
 export default function CrearCategoria() {
   const [nombre, setNombre] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [categorias, setCategorias] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [state, setState] = useState('');
 
-  useEffect(() => {
+
+
+
+const fetchCategorias = async () => {
+      try {
+        const nuevaCategoria = await categoriaService.create({
+          nombre: "Cateríssa d"
+        });
+
+        console.log('Categorías:', nuevaCategoria.categoria.id_categoria);
+        setState( (nuevaCategoria.categoria.id_categoria >0) ? true : false  );
+      } catch (error) {
+        console.error('Error obteniendo categorías:', error);
+      }
+    };
+
+
+        const fetchViewCategorias = async () => {
+      try {
+        const categorias = await categoriaService.getAll();
+        console.log('Categorías:', categorias);
+      } catch (error) {
+        console.error('Error obteniendo categorías:', error);
+      }
+    };
+
+     
+
+useEffect(() => {
+    fetchViewCategorias();
     setMounted(true);
   }, []);
 
+
+
+
   const handleSubmit = (e: React.FormEvent) => {
+    fetchCategorias();
     e.preventDefault();
     if (!nombre.trim()) {
       setMensaje('Por favor, completá el campo nombre.');
@@ -36,7 +75,7 @@ export default function CrearCategoria() {
           <Input
             label="Nombre"
             type="text"
-            value={nombre}
+            value={state}
             onChange={e => setNombre(e.target.value)}
           />
 

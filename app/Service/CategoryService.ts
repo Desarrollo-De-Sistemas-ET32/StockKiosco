@@ -1,4 +1,5 @@
 // src/services/categoria.service.ts
+import { categorias } from '@prisma/client';
 import api from '../Service/API';
 import { Categoria } from '../Service/categoria';
 
@@ -8,7 +9,7 @@ export const categoriaService = {
   // Obtener todas las categorías
   getAll: async (): Promise<Categoria[]> => {
     try {
-      const response = await api.get<Categoria[]>('/categoria/crearCategorias');
+      const response = await api.get<Categoria[]>('/categoria/leerCategoria');
       return response.data;
     } catch (error) {
       console.error('Error obteniendo categorías', error);
@@ -28,15 +29,19 @@ export const categoriaService = {
   },
 
   // Crear una nueva categoría
-  create: async (data: Categoria): Promise<Categoria> => {
-    try {
-      const response = await api.post<Categoria>('/categorias', data);
-      return response.data;
-    } catch (error) {
-      console.error('Error creando categoría', error);
-      throw error;
-    }
-  },
+create: async (data: Categoria): Promise<{ message: string; categoria: Categoria }> => {
+  try {
+    const response = await api.post<{ message: string; categoria: Categoria }>(
+      '/categoria/crearCategoria',
+      data
+    );
+    return response.data; // devuelve { message, categoria }
+  } catch (error) {
+    console.error('Error creando categoría', error);
+    throw error;
+  }
+},
+
 
   // Actualizar categoría por id
   update: async (id: number, data: Partial<Categoria>): Promise<Categoria> => {
