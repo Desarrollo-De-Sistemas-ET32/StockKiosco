@@ -1,4 +1,4 @@
-// app/api/categorias/route.ts
+// app/api/categorias/crearCategoria/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createCategoria } from "@/actions/addCategoria";
 
