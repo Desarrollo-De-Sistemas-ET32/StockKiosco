@@ -1,5 +1,5 @@
 // app/Service/CategoryService.ts
-import api from './API';
+import api from '../API';
 import { CategoriaPayload, CategoriaWithId } from './categoria';
 
 export const categoriaService = {

@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { categoriaService } from '../Service/CategoryService';
-import { CategoriaWithId } from '../Service/categoria';
+import { categoriaService } from '../Service/categoria/CategoryService';
+import { CategoriaWithId } from '../Service/categoria/categoria';
 import axios from 'axios';
 
 export default function CrearCategoria() {
