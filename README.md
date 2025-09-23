@@ -1,86 +1,34 @@
-# StockKiosco
+# 🚀 StockKiosco
 
-Aplicación web construida con [Next.js/React], TypeScript, Prisma y NextAuth.js.
+**StockKiosco** es una aplicación web para la gestión de stock de kioscos, construida con **Next.js/React**, **TypeScript**, **Prisma** y **NextAuth.js**. Permite administrar inventario de manera **eficiente, segura y moderna**.  
 
-## 🚀 Comenzando
+💻 **Prerrequisitos:** Asegúrate de tener instalados **Node.js**, **npm**, **Git** y tu base de datos (ej. PostgreSQL o Supabase).  
 
-### Prerrequisitos
+📥 **Instalación:**  
+Clona el repositorio y accede a la carpeta:  
+`git clone [URL-DE-TU-REPOSITORIO]`  
+`cd stockkiosco`  
 
-Asegúrate de tener instalado: Node.js, npm, Git, y tu [Base de Datos] (ej. PostgreSQL).
+Instala las dependencias:  
+`npm install`  
 
-### Instalación
-    
-1.  **Instala dependencias:**
-    
-    Bash
-    
-    ```
-    npm i
-    
-    ```
-    
-2.  **Configura `.env`:** Crea un archivo `.env` con:
-    
-    Fragmento de código
-    
-    ```
-    DATABASE_URL="tu_url_de_base_de_datos"
-    NEXTAUTH_SECRET="GENERADO_CON_npx_auth_secret"
-    NEXTAUTH_URL="http://localhost:3000"
-    
-    ```
-    
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables (reemplaza `[YOUR-PASSWORD]` por tu contraseña):  
+`DATABASE_URL="postgresql://postgres.vqkilvejuwcsxufssdvx:[YOUR-PASSWORD]@aws-0-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true"`  
+`DIRECT_URL="postgresql://postgres.vqkilvejuwcsxufssdvx:[YOUR-PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres"`  
 
-### Configuración de la Base de Datos
+⚙️ **Configuración de Prisma:**  
+Genera Prisma Client: `npx prisma generate`  
+Sincroniza el esquema de la base de datos si partes de una BD existente: `npx prisma db pull`  
+Para aplicar cambios de `schema.prisma` a la base de datos: `npx prisma db push` o `npx prisma migrate dev`  
 
-1.  **Genera el Prisma Client:**
-    
-    Bash
-    
-    ```
-    npx prisma generate
-    
-    ```
-    
-2.  **Sincroniza el esquema (opcional, si partes de una BD existente):**
-    
-    Bash
-    
-    ```
-    npx prisma db pull
-    
-    ```
-    
-    _(Usa `npx prisma db push` o `npx prisma migrate dev` si aplicas cambios de `schema.prisma` a la BD)._
+🔒 **Configuración de NextAuth:**  
+Genera un secreto: `npx auth secret`  
+Copia el resultado en tu `.env` como `NEXTAUTH_SECRET`.  
 
-### Generar Secreto de Autenticación
+🚀 **Ejecutar la aplicación:**  
+`npm run dev`  
+La aplicación estará disponible en: `http://localhost:3000`  
 
-1.  **Genera un `NEXTAUTH_SECRET` para tu `.env`:**
-    
-    Bash
-    
-    ```
-    npx auth secret
-    
-    ```
-    
-    Copia el resultado y pégalo en tu `.env`.
+🛠️ **Tecnologías clave:** Next.js, React, TypeScript, Prisma ORM, NextAuth.js, Zod (validación de datos), Tailwind CSS (estilos modernos y responsivos).  
 
-### Ejecutar la Aplicación
-
-Bash
-
-```
-npm run dev
-
-```
-
-La aplicación estará disponible en `http://localhost:3000`.
-
-## 🛠️ Tecnologías Clave
-
--   [Next.js]
--   TypeScript
--   Prisma ORM
--   NextAuth.js
--   [Zod, Tailwind CSS, etc.]
+💡 **Descripción:** StockKiosco permite gestionar inventario de kioscos de manera **eficiente, segura y moderna**, con autenticación robusta y tecnología full-stack actual.
