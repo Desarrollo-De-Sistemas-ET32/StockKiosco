@@ -19,15 +19,15 @@ Asegúrate de tener instalado: Node.js, npm, Git, y tu [Base de Datos] (ej. Post
     
     ```
     
-2.  **Configura `.env`:** Crea un archivo `.env` con:
+2.  **Configura `.env`:** Crea un archivo `.env` con(NO OLVIDEN PONER LA CONTRASERA EN YOUR PASSWORD):
     
     Fragmento de código
     
     ```
-    DATABASE_URL="tu_url_de_base_de_datos"
-    NEXTAUTH_SECRET="GENERADO_CON_npx_auth_secret"
-    NEXTAUTH_URL="http://localhost:3000"
-    
+DATABASE_URL="postgresql://postgres.vqkilvejuwcsxufssdvx:[YOUR-PASSWORD]@aws-0-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.vqkilvejuwcsxufssdvx:[YOUR-PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres"
+
+
     ```
     
 
