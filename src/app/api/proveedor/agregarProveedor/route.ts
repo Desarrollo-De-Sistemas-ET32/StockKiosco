@@ -1,23 +1,42 @@
 import { agregarProveedor } from "@/actions/addProveedor";
 import { NextResponse } from "next/server";
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "http://localhost:3000",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS,PATCH",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Credentials": "true",
+};
+
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: CORS_HEADERS,
+  });
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("Datos recibidos en POST:", body); 
-    const result = await agregarProveedor(body); 
+    console.log("Datos recibidos en POST:", body);
+
+    const result = await agregarProveedor(body);
 
     if (result.error) {
-      return NextResponse.json({ error: result.error }, { status: 400 });
+      return NextResponse.json({ error: result.error }, { status: 400, headers: CORS_HEADERS });
     }
 
     if (!result.success) {
-      return NextResponse.json({ error: result.message }, { status: 400 });
+      return NextResponse.json({ error: result.message }, { status: 400, headers: CORS_HEADERS });
     }
-    console.log("Resultado de la actualización:", result); 
-    return NextResponse.json(result);
+
+    console.log("Resultado de la creación:", result);
+    return NextResponse.json(result, { status: 200, headers: CORS_HEADERS });
   } catch (err) {
-    console.error("API error:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    console.error("API error (agregarProveedor):", err);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500, headers: CORS_HEADERS }
+    );
   }
 }
