@@ -50,3 +50,48 @@ export const delProductSchema = object({
       "El nombre no puede contener caracteres especiales"
     ),
 });
+
+
+export const readProductSchema = z.object({
+  id_producto: z
+    .preprocess((val) => {
+      if (typeof val === "string") return parseInt(val, 10)
+      return val
+    }, z.number().int().positive("ID de producto inválido"))
+    .optional(),
+  nombre: z.preprocess((val) => {
+    if (typeof val === "string") return val.trim().toLowerCase()
+    return val
+  }, z.string().min(1, "El nombre no puede estar vacío")).optional(),
+  categoria: z.preprocess((val) => {
+    if (typeof val === "string") return val.trim().toLowerCase()
+    return val
+  }, z.string().min(1, "La categoría no puede estar vacía")).optional(),
+  id_proveedor: z
+    .preprocess((val) => {
+      if (typeof val === "string") return parseInt(val, 10)
+      return val
+    }, z.number().int().positive("ID de proveedor inválido"))
+    .optional(),
+  id_marca: z
+    .preprocess((val) => {
+      if (typeof val === "string") return parseInt(val, 10)
+      return val
+    }, z.number().int().positive("ID de marca inválido"))
+    .optional(),
+  stock_min: z
+    .preprocess((val) => {
+      if (typeof val === "string") return parseInt(val, 10)
+      return val
+    }, z.number().int().nonnegative("Stock mínimo inválido"))
+    .optional(),
+  stock_max: z
+    .preprocess((val) => {
+      if (typeof val === "string") return parseInt(val, 10)
+      return val
+    }, z.number().int().nonnegative("Stock máximo inválido"))
+    .optional(),
+  precio_min: z.number().positive("Precio mínimo inválido").optional(),
+  precio_max: z.number().positive("Precio máximo inválido").optional(),
+  activo: z.boolean().optional(),
+})

@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+
+const nombreValidation = z
+  .preprocess((val) => {
+    if (typeof val === "string") return val.trim().toLowerCase();
+    return val;
+  }, z.string().min(1, "El nombre no puede estar vacío"));
+
 export const createDiscountSchema = z.object({
   id_descuento: z.number().int().positive(),
   nombre: z.string().min(1, "Nombre es requerido"),
@@ -25,6 +32,19 @@ export const updateDescuentoSchema = z.object({
 
 export const deleteDescuentoSchema = z.object({
   id_descuento: z.number({ required_error: "El ID del descuento es obligatorio" }).int(),
+});
+
+
+export const readDescuentoSchema = z.object({
+  id_descuento: z
+    .preprocess((val) => {
+      if (typeof val === "string") return parseInt(val, 10);
+      return val;
+    }, z.number().int().positive("ID de descuento inválido"))
+    .optional(),
+  nombre: nombreValidation.optional(),
+  tipo: z.enum(["PORCENTAJE", "MONTOFIJO"]).optional(),
+  activo: z.boolean().optional(),
 });
 
 export type DeleteDescuentoInput = z.infer<typeof deleteDescuentoSchema>;

@@ -1,7 +1,7 @@
-// src/schemas/categoria_scheme.ts
+
 import { z } from "zod";
 
-// Schema base para validar nombre
+
 const nombreValidation = z.preprocess((val) => {
   if (typeof val === "string") return val.trim().toLowerCase();
   return val;
@@ -27,12 +27,12 @@ z.string()
   })
 );
 
-// Schema para crear categoría
+
 export const createCategoriaSchema = z.object({
   nombre: nombreValidation
 });
 
-// Schema para actualizar categoría
+
 export const updateCategoriaSchema = z.object({
   id_categoria: z.preprocess((val) => {
     if (typeof val === "string") return parseInt(val, 10);
@@ -41,10 +41,18 @@ export const updateCategoriaSchema = z.object({
   nombre: nombreValidation
 });
 
-// Schema para eliminar categoría
+
 export const deleteCategoriaSchema = z.object({
   id_categoria: z.preprocess((val) => {
     if (typeof val === "string") return parseInt(val, 10);
     return val;
   }, z.number().int().positive("ID de categoría inválido")),
+});
+
+export const readCategoriaSchema = z.object({
+  id_categoria: z.preprocess((val) => {
+    if (typeof val === "string") return parseInt(val, 10);
+    return val;
+  }, z.number().int().positive("ID de categoría inválido")).optional(),
+  nombre: nombreValidation.optional()
 });

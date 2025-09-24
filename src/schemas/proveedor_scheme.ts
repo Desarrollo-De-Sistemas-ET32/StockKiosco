@@ -1,5 +1,6 @@
 import z, { object, string } from "zod"
 
+// Eliminar proveedor
 export const delproveedorSchema = object({
   name: string({ required_error: "Se necesita un nombre" })
     .min(1, "No puede estar vacío")
@@ -10,6 +11,7 @@ export const delproveedorSchema = object({
     ),
 });
 
+// Actualizar proveedor
 export const actualizarProveedorSchema = z.object({
   id_proveedor: z.number().int().positive(),
   nombre: z
@@ -38,7 +40,7 @@ export const actualizarProveedorSchema = z.object({
     }, z.date({ required_error: "Fecha inválida" })),
 });
 
-
+// Crear proveedor
 export const crearProveedorSchema = z.object({
   nombre: z
     .string()
@@ -60,4 +62,28 @@ export const crearProveedorSchema = z.object({
     .string()
     .min(1, "La dirección no puede estar vacía")
     .max(200, "La dirección es muy larga"),
+});
+
+// Leer proveedor (filtros opcionales)
+export const readProveedorSchema = z.object({
+  id_proveedor: z
+    .preprocess((val) => {
+      if (typeof val === "string") return parseInt(val, 10);
+      return val;
+    }, z.number().int().positive("ID de proveedor inválido"))
+    .optional(),
+  nombre: z
+    .preprocess((val) => {
+      if (typeof val === "string") return val.trim().toLowerCase();
+      return val;
+    }, z.string().min(1, "El nombre no puede estar vacío"))
+    .optional(),
+  contacto: z
+    .preprocess((val) => {
+      if (typeof val === "string") return val.trim();
+      return val;
+    }, z.string().min(1, "El contacto no puede estar vacío"))
+    .optional(),
+  email: z.string().email("Email inválido").optional(),
+  activo: z.boolean().optional(),
 });

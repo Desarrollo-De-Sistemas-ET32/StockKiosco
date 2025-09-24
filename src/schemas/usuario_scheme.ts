@@ -1,5 +1,6 @@
 import { z, object, string } from "zod";
 
+// Eliminar usuario
 export const delUserSchema = object({
   email: string({ required_error: "Email is required" })
     .min(1, "Email is required")
@@ -10,7 +11,7 @@ export const delUserSchema = object({
     .max(32, "Password must be less than 32 characters"),
 });
 
-// Schema que ya tenías para actualizar usuario
+// Actualizar usuario
 export const updateUserSchema = object({
   email: string({ required_error: "Se necesita un email" }),
   nombre: string({ required_error: "Se necesita un nombre" }),
@@ -19,12 +20,8 @@ export const updateUserSchema = object({
   fecha_actualizacion: z.date().optional().default(new Date()),
 });
 
-/*
-  Schema para crear usuario (nuevo).
-  Acepta 'name' o 'nombre' en entrada (mapeará a name).
-*/
+// Crear usuario
 export const crearUsuarioSchema = object({
-  // permitimos que el cliente mande 'name' o 'nombre'
   name: string().optional(),
   nombre: string().optional(),
   email: string({ required_error: "Se necesita un email" })
@@ -35,6 +32,20 @@ export const crearUsuarioSchema = object({
     .max(64, "La contraseña debe tener menos de 64 caracteres"),
   telefono: string().optional().default(""),
   direccion: string().optional().default(""),
-  // roles: si tu modelo es array de strings, este schema sirve; si es enum o tipo distinto, adaptar.
   usuarios_roles: z.array(z.string()).optional().default(["user"]),
+});
+
+// Leer usuario (filtros opcionales)
+export const readUserSchema = object({
+  email: string().email("Email inválido").optional(),
+  nombre: z
+    .preprocess((val) => {
+      if (typeof val === "string") return val.trim().toLowerCase();
+      return val;
+    }, z.string().min(1, "El nombre no puede estar vacío"))
+    .optional(),
+  telefono: string().optional(),
+  direccion: string().optional(),
+  usuarios_roles: z.array(z.string()).optional(),
+  activo: z.boolean().optional(),
 });
