@@ -18,6 +18,8 @@ import Venta from "@/components/sale-box";
 import StockBajo from "@/components/product-box";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
 type Producto = {
   name: string;
@@ -29,27 +31,59 @@ type Producto = {
   id: number;
 };
 
-export default function Menu() {
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
+export default function Menu() {
   const [productos, setProductos] = useState<Producto[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
-    fetch('/productos.json')
-      .then(res => res.json())
-      .then(data => setProductos(data));
-  }, []);
+    let mounted = true;
 
-  productos.map((producto) => {
-    console.log(producto.price);
-    console.log("hola");
-  });
+    async function checkAndLoad() {
+      try {
+        // Obtener session
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+        if (!session) {
+          // no hay sesión -> redirigir a login
+          router.replace("/login");
+          return;
+        }
 
-  
+        // hay sesión -> cargar productos
+        const res = await fetch("/productos.json");
+        if (!res.ok) {
+          console.error("No se pudo cargar productos.json", res.status);
+          return;
+        }
+        const dataProductos = await res.json();
+        if (!mounted) return;
+        setProductos(dataProductos);
+      } catch (err) {
+        console.error("Error checkAndLoad:", err);
+        // en caso de error de auth o red de forma conservadora redirigimos
+        router.replace("/login");
+      }
+    }
+
+    checkAndLoad();
+
+    return () => {
+      mounted = false;
+    };
+  }, [router]);
+
   return (
     <main className="flex justify-start items-center h-screen flex-col p-4 gap-15">
       <div className="w-full flex justify-center text-sm text-muted-foreground">
-        <NavBar></NavBar>
+        <NavBar />
       </div>
+
+      {/* --- Info cards --- */}
       <div className="max-h-fit w-fit xl:w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 justify-items-center">
         <InfoCard
           title="Inventario total"
@@ -80,6 +114,8 @@ export default function Menu() {
           description="Productos"
         />
       </div>
+
+      {/* --- resto del layout (sin cambios) --- */}
       <div className="w-full flex flex-col xl:flex-row gap-5 justify-center items-start">
         <div className="w-full h-fit bg-var7 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-row justify-between items-center mb-5">
@@ -95,7 +131,7 @@ export default function Menu() {
               </p>
             </div>
             <Button className="bg-var5 dark:bg-var1 text-foreground hover:bg-var5/50 dark:hover:bg-var1/50 border-0">
-              <BiShow className="size-5 text-foreground"></BiShow>
+              <BiShow className="size-5 text-foreground" />
               Ver todo
             </Button>
           </div>
@@ -105,26 +141,26 @@ export default function Menu() {
                 nombreProducto={productos[0]?.name}
                 unidades={productos[0]?.unidades}
                 minimoUnidades={productos[0]?.minimoUnidades}
-              ></StockBajo>
+              />
               <StockBajo
                 nombreProducto={productos[1]?.name}
                 unidades={productos[1]?.unidades}
                 minimoUnidades={productos[1]?.minimoUnidades}
-              ></StockBajo>
-              
+              />
               <StockBajo
                 nombreProducto={productos[2]?.name}
                 unidades={productos[2]?.unidades}
                 minimoUnidades={productos[2]?.minimoUnidades}
-              ></StockBajo>
+              />
               <StockBajo
                 nombreProducto={productos[3]?.name}
                 unidades={productos[3]?.unidades}
                 minimoUnidades={productos[3]?.minimoUnidades}
-              ></StockBajo>
+              />
             </div>
           </div>
         </div>
+
         <div className="flex flex-col w-full xl:w-2/4 h-fit bg-var7 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-col justify-start mb-5 gap-1">
             <p className="flex justify-start items-center text-2xl gap-5">
@@ -139,45 +175,46 @@ export default function Menu() {
               horario="15:00"
               precio={productos[0]?.price}
               unidades={1}
-            ></Venta>
-            <Separator className="bg-var6"></Separator>
+            />
+            <Separator className="bg-var6" />
             <Venta
               nombreProducto={productos[1]?.name}
               horario="15:00"
               precio={productos[1]?.price}
               unidades={13}
-            ></Venta>
-            <Separator className="bg-var6"></Separator>
+            />
+            <Separator className="bg-var6" />
             <Venta
               nombreProducto={productos[2]?.name}
               horario="15:00"
               precio={productos[2]?.price}
               unidades={15}
-            ></Venta>
-            <Separator className="bg-var6"></Separator>
+            />
+            <Separator className="bg-var6" />
             <Venta
               nombreProducto={productos[3]?.name}
               horario="15:00"
               precio={productos[3]?.price}
               unidades={5}
-            ></Venta>
-            <Separator className="bg-var6"></Separator>
+            />
+            <Separator className="bg-var6" />
             <Venta
               nombreProducto={productos[4]?.name}
               horario="15:00"
               precio={productos[4]?.price}
               unidades={3}
-            ></Venta>
-            <Separator className="bg-var6"></Separator>
+            />
+            <Separator className="bg-var6" />
             <Venta
               nombreProducto={productos[0]?.name}
               horario="15:00"
               precio={productos[0]?.price}
               unidades={2}
-            ></Venta>
+            />
           </div>
         </div>
       </div>
+
       <div className="w-full flex flex-col bg-var7 dark:bg-var2 rounded-2xl p-4">
         <div className="flex flex-col justify-center items-start">
           <p className="text-2xl text-center justify-center items-center flex gap-5">
