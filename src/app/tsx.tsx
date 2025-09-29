@@ -1,6 +1,6 @@
 import { GetStaticProps } from 'next';
-import List from './components/List';
-import proveedoresData from './data/proveedores.json';
+import List from '@/components/List';
+import proveedoresData from '@/app/data/proveedores.json';
 
 // Interfaces (asegúrate de que estas coincidan en todos tus archivos)
 interface Proveedor {
