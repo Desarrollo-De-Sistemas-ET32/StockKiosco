@@ -3,13 +3,12 @@
 import db from "@/lib/db";
 
 type CreateUsuarioValues = {
-  id_usuario?: number;
   name: string;
   email: string;
-  password: string; // se asume hasheada si la route la hizo
-  telefono?: string;
-  direccion?: string;
-  usuarios_roles?: string[];
+  password: string;
+  telefono?: string | null;
+  direccion?: string | null;
+  usuarios_roles?: string[]; // si el modelo no lo soporta, será ignorado al crear
   fecha_creacion?: Date;
   fecha_actualizacion?: Date;
 };
@@ -29,20 +28,35 @@ export const createUsuario = async (values: CreateUsuarioValues) => {
     });
     if (existe) return { error: "El email ya está registrado." };
 
+    // Lista blanca de campos que sabemos que existen en el modelo (evita Unknown argument)
+    const allowedFields = [
+      "name",
+      "email",
+      "password",
+      "fecha_creacion",
+      "fecha_actualizacion",
+      // Si tu schema tiene otros campos válidos agregalos aquí.
+    ] as const;
+
+    const dataToCreate: any = {};
+
+    if (allowedFields.includes("name")) dataToCreate.name = values.name;
+    if (allowedFields.includes("email")) dataToCreate.email = values.email;
+    if (allowedFields.includes("password")) dataToCreate.password = values.password;
+    dataToCreate.fecha_creacion = values.fecha_creacion ?? new Date();
+    dataToCreate.fecha_actualizacion = values.fecha_actualizacion ?? new Date();
+
     const usuario = await db.usuarios.create({
-      data: {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-        telefono: values.telefono ?? "",
-        direccion: values.direccion ?? "",
-        usuarios_roles: values.usuarios_roles ?? ["user"],
-        fecha_creacion: values.fecha_creacion ?? new Date(),
-        fecha_actualizacion: values.fecha_actualizacion ?? new Date(),
-      },
+      data: dataToCreate,
     });
 
-    return { success: true, usuario };
+    // Informar si el request traía campos extra que no se guardaron
+    const ignored: Record<string, any> = {};
+    if (values.telefono) ignored.telefono = values.telefono;
+    if (values.direccion) ignored.direccion = values.direccion;
+    if (values.usuarios_roles) ignored.usuarios_roles = values.usuarios_roles;
+
+    return { success: true, usuario, ignored: Object.keys(ignored).length ? ignored : undefined };
   } catch (error) {
     console.error("createUsuario error:", error);
     return { error: "Error al crear usuario" };
