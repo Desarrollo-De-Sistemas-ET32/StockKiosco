@@ -54,7 +54,8 @@ export default function SubirImagen({
 
       setIsUploading(true)
 
-      const res = await fetch('/api/upload', {
+      // 👇 CAMBIO AQUÍ: Apuntar al backend en localhost:3001
+      const res = await fetch('http://localhost:3001/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dataUrl, fileName: file.name, productoId })
@@ -112,7 +113,13 @@ export default function SubirImagen({
           </Button>
         </label>
 
-        <Button type="button" variant="ghost" className="px-4 py-2" onClick={handleReset} disabled={isUploading}>
+        <Button 
+          type="button" 
+          variant="ghost" 
+          className="px-4 py-2" 
+          onClick={handleReset} 
+          disabled={isUploading}
+        >
           Reset
         </Button>
       </div>

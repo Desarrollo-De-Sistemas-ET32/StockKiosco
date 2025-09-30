@@ -3,23 +3,25 @@
 // Payload que envías a la API externa
 export interface ProductoPayload {
   nombre: string;
+  codigo_barra: string | bigint;
   precio: number;
-  codigo_barra: string;
-  fecha_actualizacion: Date | string;
-  id_proveedor: number;
-  id_marca?: number | null;
-  categoria: string; // nombre de la categoría
-  images?: string | null;
   stock: number;
+  categoria: string; // nombre de la categoría (el backend busca por nombre)
+  images?: string;
+  fecha_creacion?: Date | string;
+  fecha_actualizacion?: Date | string;
+  id_proveedor: number;
+  id_marca?: number;
 }
 
 // Producto tal como viene del backend
 export interface ProductoWithId {
   id_producto?: number;
   nombre: string;
-  precio: number;
   codigo_barra: string;
-  fecha_actualizacion: string | Date;
+  precio: number;
+  fecha_creacion: string;
+  fecha_actualizacion: string;
   id_proveedor: number;
   id_marca?: number | null;
   id_categoria: number;

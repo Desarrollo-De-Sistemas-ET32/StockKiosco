@@ -51,12 +51,11 @@ export default function CrearProductoPage() {
         nombre,
         precio: Number(precio),
         codigo_barra: codigoBarras,
-        fecha_actualizacion: new Date().toISOString(),
-        id_proveedor: Number(idProveedor) || 1, // valor por defecto temporal
-        id_marca: idMarca ? Number(idMarca) : null,
-        categoria: categoria || 'General', // valor por defecto temporal
-        images: imagenUrl || null,
-        stock: Number(stock) || 0
+        stock: Number(stock) || 0,
+        categoria: categoria || 'general',
+        images: imagenUrl || '',
+        id_proveedor: Number(idProveedor) || 1,
+        id_marca: idMarca ? Number(idMarca) : undefined,
       }
 
       const result = await productoService.create(payload)
