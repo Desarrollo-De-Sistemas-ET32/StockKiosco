@@ -1,11 +1,14 @@
+// app/crear_productos/page.tsx
 'use client'
 
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react'
+import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import SubirImagen from '@/components/ui/subirImagen'
+import { productoService } from '@/app/Service/producto/ProductoService'
 
-export default function EditarProductoPage() {
+export default function CrearProductoPage() {
   const router = useRouter()
 
   const [nombre, setNombre] = useState('')
@@ -13,49 +16,65 @@ export default function EditarProductoPage() {
   const [vencimiento, setVencimiento] = useState('')
   const [categoria, setCategoria] = useState('')
   const [marca, setMarca] = useState('')
-  const [precioCompra, setPrecioCompra] = useState('')
-  const [precioPublico, setPrecioPublico] = useState('')
-
-  // Preview handling: imagenPreview = string que puede ser ruta pública o blob URL
+  const [precio, setPrecio] = useState('')
+  const [stock, setStock] = useState('')
+  const [idProveedor, setIdProveedor] = useState('')
+  const [idMarca, setIdMarca] = useState('')
   const [imagenPreview, setImagenPreview] = useState<string>('/milka.png')
-  const [blobUrl, setBlobUrl] = useState<string | null>(null)
+  const [imagenUrl, setImagenUrl] = useState<string>('')
+  const [isSaving, setIsSaving] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  useEffect(() => {
-    // cuando blobUrl cambia, actualizamos imagenPreview y limpiamos el anterior
-    if (blobUrl) setImagenPreview(blobUrl)
-    // cleanup al desmontar: revoke si existe
-    return () => {
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl)
-      }
-    }
-  }, [blobUrl])
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    // revocar anterior si existía
-    if (blobUrl) {
-      URL.revokeObjectURL(blobUrl)
-      setBlobUrl(null)
-    }
-    const previewUrl = URL.createObjectURL(file)
-    setBlobUrl(previewUrl)
+  const handleImagenSubida = (url: string) => {
+    setImagenUrl(url)
+    console.log('Imagen subida con URL:', url)
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    // aquí enviarías datos al backend / supabase
-    console.log({
-      nombre,
-      codigoBarras,
-      vencimiento,
-      categoria,
-      marca,
-      precioCompra,
-      precioPublico,
-      imagenPreview,
-    })
+    setErrors({})
+
+    // Validaciones básicas
+    if (!nombre.trim()) {
+      setErrors({ nombre: 'El nombre es requerido' })
+      return
+    }
+    if (!precio || Number(precio) <= 0) {
+      setErrors({ precio: 'El precio debe ser mayor a 0' })
+      return
+    }
+
+    setIsSaving(true)
+
+    try {
+      const payload = {
+        nombre,
+        precio: Number(precio),
+        codigo_barra: codigoBarras,
+        fecha_actualizacion: new Date().toISOString(),
+        id_proveedor: Number(idProveedor) || 1, // valor por defecto temporal
+        id_marca: idMarca ? Number(idMarca) : null,
+        categoria: categoria || 'General', // valor por defecto temporal
+        images: imagenUrl || null,
+        stock: Number(stock) || 0
+      }
+
+      const result = await productoService.create(payload)
+
+      if (result.error) {
+        // Mostrar errores del backend
+        setErrors(result.error)
+        return
+      }
+
+      console.log('Producto creado exitosamente:', result.product)
+      router.push('/productos')
+    } catch (err: any) {
+      console.error('Error guardar producto', err)
+      setErrors({ general: err?.message || 'Error desconocido al conectar con el servidor' })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -67,153 +86,120 @@ export default function EditarProductoPage() {
           </h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* FORM */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                label="Nombre del producto"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                placeholder="Nombre del producto"
-                className="dark:placeholder-neutral-300 dark:bg-neutral-700"
-              />
+              <div>
+                <Input 
+                  value={nombre} 
+                  onChange={(e) => setNombre(e.target.value)} 
+                  placeholder="Nombre del producto"
+                  className='dark:bg-neutral-700'
+                />
+                {errors.nombre && <p className="text-xs text-red-600 mt-1">{errors.nombre}</p>}
+              </div>
 
-              <Input
-                label="Código de barras"
-                value={codigoBarras}
-                onChange={(e) => setCodigoBarras(e.target.value)}
-                placeholder="0000000000000"
-                className="dark:placeholder-gray-300 dark:bg-neutral-700"
-              />
+              <div>
+                <Input 
+                  value={codigoBarras} 
+                  onChange={(e) => setCodigoBarras(e.target.value)} 
+                  placeholder="Código de barras"
+                  className='dark:bg-neutral-700'
+                />
+                {errors.codigo_barra && <p className="text-xs text-red-600 mt-1">{errors.codigo_barra}</p>}
+              </div>
 
-              <Input
-                label="Fecha de vencimiento"
-                type="date"
-                value={vencimiento}
+              <Input 
+                type="date" 
+                value={vencimiento} 
                 onChange={(e) => setVencimiento(e.target.value)}
-                className="dark:bg-neutral-700"
+                placeholder="Fecha de vencimiento"
+                className='dark:bg-neutral-700'
               />
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                    Categoría
-                  </label>
-                  <select
-                    value={categoria}
-                    onChange={(e) => setCategoria(e.target.value)}
-                    className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:bg-neutral-700 dark:border-gray-600 dark:text-white "
-                  >
-                    <option value="">Seleccionar</option>
-                    <option>Golosinas</option>
-                    <option>Bebidas</option>
-                    <option>Lácteos</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                  Categoría
+                </label>
+                <select 
+                  value={categoria} 
+                  onChange={(e) => setCategoria(e.target.value)} 
+                  className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:bg-neutral-700 dark:border-gray-600 dark:text-white"
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="golosinas">Golosinas</option>
+                  <option value="bebidas">Bebidas</option>
+                  <option value="lacteos">Lácteos</option>
+                </select>
+                {errors.categoria && <p className="text-xs text-red-600 mt-1">{errors.categoria}</p>}
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                    Marca
-                  </label>
-                  <select
-                    value={marca}
-                    onChange={(e) => setMarca(e.target.value)}
-                    className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:bg-neutral-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="">Seleccionar</option>
-                    <option>Milka</option>
-                    <option>Arcor</option>
-                    <option>Pepsi</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                  ID Marca (opcional)
+                </label>
+                <Input 
+                  type="number" 
+                  value={idMarca} 
+                  onChange={(e) => setIdMarca(e.target.value)} 
+                  placeholder="ID de marca"
+                  className='dark:bg-neutral-700'
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <Input
-                  label="Precio de compra"
-                  type="number"
-                  value={precioCompra}
-                  onChange={(e) => setPrecioCompra(e.target.value)}
-                  placeholder="$0,00"
-                  className='dark:bg-neutral-700'
-                />
-                <Input
-                  label="Precio al público"
-                  type="number"
-                  value={precioPublico}
-                  onChange={(e) => setPrecioPublico(e.target.value)}
-                  placeholder="$0,00"
-                  className='dark:bg-neutral-700'
-                />
+                <div>
+                  <Input 
+                    type="number" 
+                    value={precio} 
+                    onChange={(e) => setPrecio(e.target.value)} 
+                    placeholder="Precio"
+                    className='dark:bg-neutral-700'
+                    step="0.01"
+                  />
+                  {errors.precio && <p className="text-xs text-red-600 mt-1">{errors.precio}</p>}
+                </div>
+
+                <div>
+                  <Input 
+                    type="number" 
+                    value={stock} 
+                    onChange={(e) => setStock(e.target.value)} 
+                    placeholder="Stock inicial"
+                    className='dark:bg-neutral-700'
+                  />
+                  {errors.stock && <p className="text-xs text-red-600 mt-1">{errors.stock}</p>}
+                </div>
               </div>
 
               <div className="flex gap-4 mt-4">
-                <Button
-                  type="submit"
-                  className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white"
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white" 
+                  disabled={isSaving}
                 >
-                  Siguiente
+                  {isSaving ? 'Guardando...' : 'Guardar'}
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1 border-neutral-300 dark:border-gray-600 text-gray-900 dark:text-white dark:"
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="flex-1 border-neutral-300 dark:border-gray-600 text-gray-900 dark:text-white" 
                   onClick={() => router.back()}
                 >
                   Volver
                 </Button>
               </div>
+
+              {errors.general && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
+                  <p className="text-sm text-red-600 dark:text-red-400">{errors.general}</p>
+                </div>
+              )}
             </form>
 
-            {/* PREVIEW / UPLOAD */}
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-full h-56 bg-neutral-100 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden flex items-center justify-center">
-                {/* uso <img> para blob URLs y evitar problemas de next/image */}
-                <img
-                  src={imagenPreview}
-                  alt="Preview"
-                  className="max-h-full max-w-full object-contain"
-                />
-              </div>
-
-              <div className="flex w-full gap-3">
-                <label className="flex-1">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageChange}
-                  />
-                  <Button asChild variant="outline" className="w-full">
-                    <span className="flex items-center justify-center gap-2 px-4 py-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-current">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h.582M20 20v-6h-.581M4 10V4h6M20 14v6h-6" />
-                      </svg>
-                      Subir imagen
-                    </span>
-                  </Button>
-                </label>
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="px-4 py-2"
-                  onClick={() => {
-
-                    if (blobUrl) {
-                      URL.revokeObjectURL(blobUrl)
-                      setBlobUrl(null)
-                    }
-                    setImagenPreview('/milka.png')
-                  }}
-                >
-                  Reset
-                </Button>
-              </div>
-
-              <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 text-center">
-
-              </p>
-            </div>
+            <SubirImagen 
+              imagenPreview={imagenPreview} 
+              setImagenPreview={setImagenPreview} 
+              onImagenSubida={handleImagenSubida} 
+            />
           </div>
         </div>
       </div>

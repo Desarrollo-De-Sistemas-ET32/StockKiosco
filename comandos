@@ -12,6 +12,7 @@ npm install tailwind-merge
 npm install @radix-ui/react-navigation-menu lucide-react
 npm install @radix-ui/react-avatar @radix-ui/react-menubar @radix-ui/react-separator
 npm install react-icons@latest
+npm install @radix-ui/react-avatar @radix-ui/react-menubar @radix-ui/react-separator
 
 npm install @supabase/supabase-js
 npm install zod
@@ -21,7 +22,7 @@ npm install @prisma/client
 
 npx prisma generate
 
-npm install @radix-ui/react-avatar @radix-ui/react-menubar @radix-ui/react-separator
+
 
 
 npm run dev

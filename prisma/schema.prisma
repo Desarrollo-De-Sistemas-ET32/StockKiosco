@@ -60,6 +60,7 @@ model productos {
   fecha_creacion      DateTime         @default(now())
   fecha_actualizacion DateTime
   id_marca            Int?
+  images              String?
   detalles_venta      detalles_venta[]
   marcas              marcas?          @relation(fields: [id_marca], references: [id_marca])
   proveedores         proveedores      @relation(fields: [id_proveedor], references: [id_proveedor])
