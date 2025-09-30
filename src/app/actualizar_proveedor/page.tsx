@@ -25,8 +25,8 @@ export default function ActualizarProveedorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#212529] flex items-center justify-center p-4">
-      <div className="bg-gray-100 rounded-2xl p-10 w-full max-w-6xl">
+    <div className="min-h-screen bg-var5 dark:bg-[#212529] flex items-center justify-center p-4">
+      <div className="bg-gray-100 rounded-2xl p-10 w-full max-w-6xl dark:bg-var1">
         <div className="flex flex-col md:flex-row gap-10 items-center">
 
           <div className="flex-1 w-full h-full max-w-md flex flex-col items-start gap-6">
@@ -48,6 +48,7 @@ export default function ActualizarProveedorPage() {
               value={form.nombre}
               onChange={handleChange}
               placeholder="Nombre"
+              className='dark:bg-var2'
             />
             <Input
               label="Email"
@@ -56,6 +57,8 @@ export default function ActualizarProveedorPage() {
               value={form.email}
               onChange={handleChange}
               placeholder="correo@ejemplo.com"
+              className='dark:bg-var2'
+
             />
             <Input
               label="Dirección"
@@ -63,6 +66,7 @@ export default function ActualizarProveedorPage() {
               value={form.direccion}
               onChange={handleChange}
               placeholder="Calle, número, ciudad"
+              className='dark:bg-var2'
             />
             <Input
               label="Contacto"
@@ -70,6 +74,7 @@ export default function ActualizarProveedorPage() {
               value={form.contacto}
               onChange={handleChange}
               placeholder="Persona de contacto"
+              className='dark:bg-var2'
             />
             <Input
               label="Teléfono"
@@ -77,6 +82,7 @@ export default function ActualizarProveedorPage() {
               value={form.telefono}
               onChange={handleChange}
               placeholder="0123456789"
+              className='dark:bg-var2'
             />
 
             <div className="flex gap-4 pt-2">
