@@ -4,11 +4,20 @@
 import { useEffect, useState } from "react";
 import ProductCard from "@/components/cardProduct";
 import handleEdit from "@/components/cardProduct";
+import { NavBar } from "@/components/navBar";
+
+interface Producto {
+  id_producto: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  stock: number;
+}
 
 export default function ProductManagement() {
-  const [productos, setProductos] = useState([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
     const fetchProductos = async () => {
       try {
@@ -17,13 +26,9 @@ export default function ProductManagement() {
           throw new Error("Error al obtener los datos de la API");
         }
         const data = await response.json();
-        setProductos(data.body);
+        setProductos(data.body || []);
       } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("Ocurrió un error desconocido");
-        }
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -43,6 +48,9 @@ export default function ProductManagement() {
 
   return (
     <main className="w-full flex flex-col items-center gap-5">
+       <div className="w-full flex justify-center text-sm text-muted-foreground">
+          <NavBar></NavBar>
+        </div>
       <div className="flex justify-center flex-wrap gap-5">
         {productos.length > 0 ? (
           productos.map((producto) => (
