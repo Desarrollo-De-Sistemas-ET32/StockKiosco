@@ -13,7 +13,7 @@ export default function ListaProveedores() {
   );
 
   return (
-    <div className="flex flex-col items-center gap-4 w-fit mx-auto my-5 font-sans">
+    <div className=" bg-white flex flex-col items-center gap-4 w-fit mx-auto my-5 font-sans">
       {/* Barra de búsqueda + botón */}
       <h1 className="font-semibold"> Lista Proveedores</h1>
       <div className="flex items-center w-[700px] mx-auto gap-4">
@@ -37,7 +37,7 @@ export default function ListaProveedores() {
       {/* Lista de proveedores */}
       <div
         className="h-[80vh] w-[700px] bg-gray-100 overflow-y-auto overflow-x-hidden p-4 rounded-xl
-                   flex flex-col gap-3"
+                   flex flex-col gap-3 dark:bg-var2"
         style={{
           scrollbarWidth: "thin",
           scrollbarColor: "#888 #f1f1f1",
@@ -56,13 +56,13 @@ export default function ListaProveedores() {
       {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 animate-fadeIn">
-          <div className="bg-white p-7 rounded-2xl w-[400px] shadow-xl font-sans animate-slideUp">
-            <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 tracking-wide">
+          <div className="bg-white p-7 rounded-2xl w-[400px] shadow-xl font-sans animate-slideUp dark:bg-var1">
+            <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 tracking-wide dark:text-white">
               Agregar Proveedor
             </h2>
             <form className="flex flex-col gap-4">
               <div className="flex flex-col">
-                <label className="mb-1 text-gray-600 text-xs font-medium">Nombre</label>
+                <label className="mb-1 text-gray-600 text-xs font-medium dark:text-white">Nombre</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
@@ -70,7 +70,7 @@ export default function ListaProveedores() {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-gray-600 text-xs font-medium">Teléfono</label>
+                <label className="mb-1 text-gray-600 text-xs font-medium dark:text-white">Teléfono</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
@@ -78,7 +78,7 @@ export default function ListaProveedores() {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="mb-1 text-gray-600 text-xs font-medium">CUIL</label>
+                <label className="mb-1 text-gray-600 text-xs font-medium dark:text-white">CUIL</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm

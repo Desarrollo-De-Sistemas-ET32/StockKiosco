@@ -3,7 +3,7 @@
 
 
 :root {
-  --background: #ffffff;
+  --background: #000000;
   --foreground: #171717;
   --variant1: #343A40;
   --variant2: #495057;
@@ -99,6 +99,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px); 
 }
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -153,6 +154,7 @@ body {
   'GRAD' 0,
   'opsz' 24
 }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
