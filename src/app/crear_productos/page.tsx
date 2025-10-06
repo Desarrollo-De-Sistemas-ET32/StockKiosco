@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import SubirImagen from '@/components/ui/subirImagen'
+import { NavBar } from '@/components/navBar'
 import { productoService } from '@/app/Service/producto/ProductoService'
 
 export default function CrearProductoPage() {
@@ -77,8 +78,11 @@ export default function CrearProductoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#2F363C] flex items-center justify-center p-6">
-      <div className="w-full max-w-4xl bg-white dark:bg-neutral-800 rounded-2xl shadow-lg overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#2F363C] flex flex-col p-6">
+      <div className="flex items-center justify-center gap-10 py-3 pb-24">
+        <NavBar />
+      </div>
+      <div className="w-full max-w-4xl bg-white dark:bg-neutral-800 rounded-2xl shadow-lg overflow-hidden flex self-center">
         <div className="p-6 md:p-8">
           <h1 className="text-center text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-6">
             CREAR PRODUCTO
