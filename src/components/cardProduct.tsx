@@ -12,9 +12,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
+
 // Define las propiedades que el componente espera recibir
 interface ProductCardProps {
   producto: {
@@ -120,11 +122,11 @@ export default function ProductCard({
     }
 }
   return (
-    <div className="flex flex-col gap-5 bg-var1 p-5 rounded-2xl w-sm lg:w-full">
+    <div className="flex flex-col gap-5 dark:bg-var1 bg-var6 p-5 rounded-2xl w-xs lg:w-full">
       <div className="flex flex-col lg:flex-row justify-between gap-5">
         <div className="flex flex-col gap-5 justify-center items-center lg:items-start">
-          <div className="flex justify-start items-start h-5 gap-5">
-            <p className="text-xl lg:text-2xl">{producto.nombre}</p>
+          <div className="flex flex-wrap justify-start items-start h-5 gap-5">
+            <p className="text-xs lg:text-2xl">{producto.nombre}</p>
             <Badge className={`text-xs rounded-2xl lg:rounded-4xl bg-confirm`}>
               {producto.stock.length > 0 ? "Hay Stock" : "Sin Stock"}
             </Badge>
@@ -132,7 +134,7 @@ export default function ProductCard({
               {producto.categoria ? producto.categoria.nombre : "Sin categoría"}  
             </Badge>
           </div>
-          <div className="grid grid-cols-2 items-center justify-items-center lg:flex lg:flex-row gap-10">
+          <div className="grid grid-cols-3 md:grid-cols-2 items-center justify-items-center lg:flex lg:flex-row gap-10">
             <p className="text-xs lg:text-md">
               {["Precio: " + producto.precio]}
             </p>
@@ -155,11 +157,11 @@ export default function ProductCard({
             {`Còdigo de barras: ` + producto.codigo_barra}
           </p>
         </div>
-        <div className="flex flex-col lg:flex-row gap-5 justify-center items-center">
+        <div className="flex flex-row gap-5 justify-center items-center">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <div className="flex flex-row">
-                <Button className="bg-background hover:bg-background/70">
+                <Button className="dark:bg-background hover:bg-background/70">
                   <BiEdit className="h-5 w-5" />
                 </Button>
               </div>
@@ -177,6 +179,7 @@ export default function ProductCard({
                         id="nombre"
                         onChange={handleInputChange}
                         value={editedProduct.nombre}
+                        label=""
                       />
                     </div>
                     <div className="flex flex-col col-[1/2] gap-1">
@@ -187,6 +190,7 @@ export default function ProductCard({
                         id="codigo_barra"
                         onChange={handleInputChange}
                         value={editedProduct.codigo_barra}
+                        label=""
                       />
                     </div>
                     <div className="flex flex-col col-[1/2] gap-1">
@@ -197,6 +201,7 @@ export default function ProductCard({
                         id="stock"
                         onChange={handleInputChange}
                         value={editedProduct.stock}
+                        label=""
                       />
                     </div>
                     <div className="flex flex-col col-[1/3] gap-1">
@@ -208,6 +213,7 @@ export default function ProductCard({
                         id="precio"
                         onChange={handleInputChange}
                         value={editedProduct.precio}
+                        label=""
                       />
                     </div>
                       <div className="flex flex-col row-1 col-[2/3] gap-1">
@@ -219,6 +225,7 @@ export default function ProductCard({
                         id="categoria"
                         onChange={handleInputChange}
                         value={editedProduct.categoria ? editedProduct.categoria.nombre : ""}
+                        label=""
                       />
                     </div>
                   </div>
@@ -233,7 +240,7 @@ export default function ProductCard({
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <div className="flex flex-row">
-                <Button className="bg-background hover:bg-background/70">
+                <Button className="dark:bg-background hover:bg-background/70">
                   <BiTrash className="h-5 w-5" />
                 </Button>
               </div>

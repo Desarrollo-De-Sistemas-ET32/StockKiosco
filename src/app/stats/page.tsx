@@ -53,7 +53,6 @@ export default function StatsPage() {
       <div className="flex justify-center items-center flex-1 p-4">
         <div className="w-full max-w-7xl bg-[#2F363C] rounded-xl grid grid-rows-[auto_auto] gap-10 p-6 drop-shadow-xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-linear-90 from-white to-black p-[1px] rounded-xl drop-shadow-lg/25">
               <StatCard
                 title="Ingresos Totales"
                 icon={<BiDollar className="size-7 text-white" />}
@@ -62,9 +61,8 @@ export default function StatsPage() {
                 description=""
                 color="bg-linear-90 from-[#34A13B] to-[#009211]"
               />
-            </div>
+            
 
-            <div className="bg-linear-90 from-white to-black p-[1px] rounded-xl drop-shadow-lg/25">
               <StatCard
                 title="Ventas Totales"
                 icon={<BiCartAlt className="size-7 text-white" />}
@@ -73,9 +71,8 @@ export default function StatsPage() {
                 description=""
                 color="bg-linear-90 from-[#FF6A2A] to-[#FF8F20]"
               />
-            </div>
+            
 
-            <div className="bg-linear-90 from-white to-black p-[1px] rounded-xl drop-shadow-lg/25">
               <StatCard
                 title="Productos Vendidos"
                 icon={<BiPackage className="size-7 text-white" />}
@@ -84,9 +81,7 @@ export default function StatsPage() {
                 description=""
                 color="bg-linear-90 from-[#0077FF] to-[#4CCFFF]"
               />
-            </div>
 
-            <div className="bg-linear-90 from-white to-black p-[1px] rounded-xl drop-shadow-lg/25">
               <StatCard
                 title="Inventario total"
                 icon={<BiUser className="size-7 text-white" />}
@@ -95,9 +90,7 @@ export default function StatsPage() {
                 description=""
                 color="bg-linear-90 from-[#212529] to-[#343A40]"
               />
-            </div>
 
-            <div className="bg-linear-90 from-white to-black p-[1px] rounded-xl drop-shadow-lg/25">
               <StatCard
                 title="Inventario total"
                 icon={<BiTrendingUp className="size-7 text-white" />}
@@ -106,9 +99,7 @@ export default function StatsPage() {
                 description=""
                 color="bg-linear-90 from-[#212529] to-[#343A40]"
               />
-            </div>
 
-            <div className="bg-linear-90 from-white to-black p-[1px] rounded-xl drop-shadow-lg/25">
               <StatCard
                 title="Inventario total"
                 icon={<BiTimeFive className="size-7 text-white" />}
@@ -117,22 +108,18 @@ export default function StatsPage() {
                 description=""
                 color="bg-linear-90 from-[#212529] to-[#343A40]"
               />
-            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-           <div className="h-auto min-h-[50vh] bg-linear-90 from-white to-black p-[1px] rounded-xl drop-shadow-lg/25">
-              <div className="w-full bg-linear-90 from-[#212529] to-[#343A40] rounded-xl p-5 flex flex-col">
-                <p className="text-white p-2 font-bold">Productos Más Vendidos</p>
-                <TopCard puesto={1} nombreProducto="Coca Cola 500ml" cantVendidos={145} precio={290} variacion={12} />
-                <TopCard puesto={2} nombreProducto="Sándwich de Jamón" cantVendidos={89} precio={356} variacion={8} />
-                <TopCard puesto={4} nombreProducto="Galletitas Oreo" cantVendidos={65} precio={130} variacion={5} />
-                <TopCard puesto={5} nombreProducto="Agua Mineral" cantVendidos={54} precio={81} variacion={3} />
-                <TopCard puesto={3} nombreProducto="Café Americano" cantVendidos={76} precio={152} variacion={15} />
-              </div>
+            <div className="w-full bg-linear-90 from-[#212529] to-[#343A40] rounded-xl p-5 flex flex-col">
+              <p className="text-white p-2 font-bold">Productos Más Vendidos</p>
+              <TopCard puesto={1} nombreProducto="Coca Cola 500ml" cantVendidos={145} precio={290} variacion={12} />
+              <TopCard puesto={2} nombreProducto="Sándwich de Jamón" cantVendidos={89} precio={356} variacion={8} />
+              <TopCard puesto={4} nombreProducto="Galletitas Oreo" cantVendidos={65} precio={130} variacion={5} />
+              <TopCard puesto={5} nombreProducto="Agua Mineral" cantVendidos={54} precio={81} variacion={3} />
+              <TopCard puesto={3} nombreProducto="Café Americano" cantVendidos={76} precio={152} variacion={15} />
             </div>
 
-            <div className="h-auto min-h-[50vh] bg-linear-90 from-white to-black p-[1px] rounded-xl drop-shadow-lg/25">
               <div className="w-full h-full bg-linear-90 from-[#212529] to-[#343A40] rounded-xl p-4 flex flex-col justify-between">
                 <p className="text-white font-bold p-4">Ingresos Semanales</p>
                 <ChartContainer config={chartConfig}>
@@ -175,7 +162,6 @@ export default function StatsPage() {
                     Mostrando la cantidad de Ingresos en la semana
                   </div>
                 </CardFooter>
-              </div>
             </div>
           </div> 
         </div>
