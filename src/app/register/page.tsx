@@ -1,17 +1,54 @@
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
+'use client'
+
+import React, { useState } from 'react'
+import Image from 'next/image'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { BiEnvelope, BiKey, BiUser } from "react-icons/bi"
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { BiEnvelope, BiKey, BiUser } from 'react-icons/bi'
+import { usuarioService } from '@/app/Service/UsuarioService'
+import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
+  const router = useRouter()
+  const [form, setForm] = useState({ nombre: '', email: '', password: '' })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target
+    setForm((p) => ({ ...p, [id]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+    try {
+      await usuarioService.addUsuario({
+        nombre: form.nombre,
+        email: form.email,
+        password: form.password,
+      })
+
+      // Redirigir después del registro (ajustá la ruta si preferís otra)
+      router.push('/login')
+    } catch (err: any) {
+      console.error('Error en registro:', err)
+      const msg = err?.response?.data?.message || err?.message || 'Error registrando usuario'
+      setError(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <main className="flex h-screen items-center justify-center bg-blend-darken">
       <Image
@@ -26,17 +63,27 @@ export default function RegisterPage() {
           <CardTitle className="text-3xl text-black dark:text-white cursor-default">REGISTRARSE</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 items-center justify-center flex-wrap">
-          <form id="register-form" className="flex w-full flex-col flex-wrap">
+          {/* Mostrar error sin alterar diseño (pequeño banner dentro del card) */}
+          {error && (
+            <div className="w-full mb-4 px-3 py-2 rounded bg-red-100 text-red-700 text-sm text-center">
+              {error}
+            </div>
+          )}
+
+          <form id="register-form" className="flex w-full flex-col flex-wrap" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-12">
               <div className="grid gap-2">
-                <Label htmlFor="name" className="text-black dark:text-white font-semibold">Nombre Completo</Label>
+                <Label htmlFor="nombre" className="text-black dark:text-white font-semibold">Nombre Completo</Label>
                 <div className="relative">
                   <Input
                     className="h-12 rounded-lg border-none bg-var5 pl-12  dark:text-white dark:bg-var1"
-                    id="name"
+                    id="nombre"
                     type="text"
                     placeholder="John Doe"
                     required
+                    value={form.nombre}
+                    onChange={handleChange}
+                    disabled={loading}
                   />
                   <BiUser
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -53,6 +100,9 @@ export default function RegisterPage() {
                     type="email"
                     placeholder="john_doe@example.com"
                     required
+                    value={form.email}
+                    onChange={handleChange}
+                    disabled={loading}
                   />
                   <BiEnvelope
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -69,6 +119,9 @@ export default function RegisterPage() {
                     type="password"
                     placeholder="••••••••"
                     required
+                    value={form.password}
+                    onChange={handleChange}
+                    disabled={loading}
                   />
                   <BiKey
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -84,8 +137,9 @@ export default function RegisterPage() {
             form="register-form"
             type="submit"
             className="h-12 w-3/4 cursor-pointer bg-white text-black dark:text-var4 font-semibold transition-colors border border-transparent hover:border-white hover:text-white duration:350 hover:border-1 ease-in-out dark:bg-var1"
+            disabled={loading}
           >
-            Registrarse
+            {loading ? 'Registrando...' : 'Registrarse'}
           </Button>
         </CardFooter>
       </Card>
