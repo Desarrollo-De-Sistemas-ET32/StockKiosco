@@ -43,7 +43,7 @@ export default function ProductManagement() {
     return (
       <main className="w-full h-full flex flex-col justify-center items-center gap-[19rem]">
         <NavBar></NavBar>
-        <div className="flex justify-center items-center flex-col bg-var7 dark:bg-var2 rounded-md p-5 gap-5">
+        <div className="flex justify-center items-center flex-col bg-var6 dark:bg-var2 rounded-md p-5 gap-5">
           <p>Cargando Productos</p>
           <Spinner className="size-10"></Spinner>
         </div>

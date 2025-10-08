@@ -46,8 +46,8 @@ export default function Menu() {
 
   
   return (
-    <main className="flex justify-start items-center h-screen flex-col p-4 gap-15">
-      <div className="w-full flex justify-center text-sm text-muted-foreground">
+    <main className="flex items-center flex-col gap-15">
+      <div className="w-screen flex justify-center text-sm text-muted-foreground">
         <NavBar></NavBar>
       </div>
       <div className="max-h-fit w-fit xl:w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 justify-items-center">
@@ -81,7 +81,7 @@ export default function Menu() {
         />
       </div>
       <div className="w-full flex flex-col xl:flex-row gap-5 justify-center items-start">
-        <div className="w-full h-fit bg-var7 dark:bg-var2 p-5 rounded-2xl">
+        <div className="w-full h-fit bg-var6 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-row justify-between items-center mb-5">
             <div className="flex flex-col justify-start items-start gap-1">
               <div className="flex justify-center items-center gap-5">
@@ -125,7 +125,7 @@ export default function Menu() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-full xl:w-2/4 h-fit bg-var7 dark:bg-var2 p-5 rounded-2xl">
+        <div className="flex flex-col w-full xl:w-2/4 h-fit bg-var6 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-col justify-start mb-5 gap-1">
             <p className="flex justify-start items-center text-2xl gap-5">
               <BiCart className="text-confirm size-7" />
@@ -178,7 +178,7 @@ export default function Menu() {
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col bg-var7 dark:bg-var2 rounded-2xl p-4">
+      <div className="w-full flex flex-col bg-var6 dark:bg-var2 rounded-2xl p-4">
         <div className="flex flex-col justify-center items-start">
           <p className="text-2xl text-center justify-center items-center flex gap-5">
             <BiMedal className="text-random size-7" />
@@ -186,11 +186,11 @@ export default function Menu() {
           </p>
         </div>
         <div className="grid grid-cols-1 justify-items-center gap-5 mt-5 sm:grid-cols-2">
-          <Button className="bg-var6 dark:bg-var1 w-full h-fit text-xl text-foreground">
+          <Button className="bg-var5 dark:bg-var1 w-full h-fit text-xl text-foreground">
             <BiPlus className="size-7" />
             Nuevo Producto
           </Button>
-          <Button className="bg-var6 dark:bg-var1 w-full h-fit text-xl text-foreground">
+          <Button className="bg-var5 dark:bg-var1 w-full h-fit text-xl text-foreground">
             <BiCart className="size-7" />
             Nueva Venta
           </Button>
