@@ -1,57 +1,53 @@
-
+// src/app/api/usuario/agregarUsuario/route.ts
 import { NextResponse } from "next/server";
-import { crearUsuarioSchema } from "@/schemas/usuario_scheme";
-import { createUsuario } from "@/actions/addUsuario";
+import bcrypt from "bcryptjs";
+import db from "@/lib/db";
+
+const FRONTEND_ORIGIN = "http://localhost:3000";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": FRONTEND_ORIGIN,
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: corsHeaders });
+}
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    // validar con Zod (si tu schema incluye telefono/direccion, la validación pasará)
-    const parsed = crearUsuarioSchema.parse(body);
+    const name = body.name ?? body.nombre;
+    const email = body.email;
+    const password = body.password;
 
-    const finalName =
-      (parsed.name && String(parsed.name).trim()) ||
-      (parsed.nombre && String(parsed.nombre).trim()) ||
-      "";
-
-    if (!finalName) {
-      return NextResponse.json({ error: "Se requiere el nombre del usuario." }, { status: 400 });
+    if (!name || !email || !password) {
+      return NextResponse.json({ error: "Faltan campos obligatorios" }, { status: 400, headers: corsHeaders });
     }
 
-    const result = await createUsuario({
-      name: finalName,
-      email: parsed.email,
-      password: parsed.password,
-      telefono: parsed.telefono,
-      direccion: parsed.direccion,
-      usuarios_roles: parsed.usuarios_roles,
-      fecha_creacion: new Date(),
-      fecha_actualizacion: new Date(),
+    // Verificar email único
+    const existe = await db.usuarios.findUnique({ where: { email }, select: { id_usuario: true } });
+    if (existe) {
+      return NextResponse.json({ error: "El email ya está registrado" }, { status: 409, headers: corsHeaders });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const usuario = await db.usuarios.create({
+      data: {
+        name,
+        email,
+        password: hashed,
+        fecha_creacion: new Date(),
+        fecha_actualizacion: new Date(),
+      }
     });
 
-    if ((result as any).error) {
-      const status = (result as any).error.includes("registrado") ? 409 : 400;
-      return NextResponse.json({ error: (result as any).error }, { status });
-    }
+    const safeUser = { id_usuario: usuario.id_usuario, name: usuario.name, email: usuario.email };
 
-    // Si hubo campos ignorados, devolvemos ese dato para que sepas qué no se guardó
-    if ((result as any).ignored) {
-      return NextResponse.json(
-        { usuario: (result as any).usuario, note: "Campos no guardados", ignored: (result as any).ignored },
-        { status: 201 }
-      );
-    }
-
-    return NextResponse.json((result as any).usuario, { status: 201 });
-  } catch (error: any) {
-    if (error?.issues) {
-      return NextResponse.json({ error: error.issues }, { status: 400 });
-    }
-    console.error("addusuario route error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ usuario: safeUser }, { status: 201, headers: corsHeaders });
+  } catch (err: any) {
+    console.error("Error en agregarUsuario:", err);
+    return NextResponse.json({ error: "Error interno" }, { status: 500, headers: corsHeaders });
   }
-}
-
-export async function GET() {
-  return NextResponse.json({ error: "Use POST para crear usuarios." }, { status: 405 });
 }
