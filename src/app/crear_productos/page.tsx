@@ -78,11 +78,11 @@ export default function CrearProductoPage() {
   }
 
   return (
-    <div className="min-h-screen min-w-0.5 bg-gray-50 dark:bg-[#2F363C] flex flex-col p-6">
+    <main className="min-h-screen min-w-0.5 bg-gray-50 dark:bg-neutral-800 flex flex-col p-6">
       <div className="flex items-center justify-center gap-10 py-3 pb-24">
         <NavBar />
       </div>
-      <div className="w-full max-w-4xl bg-white dark:bg-neutral-800 rounded-2xl shadow-lg overflow-hidden flex self-center">
+      <div className="w-full max-w-4xl bg-white dark:bg-var1 rounded-2xl shadow-lg overflow-hidden flex self-center">
         <div className="p-6 md:p-8">
           <h1 className="text-center text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-6">
             CREAR PRODUCTO
@@ -95,7 +95,7 @@ export default function CrearProductoPage() {
                   value={nombre} 
                   onChange={(e) => setNombre(e.target.value)} 
                   placeholder="Nombre del producto"
-                  className='dark:bg-neutral-700'
+                  className='dark:bg-var2'
                 />
                 {errors.nombre && <p className="text-xs text-red-600 mt-1">{errors.nombre}</p>}
               </div>
@@ -105,7 +105,7 @@ export default function CrearProductoPage() {
                   value={codigoBarras} 
                   onChange={(e) => setCodigoBarras(e.target.value)} 
                   placeholder="Código de barras"
-                  className='dark:bg-neutral-700'
+                  className='dark:bg-var2'
                 />
                 {errors.codigo_barra && <p className="text-xs text-red-600 mt-1">{errors.codigo_barra}</p>}
               </div>
@@ -115,7 +115,7 @@ export default function CrearProductoPage() {
                 value={vencimiento} 
                 onChange={(e) => setVencimiento(e.target.value)}
                 placeholder="Fecha de vencimiento"
-                className='dark:bg-neutral-700'
+                className='dark:bg-var2'
               />
 
               <div>
@@ -125,7 +125,7 @@ export default function CrearProductoPage() {
                 <select 
                   value={categoria} 
                   onChange={(e) => setCategoria(e.target.value)} 
-                  className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:bg-neutral-700 dark:border-gray-600 dark:text-white"
+                  className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:bg-var2 dark:border-gray-600 dark:text-white"
                 >
                   <option value="">Seleccionar</option>
                   <option value="golosinas">Golosinas</option>
@@ -144,7 +144,7 @@ export default function CrearProductoPage() {
                   value={idMarca} 
                   onChange={(e) => setIdMarca(e.target.value)} 
                   placeholder="ID de marca"
-                  className='dark:bg-neutral-700'
+                  className='dark:bg-var2'
                 />
               </div>
 
@@ -155,7 +155,7 @@ export default function CrearProductoPage() {
                     value={precio} 
                     onChange={(e) => setPrecio(e.target.value)} 
                     placeholder="Precio"
-                    className='dark:bg-neutral-700'
+                    className='dark:bg-var2'
                     step="0.01"
                   />
                   {errors.precio && <p className="text-xs text-red-600 mt-1">{errors.precio}</p>}
@@ -167,7 +167,7 @@ export default function CrearProductoPage() {
                     value={stock} 
                     onChange={(e) => setStock(e.target.value)} 
                     placeholder="Stock inicial"
-                    className='dark:bg-neutral-700'
+                    className='dark:bg-var2'
                   />
                   {errors.stock && <p className="text-xs text-red-600 mt-1">{errors.stock}</p>}
                 </div>
@@ -184,7 +184,7 @@ export default function CrearProductoPage() {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="flex-1 border-neutral-300 dark:border-gray-600 text-gray-900 dark:text-white bg-var6 dark:bg-var2 rounded-lg transition-colors dark:hover:bg-var1 hover:bg-var4" 
+                  className="flex-1 border-neutral-300 dark:border-gray-600 text-gray-900 dark:text-white bg-var6 dark:bg-var3 rounded-lg transition-colors dark:hover:bg-var2 hover:bg-var4" 
                   onClick={() => router.back()}
                 >
                   Volver
@@ -206,6 +206,6 @@ export default function CrearProductoPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

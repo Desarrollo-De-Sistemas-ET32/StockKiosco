@@ -101,7 +101,7 @@ export default function SubirImagen({
       </div>
 
       <div className="flex w-full gap-3">
-        <label className="flex-1 dark:bg-var3 rounded-lg transition-colors dark:hover:bg-var1 bg-var6 hover:bg-var4">
+        <label className="flex-1 dark:bg-var3 rounded-lg transition-colors dark:hover:bg-var2 bg-var6 hover:bg-var4">
           <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} disabled={isUploading} />
           <Button asChild variant="outline" className="w-full" disabled={isUploading}>
             <span className="flex items-center justify-center gap-2 px-4 py-2">
@@ -116,7 +116,7 @@ export default function SubirImagen({
         <Button 
           type="button" 
           variant="ghost" 
-          className="px-4 py-2 dark:bg-var3 rounded-lg transition-colors dark:hover:bg-var1 bg-var6 hover:bg-var4" 
+          className="px-4 py-2 dark:bg-var3 rounded-lg transition-colors dark:hover:bg-var2 bg-var6 hover:bg-var4" 
           onClick={handleReset} 
           disabled={isUploading}
         >

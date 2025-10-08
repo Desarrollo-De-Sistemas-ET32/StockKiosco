@@ -3,6 +3,7 @@
 import { useState, FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { NavBar } from "@/components/navBar";
 
 export default function EditarProductoPage() {
   const [nombre, setNombre] = useState("");
@@ -55,7 +56,10 @@ export default function EditarProductoPage() {
 
   return (
     <body>
-    <div className="min-h-screen bg-gray-50 dark:bg-[#2F363C] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#2F363C] flex flex-col items-center justify-center p-4">
+      <div className="w-full flex items-center justify-center gap-10 py-3">
+        <NavBar />
+      </div>
       <div className="bg-white dark:bg-var2 rounded-2xl p-8 w-full max-w-3xl flex flex-col drop-shadow-2xl/10">
         <h1 className="text-center text-4xl font-bold mb-8 text-black dark:text-white">
           CREAR DESCUENTO

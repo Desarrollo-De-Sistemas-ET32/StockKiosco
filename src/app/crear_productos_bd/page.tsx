@@ -64,11 +64,11 @@ export default function CrearProductoPage() {
   }
   
   return (
-    <body className="min-h-screen bg-gray-50 dark:bg-[#2F363C] flex flex-col items-center p-6 gap-10">
-       <div className=" w-full flex items-center justify-center gap-10 py-3">
+    <main className="min-h-screen bg-gray-50 dark:bg-neutral-800 flex flex-col items-center p-6 gap-10">
+       <div className=" w-full flex items-center justify-center gap-10 py-3 pb-24">
           <NavBar />
         </div>
-      <div className="w-full max-w-4xl bg-var7 dark:bg-var2 rounded-2xl shadow-lg overflow-hidden">
+      <div className="w-full max-w-4xl bg-var7 dark:bg-var1 rounded-2xl shadow-lg overflow-hidden">
         <div className="p-6 md:p-8">
           <h1 className="text-center text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-6">
             CREAR PRODUCTO
@@ -80,21 +80,21 @@ export default function CrearProductoPage() {
               value={nombre} 
               onChange={(e) => setNombre(e.target.value)} 
               placeholder="Nombre del producto"
-              className='dark:bg-var1' 
+              className='dark:bg-var2' 
               />
 
               <Input 
               value={codigoBarras} 
               onChange={(e) => setCodigoBarras(e.target.value)} 
               placeholder="Código de barras (no se guarda aún)" 
-              className='dark:bg-var1'
+              className='dark:bg-var2'
               />
 
               <Input 
               type="date" 
               value={vencimiento} 
               onChange={(e) => setVencimiento(e.target.value)} 
-              className='dark:bg-var1'
+              className='dark:bg-var2'
               />
 
               <div>
@@ -104,7 +104,7 @@ export default function CrearProductoPage() {
                 <select 
                 value={marca} 
                 onChange={(e) => setMarca(e.target.value)} 
-                className="dark:bg-var1 block w-full rounded-md border px-3 py-2 text-sm"
+                className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:bg-var2 dark:border-gray-600 dark:text-white"
                 >
                   <option>Seleccionar</option>
                   <option>Milka</option>
@@ -118,14 +118,14 @@ export default function CrearProductoPage() {
                 value={precioCompra} 
                 onChange={(e) => setPrecioCompra(e.target.value)} 
                 placeholder="$0,00 (no se guarda aún)"
-                className='dark:bg-var1'
+                className='dark:bg-var2'
                 />
 
                 <Input type="number" 
                 value={precioPublico} 
                 onChange={(e) => setPrecioPublico(e.target.value)} 
                 placeholder="$0,00 (no se guarda aún)"
-                className='dark:bg-var1'
+                className='dark:bg-var2'
                 />
               </div>
 
@@ -136,7 +136,7 @@ export default function CrearProductoPage() {
                 <Button 
                 type="button" 
                 variant="outline" 
-                className="flex-1 bg-var5 hover:bg-var4 dark:bg-var3 dark:hover:bg-var1" 
+                className="flex-1 bg-var5 hover:bg-var4 dark:bg-var3 dark:hover:bg-var2" 
                 onClick={() => window.history.back()}>
                   Volver
                 </Button>
@@ -149,6 +149,6 @@ export default function CrearProductoPage() {
           </div>
         </div>
       </div>
-    </body>
+    </main>
   )
 }
