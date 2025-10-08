@@ -30,20 +30,79 @@ export default function Home() {
           </li>
         </ol>
 
-        <div className="flex gap-4 mt-6">
+        <div className="flex gap-4 mt-6 flex-wrap">
+
+
+          {/* Nuevos botones solicitados */}
+          <button
+            onClick={() => router.push("/actualizar_proveedor")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Actualizar proveedor
+          </button>
+
+          <button
+            onClick={() => router.push("/crear_categorias")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Crear categorías
+          </button>
+
+          <button
+            onClick={() => router.push("/crear_proveedor")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Crear proveedor
+          </button>
+
           <button
             onClick={() => router.push("/crear_productos")}
             className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
           >
-            Ir a Crear productos
-          </button>
-          <button
-            onClick={() => router.push("/crear_productos_bd")}
-            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
-          >
-            Ir a prueba de imagen
+            Crear productos
           </button>
 
+          <button
+            onClick={() => router.push("/login")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Login
+          </button>
+
+          <button
+            onClick={() => router.push("/logs")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Logs
+          </button>
+
+          <button
+            onClick={() => router.push("/productManagement")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Product Management
+          </button>
+
+          <button
+            onClick={() => router.push("/register")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Register
+          </button>
+
+          <button
+            onClick={() => router.push("/stats")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Stats
+          </button>
+
+          <button
+            onClick={() => router.push("/ventas")}
+            className="px-6 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Ventas
+          </button>
         </div>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">

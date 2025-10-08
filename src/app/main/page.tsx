@@ -186,11 +186,11 @@ export default function Menu() {
           </p>
         </div>
         <div className="grid grid-cols-1 justify-items-center gap-5 mt-5 sm:grid-cols-2">
-          <Button className="bg-var6 dark:bg-var1 w-full h-fit text-xl">
+          <Button className="bg-var6 dark:bg-var1 w-full h-fit text-xl text-foreground">
             <BiPlus className="size-7" />
             Nuevo Producto
           </Button>
-          <Button className="bg-var6 dark:bg-var1 w-full h-fit text-xl">
+          <Button className="bg-var6 dark:bg-var1 w-full h-fit text-xl text-foreground">
             <BiCart className="size-7" />
             Nueva Venta
           </Button>
