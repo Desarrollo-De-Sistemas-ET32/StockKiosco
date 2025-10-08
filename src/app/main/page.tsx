@@ -46,8 +46,8 @@ export default function Menu() {
 
   
   return (
-    <main className="flex items-center flex-col gap-15">
-      <div className="w-screen flex justify-center text-sm text-muted-foreground">
+    <main className="flex items-center flex-col gap-15 my-5 mx-50">
+      <div className="w-full flex justify-center text-sm text-muted-foreground">
         <NavBar></NavBar>
       </div>
       <div className="max-h-fit w-fit xl:w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 justify-items-center">
