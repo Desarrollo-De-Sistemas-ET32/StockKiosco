@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { BiEnvelope, BiKey, BiUser } from 'react-icons/bi'
-import { usuarioService } from '@/app/Service/UsuarioService'
+import { usuarioService } from '@/app/Service/usuario/UsuarioService'
 import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
@@ -50,13 +50,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex h-screen items-center justify-center bg-blend-darken">
-      <Image
+    <main className="flex h-screen items-center justify-center overflow-hidden">
+      <Image  
         src={`/andamoactivo.jpg`}
-        layout="fill"
+        fill
         objectFit="cover"
         alt="Background"
-        className="absolute -z-10 opacity-50"
+        className="absolute opacity-100"
       />
       <Card className="flex flex-col justify-center m-5 w-[28rem] [@media(max-height:550px)]:grow max-w-[50rem] border-none bg-var7 dark:bg-var2 drop-shadow-xl/75 ">
         <CardHeader className="flex items-center justify-center">

@@ -6,7 +6,7 @@ import {
   NavigationMenu,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import { BiHomeAlt, BiBox, BiDetail } from "react-icons/bi";
+import { BiHomeAlt, BiBox, BiDetail, BiCog } from "react-icons/bi";
 import Icono from "./avatarb";
 
 export function NavBar() {
@@ -15,10 +15,10 @@ export function NavBar() {
       <NavigationMenu className="flex p-4 flex-col rounded-lg shadow-md bg-var6 dark:bg-var2 gap-10 items-center w-full sm:w-[15vh] sm:flex-row px-15">
         <Icono src="/PrincessCard.png"></Icono>
         <NavigationMenuLink
-          className="flex justify-center items-center flex-row text-foreground"
+          className="flex justify-center items-center flex-row"
           href="/main"
         >
-          <BiHomeAlt className="size-4 text-foreground" />
+          <BiHomeAlt className="size-4" />
           Página Principal
         </NavigationMenuLink>
         <NavigationMenuLink
@@ -34,6 +34,10 @@ export function NavBar() {
         >
           <BiDetail className="size-4 text-foreground" />
           Registro
+        </NavigationMenuLink>
+        <NavigationMenuLink className="flex justify-center items-center flex-row text-foreground"
+        href="/manage">
+          <BiCog className="size-4 text-foreground"/>Gestión
         </NavigationMenuLink>
       </NavigationMenu>
     </div>

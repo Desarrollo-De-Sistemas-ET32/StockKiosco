@@ -12,7 +12,7 @@ export default function Icono({ src }: { src: string }) {
   return (
     <Menubar className="border-none flex justify-center items-center bg-transparent shadow-none">
       <MenubarMenu>
-        <MenubarTrigger>
+        <MenubarTrigger className="">
             <Avatar>
                 <AvatarImage className="w-full h-full" src={src}></AvatarImage>
             </Avatar>
