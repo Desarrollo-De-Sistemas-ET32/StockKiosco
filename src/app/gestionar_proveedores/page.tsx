@@ -13,10 +13,10 @@ export default function ListaProveedores() {
   );
 
   return (
-    <div className=" bg-white flex flex-col items-center gap-4 w-fit mx-auto my-5 font-sans">
-      {/* Barra de búsqueda + botón */}
-      <h1 className="font-semibold"> Lista Proveedores</h1>
-      <div className="flex items-center w-[700px] mx-auto gap-4">
+    <body className="bg-white dark:bg-var1">
+    <div className="flex flex-col items-center gap-4 w-fit mx-auto my-5 font-sans">
+      <h1 className="font-semibold dark:text-white"> Lista Proveedores</h1>
+      <div className="flex items-center w-[700px] mx-auto gap-4 dark:text-white">
         <input
           type="text"
           placeholder="Buscar proveedor..."
@@ -107,5 +107,6 @@ export default function ListaProveedores() {
         </div>
       )}
     </div>
+    </body>
   );
 }

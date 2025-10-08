@@ -3,7 +3,7 @@
 
 
 :root {
-  --background: #000000;
+  --background: #ffffff;
   --foreground: #171717;
   --variant1: #343A40;
   --variant2: #495057;
@@ -132,34 +132,4 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #212529;
-    --foreground: #F8F9FA;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Inter", sans-serif
-}
-
-.material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
