@@ -3,7 +3,6 @@
 import { useState, FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createDescuento } from "@/actions/addDescuento";
 
 export default function EditarProductoPage() {
   const [nombre, setNombre] = useState("");
@@ -55,9 +54,10 @@ export default function EditarProductoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <div className="bg-gray-100 rounded-2xl p-8 w-full max-w-3xl flex flex-col">
-        <h1 className="text-center text-4xl font-bold mb-8 text-black">
+    <body>
+    <div className="min-h-screen bg-gray-50 dark:bg-[#2F363C] flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-var2 rounded-2xl p-8 w-full max-w-3xl flex flex-col drop-shadow-2xl/10">
+        <h1 className="text-center text-4xl font-bold mb-8 text-black dark:text-white">
           CREAR DESCUENTO
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -67,14 +67,16 @@ export default function EditarProductoPage() {
             onChange={(e) => setNombre(e.target.value)}
             placeholder="Nombre del descuento"
             label="Nombre"
-          />
+            className="dark:bg-var3 "
+            />
           <Input
             size={1}
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
             placeholder="Acerca del descuento"
             label="Descripcion"
-          />
+            className="dark:bg-var3"
+            />
           <Input
             size={1}
             type="number"
@@ -84,6 +86,7 @@ export default function EditarProductoPage() {
             onChange={(e) => setValor(e.target.value)}
             placeholder="Valor del descuento"
             label="Valor"
+            className="dark:bg-var3"
           />
 
           <Input
@@ -92,21 +95,24 @@ export default function EditarProductoPage() {
             value={fecha_inicio}
             onChange={(e) => setFechaInicio(e.target.value)}
             label="Fecha de inicio"
-          />
+            className="dark:bg-var3"
+            />
           <Input
             size={1}
             type="date"
             value={fecha_fin}
             onChange={(e) => setFechaFin(e.target.value)}
             label="Fecha de vencimiento"
-          />
+            className="dark:bg-var3"
+            />
 
-          <label className="text-black font-medium">Tipo</label>
+          <label className="text-black font-medium dark:text-white">Tipo</label>
           <select
-            className="block w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black-400 text-black"
+            className="block w-full rounded-md border border-gray-300 bg-var
+             px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black-400 text-black dark:text-white"
             value={tipo}
             onChange={(e) => setTipo(e.target.value)}
-          >
+            >
             <option value="">Seleccione un tipo</option>
             <option value="PORCENTAJE">Porcentaje</option>
             <option value="MONTOFIJO">Monto Fijo</option>
@@ -115,13 +121,13 @@ export default function EditarProductoPage() {
           <div className="flex gap-4 mt-6">
             <Button
               type="submit"
-              className="flex-1 bg-gradient-to-b from-gray-700 to-gray-500 text-white hover:from-gray-600 hover:to-gray-400"
-            >
+              className="flex-1 dark:bg-var3 hover:bg-var3 hover:text-white dark:hover:bg-var1 dark:text-white bg-var6"
+              >
               Siguiente
             </Button>
             <Button
               variant="outline"
-              className="flex-1"
+              className="flex-1 dark:bg-var3 hover:bg-var3 hover:text-white dark:hover:bg-var1 dark:text-white bg-var6"
               onClick={() => history.back()}
             >
               Volver
@@ -130,5 +136,6 @@ export default function EditarProductoPage() {
         </form>
       </div>
     </div>
-  );
+    </body>
+  )
 }

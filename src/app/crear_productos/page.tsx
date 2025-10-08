@@ -78,7 +78,7 @@ export default function CrearProductoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#2F363C] flex flex-col p-6">
+    <div className="min-h-screen min-w-0.5 bg-gray-50 dark:bg-[#2F363C] flex flex-col p-6">
       <div className="flex items-center justify-center gap-10 py-3 pb-24">
         <NavBar />
       </div>
@@ -184,7 +184,7 @@ export default function CrearProductoPage() {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="flex-1 border-neutral-300 dark:border-gray-600 text-gray-900 dark:text-white" 
+                  className="flex-1 border-neutral-300 dark:border-gray-600 text-gray-900 dark:text-white bg-var6 dark:bg-var2 rounded-lg transition-colors dark:hover:bg-var1 hover:bg-var4" 
                   onClick={() => router.back()}
                 >
                   Volver

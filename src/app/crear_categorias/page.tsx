@@ -27,7 +27,7 @@ export default function CrearCategoria() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-var1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="bg-white dark:bg-var2 rounded-2xl shadow-2xl p-8 sm:p-10 w-full max-w-md sm:max-w-lg">
+      <div className="bg-white dark:bg-var2 rounded-2xl drop-shadow-2xl/25 p-8 sm:p-10 w-full max-w-md sm:max-w-lg">
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold mb-1">Crear</h1>
           <h2 className="text-2xl sm:text-3xl font-bold mb-6">categoría</h2>
@@ -38,7 +38,7 @@ export default function CrearCategoria() {
             type="text"
             value={nombre}
             onChange={e => setNombre(e.target.value)}
-            className='dark:bg-var3'
+            className='dark:bg-var3 border-1'
             
           />
 
@@ -47,7 +47,7 @@ export default function CrearCategoria() {
               type="submit"
               variant="green"
               size="default"
-              className="w-full sm:w-auto mt-4"
+              className="w-full sm:w-auto mt-4 dark:bg-var2 dark:hover:bg-var1"
             >
               Crear
             </Button>
