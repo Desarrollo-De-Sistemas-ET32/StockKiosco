@@ -13,6 +13,7 @@ npm install @radix-ui/react-navigation-menu lucide-react
 npm install @radix-ui/react-avatar @radix-ui/react-menubar @radix-ui/react-separator
 npm install react-icons@latest
 npm install @radix-ui/react-avatar @radix-ui/react-menubar @radix-ui/react-separator
+npm install axios
 
 npm install @supabase/supabase-js
 npm install zod
