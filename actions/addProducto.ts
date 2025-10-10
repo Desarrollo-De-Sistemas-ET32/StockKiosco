@@ -45,6 +45,7 @@ export const createProduct = async (values: CreateProductValues) => {
           create: [
             {
               cantidad: validatedData.stock,
+              cantidad_min: validatedData.stock,
               fecha_actualizacion: validatedData.fecha_actualizacion,
             },
           ],

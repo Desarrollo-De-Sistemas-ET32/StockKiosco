@@ -1,4 +1,3 @@
-
 import { createDescuento } from "@/actions/addDescuento";
 import { NextRequest, NextResponse } from "next/server";
 

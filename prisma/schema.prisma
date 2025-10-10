@@ -92,6 +92,7 @@ model stock {
   id_stock            Int       @id @default(autoincrement())
   id_producto         Int
   cantidad            Int?
+  cantidad_min        Int?
   fecha_actualizacion DateTime
   productos           productos @relation(fields: [id_producto], references: [id_producto])
 }

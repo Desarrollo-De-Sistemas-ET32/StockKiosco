@@ -2,17 +2,17 @@
 import db from "@/lib/db";
 
 type CreateDescuentoValues = {
-    id_descuento: number; // Optional for auto-increment
-    nombre: string; // Required, cannot be empty
-    descripcion: string; // Optional, defaults to empty string
+    id_descuento: number; 
+    nombre: string; 
+    descripcion: string; 
     tipo: "PORCENTAJE" | "MONTOFIJO";
     valor: number;
-    fecha_inicio: Date; // Optional, defaults to now()
-    fecha_fin: Date; // Optional, defaults to null
+    fecha_inicio: Date; 
+    fecha_fin: Date; 
 };
 
 export const createDescuento = async (values: CreateDescuentoValues) => {
-    console.log("Valores recibidos para crear descuento:", values); // Log the received values
+    console.log("Valores recibidos para crear descuento:", values); 
     
     if (!values.nombre || typeof values.nombre !== "string") {
       return { error: "El nombre del descuento es obligatorio." };
@@ -30,7 +30,7 @@ export const createDescuento = async (values: CreateDescuentoValues) => {
         fecha_actualizacion: new Date()
       },
     });
-    console.log("Descuento creado:", descuento); // Log the created discount
+    console.log("Descuento creado:", descuento); 
     return { success: true, descuento };
   } catch (error) {
     console.error("Error al crear un descuento:", error);
