@@ -13,7 +13,7 @@ export function NavBar() {
   return (
     <div className="w-full flex justify-center text-sm text-muted-foreground">
       <NavigationMenu className="flex p-4 flex-col rounded-lg shadow-md bg-var6 dark:bg-var2 gap-10 items-center w-full sm:w-[15vh] sm:flex-row px-15">
-        <Icono src="/PrincessCard.png"></Icono>
+        <Icono />
         <NavigationMenuLink
           className="flex justify-center items-center flex-row"
           href="/main"
