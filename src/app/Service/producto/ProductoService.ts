@@ -6,21 +6,13 @@ export const productoService = {
   // Obtener todos los productos
   getAll: async (): Promise<ProductoWithId[]> => {
     try {
-      const response = await api.get('/productos/leerProductos');
+      const response = await api.get('/producto/leerProducto'); // ruta del backend
       const data = response.data;
 
-      // Normalizar respuesta
-      if (Array.isArray(data)) {
-        return data;
-      }
-
-      if (Array.isArray(data.productos)) {
-        return data.productos;
-      }
-
-      if (data && data.producto && typeof data.producto === 'object') {
-        return [data.producto];
-      }
+      // Normalizar la respuesta
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.products)) return data.products;
+      if (data && data.product && typeof data.product === 'object') return [data.product];
 
       return [];
     } catch (error) {
@@ -50,23 +42,20 @@ export const productoService = {
       return response.data;
     } catch (error: any) {
       console.error('Error creando producto', error);
-      
-      // Si el backend devuelve errores estructurados
       if (error.response?.data?.error) {
         return { error: error.response.data.error };
       }
-      
       throw error;
     }
   },
 
-  // Actualizar producto por id
-  update: async (id: number, data: Partial<ProductoPayload>): Promise<ProductoWithId> => {
+  // Actualizar producto por PATCH
+  updatePatch: async (data: Partial<ProductoPayload> & { id_producto: number }): Promise<any> => {
     try {
-      const response = await api.put<ProductoWithId>(`/productos/${id}`, data);
+      const response = await api.patch('/api/producto/editarProducto', data);
       return response.data;
     } catch (error) {
-      console.error(`Error actualizando producto ${id}`, error);
+      console.error(`Error actualizando producto ${data.id_producto}`, error);
       throw error;
     }
   },
