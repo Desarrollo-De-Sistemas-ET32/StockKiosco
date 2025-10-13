@@ -25,18 +25,18 @@ export default function LogsPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#212529] flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-[#e9edf1] rounded-2xl w-full max-w-5xl p-4 sm:p-6 md:p-8 flex flex-col items-center dark:bg-[#2F363C]">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">
           Última actividad
         </h1>
 
-        <div className="bg-var2 rounded-xl p-3 sm:p-4 w-full">
-          <div className="bg-var3 rounded-lg p-3 sm:p-4 max-h-80 sm:max-h-96 overflow-y-auto space-y-3 sm:space-y-4">
+        <div className="bg-var5 dark:bg-var2 rounded-xl p-3 sm:p-4 w-full">
+          <div className="bg-var4 dark:bg-var3 rounded-lg p-3 sm:p-4 max-h-80 sm:max-h-96 overflow-y-auto space-y-3 sm:space-y-4">
             {logs.map((log, index) => (
               <div
                 key={index}
-                className="bg-var2 text-white rounded-md px-3 sm:px-4 py-2 flex items-start sm:items-center gap-3 sm:gap-4 text-sm sm:text-base"
+                className="bg-var7 dark:bg-var2 text-black dark:text-white rounded-md px-3 sm:px-4 py-2 flex items-start sm:items-center gap-3 sm:gap-4 text-sm sm:text-base"
               >
                 <FaUser className="text-lg sm:text-xl mt-1 sm:mt-0" />
                 <span>

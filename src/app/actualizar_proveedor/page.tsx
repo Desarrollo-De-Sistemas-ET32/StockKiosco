@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { proveedorService } from '@/app/Service/proveedor/ProveedorService'
 import { ProveedorPayload, ProveedorWithId } from '@/app/Service/proveedor/proveedor'
-
+ 
 export default function ActualizarProveedorPage() {
   const router = useRouter()
   const searchParams = useSearchParams()

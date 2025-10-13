@@ -21,7 +21,7 @@ export default function crearProveedor() {
         alt="Background"
         className="absolute -z-10 opacity-50"
       />
-      <Card className="m-5 w-[35rem] border-none bg-var2 xl:h-[35rem]">
+      <Card className="m-5 w-[35rem] border-none bg-var6 dark:bg-var2 xl:h-[35rem]">
         <CardHeader className="flex items-center justify-center">
           <CardTitle className="text-3xl">CREAR PROVEEDOR</CardTitle>
         </CardHeader>
@@ -37,7 +37,7 @@ export default function crearProveedor() {
                     <Label htmlFor="name">Nombre</Label>
                     <div className="relative flex items-center">
                       <Input
-                        className="h-[3rem] rounded-4xl border-none bg-var1 pl-12 w-full"
+                        className="h-[3rem] rounded-4xl border-none bg-var5 dark:bg-var1 pl-12 w-full"
                         id="name"
                         type="text"
                         placeholder="John"
@@ -53,7 +53,7 @@ export default function crearProveedor() {
                     <Label htmlFor="name">Apellido</Label>
                     <div className="relative flex items-center">
                       <Input
-                        className="h-[3rem] rounded-4xl border-none bg-var1 pl-12 w-full"
+                        className="h-[3rem] rounded-4xl border-none bg-var5 dark:bg-var1 pl-12 w-full"
                         id="surname"
                         type="text"
                         placeholder="Doe"
@@ -70,7 +70,7 @@ export default function crearProveedor() {
               <div className="flex flex-col gap-5 w-full">
                 <Label htmlFor="email">Correo electrónico</Label>
                 <Input
-                  className="h-12 rounded-4xl border-none bg-var1 pl-5"
+                  className="h-12 rounded-4xl border-none bg-var5 pl-5 dark:bg-var1"
                   id="email"
                   type="email"
                   placeholder="john_doe@example.com"
@@ -80,7 +80,7 @@ export default function crearProveedor() {
               <div className="flex flex-col gap-5 h-full">
                 <Label htmlFor="text">Dirección de la distribuidora</Label>
                 <Input
-                  className="h-12 rounded-4xl border-none bg-var1 pl-5"
+                  className="h-12 rounded-4xl border-none bg-var5 pl-5 dark:bg-var1"
                   id="address"
                   type="text"
                   placeholder="Corrientes 1234, CABA"
@@ -94,7 +94,7 @@ export default function crearProveedor() {
           <Button
             form="register-form"
             type="submit"
-            className="h-12 w-fit cursor-pointer bg-background px-15 hover:bg-background/80"
+            className="h-12 w-fit cursor-pointer bg-var4 px-15 hover:bg-var1/50 dark:bg-var1"
           >
             Crear Proveedor
           </Button>

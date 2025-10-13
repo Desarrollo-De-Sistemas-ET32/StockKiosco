@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import proveedores from "@/app/data/proveedores.json";
-import CardProveedor from "@/components/card";
+import CardProveedor from "@/components/gestion-card";
 
 export default function ListaProveedores() {
   const [isOpen, setIsOpen] = useState(false);

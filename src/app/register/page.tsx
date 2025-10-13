@@ -95,7 +95,7 @@ export default function RegisterPage() {
                 <Label htmlFor="email" className="text-black dark:text-white font-semibold">Correo electrónico</Label>
                 <div className="relative">
                   <Input
-                    className="h-12 rounded-lg border-none bg-var5 pl-12 text-white dark:bg-var1"
+                    className="h-12 rounded-lg border-none bg-var5 pl-12 dark:text-white dark:bg-var1"
                     id="email"
                     type="email"
                     placeholder="john_doe@example.com"
@@ -114,7 +114,7 @@ export default function RegisterPage() {
                 <Label htmlFor="password" className="text-black dark:text-white font-semibold">Contraseña</Label>
                 <div className="relative">
                   <Input
-                    className="h-12 rounded-lg border-none bg-var5 pl-12 text-white dark:bg-var1"
+                    className="h-12 rounded-lg border-none bg-var5 pl-12 dark:text-white dark:bg-var1"
                     id="password"
                     type="password"
                     placeholder="••••••••"

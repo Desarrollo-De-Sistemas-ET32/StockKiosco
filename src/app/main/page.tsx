@@ -144,35 +144,35 @@ export default function MainPage() {
               precio={productos[0]?.price}
               unidades={1}
             />
-            <Separator className="bg-var6" />
+            <Separator className="dark:bg-var6 bg-var1" />
             <Venta
               nombreProducto={productos[1]?.name}
               horario="15:00"
               precio={productos[1]?.price}
               unidades={13}
             />
-            <Separator className="bg-var6" />
+            <Separator className="dark:bg-var6 bg-var1" />
             <Venta
               nombreProducto={productos[2]?.name}
               horario="15:00"
               precio={productos[2]?.price}
               unidades={15}
             />
-            <Separator className="bg-var6" />
+            <Separator className="dark:bg-var6 bg-var1" />
             <Venta
               nombreProducto={productos[3]?.name}
               horario="15:00"
               precio={productos[3]?.price}
               unidades={5}
             />
-            <Separator className="bg-var6" />
+            <Separator className="dark:bg-var6 bg-var1" />
             <Venta
               nombreProducto={productos[4]?.name}
               horario="15:00"
               precio={productos[4]?.price}
               unidades={3}
             />
-            <Separator className="bg-var6" />
+            <Separator className="dark:bg-var6 bg-var1" />
             <Venta
               nombreProducto={productos[0]?.name}
               horario="15:00"
@@ -191,11 +191,11 @@ export default function MainPage() {
           </p>
         </div>
         <div className="grid grid-cols-1 justify-items-center gap-5 mt-5 sm:grid-cols-2">
-          <Button className="bg-var5 dark:bg-var1 w-full h-fit text-xl text-foreground">
+          <Button className="bg-var5 dark:bg-var1 w-full h-fit text-xl text-foreground hover:bg-var4 dark:hover:bg-var3">
             <BiPlus className="size-7" />
             Nuevo Producto
           </Button>
-          <Button className="bg-var5 dark:bg-var1 w-full h-fit text-xl text-foreground">
+          <Button className="bg-var5 dark:bg-var1 w-full h-fit text-xl text-foreground hover:bg-var4 dark:hover:bg-var3">
             <BiCart className="size-7" />
             Nueva Venta
           </Button>
