@@ -53,7 +53,6 @@ export default function ChequePage() {
             >
               <Button
                 className="absolute top-3 right-3 text-xl text-white"
-                variant="ghost"
                 onClick={() => setShowPopup(false)}
               >
                 

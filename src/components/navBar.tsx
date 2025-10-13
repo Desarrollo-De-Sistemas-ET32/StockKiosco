@@ -15,27 +15,27 @@ export function NavBar() {
       <NavigationMenu className="flex p-4 flex-col rounded-lg shadow-md bg-var6 dark:bg-var2 gap-10 items-center w-full sm:w-[15vh] sm:flex-row px-15">
         <Icono src="/PrincessCard.png"></Icono>
         <NavigationMenuLink
-          className="flex justify-center items-center flex-row"
+          className="flex justify-center items-center flex-row dark:hover:text-shadow-lg/50 dark:text-shadow-var6"
           href="/main"
         >
           <BiHomeAlt className="size-4" />
           Página Principal
         </NavigationMenuLink>
         <NavigationMenuLink
-          className="flex justify-center items-center flex-row text-foreground"
+          className="flex justify-center items-center flex-row text-foreground dark:hover:text-shadow-lg/50 dark:text-shadow-var6"
           href="/inventory"
         >
           <BiBox className="size-4 text-foreground" />
           Inventario
         </NavigationMenuLink>
         <NavigationMenuLink
-          className="flex justify-center items-center flex-row text-foreground"
+          className="flex justify-center items-center flex-row text-foreground dark:hover:text-shadow-lg/50 dark:text-shadow-var6"
           href="/registro"
         >
           <BiDetail className="size-4 text-foreground" />
           Registro
         </NavigationMenuLink>
-        <NavigationMenuLink className="flex justify-center items-center flex-row text-foreground"
+        <NavigationMenuLink className="flex justify-center items-center flex-row text-foreground transition-colors dark:hover:drop-shadow-var6 hover:dark:drop-shadow-lg"
         href="/manage">
           <BiCog className="size-4 text-foreground"/>Gestión
         </NavigationMenuLink>

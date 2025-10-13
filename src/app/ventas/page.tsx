@@ -30,7 +30,7 @@ export default function VentaPage() {
     new Intl.NumberFormat('es-AR').format(value)
 
   return (
-    <div className="bg-[#2F363C] min-h-screen text-white p-4">
+    <div className="bg-[#2F363C] min-h-screen p-4">
       <div className="flex items-center justify-center gap-10 py-3">
           <NavBar />
         </div>
