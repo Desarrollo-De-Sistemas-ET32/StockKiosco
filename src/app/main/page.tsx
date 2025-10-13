@@ -19,7 +19,6 @@ import Venta from "@/components/sale-box";
 import StockBajo from "@/components/product-box";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import RequireAuth from "@/components/requireAuth";
 
 type Producto = {
   name: string;
@@ -31,10 +30,10 @@ type Producto = {
   id: number;
 };
 
-function MenuContent() {
+export default function MainPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
 
-  // Cargar productos (asumiendo que el usuario ya está autenticado gracias a RequireAuth)
+  // Cargar productos — NavBar ya protege la vista
   useEffect(() => {
     fetch("/productos.json")
       .then((res) => res.json())
@@ -48,6 +47,7 @@ function MenuContent() {
   return (
     <main className="flex items-center flex-col gap-15 my-5 mx-50">
       <div className="w-full flex justify-center text-sm text-muted-foreground">
+        {/* NavBar ya protege: trae RequireAuth internamente */}
         <NavBar />
       </div>
 
@@ -202,13 +202,5 @@ function MenuContent() {
         </div>
       </div>
     </main>
-  );
-}
-
-export default function MainPage() {
-  return (
-    <RequireAuth>
-      <MenuContent />
-    </RequireAuth>
   );
 }

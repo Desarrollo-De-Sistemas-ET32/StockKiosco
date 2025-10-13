@@ -5,10 +5,6 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   children: React.ReactNode;
-  /**
-   * Si querés validar token además de user, poné true y pasá tu verificación en checkToken()
-   * (la versión simple solo comprueba existencia de `user` en localStorage).
-   */
   validateToken?: boolean;
 };
 
