@@ -1,29 +1,54 @@
-import React from "react"
+// components/loginInput.tsx
+import React from "react";
 
-interface LoginInputProps{
-    label: string,
-    icon: React.ReactNode,
-    type: string,
-    id: string,
-    placeholder: string
-}
+type Props = {
+  id: string;
+  label?: string;
+  placeholder?: string;
+  type?: string;
+  icon?: React.ReactNode;
+  value?: string;
+  disabled?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+};
 
+const LoginInput: React.FC<Props> = ({
+  id,
+  label,
+  placeholder,
+  type = "text",
+  icon,
+  value,
+  disabled = false,
+  onChange,
+  className = "",
+}) => {
+  return (
+    <div className={`w-full ${className}`}>
+      {label && (
+        <label htmlFor={id} className="block mb-1 text-sm font-medium text-muted-foreground">
+          {label}
+        </label>
+      )}
 
-export default function LoginInput({label, icon, type, id, placeholder}: LoginInputProps) {
-    return (
-        <div>
-            <label htmlFor="username" className="block mb-1 text-sm font-medium text-black dark:text-white">{label}</label>
-            <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none bg-foreground p-1 rounded-4xl">
-                    {icon}
-                </div>
-                <input
-                    type={type}
-                    id={id}
-                    className="w-full h-[3rem] bg-var5 dark:bg-var1 pl-12 pr-10 py-2 outline-0 focus:outline-2 dark:focus:outline-foreground rounded-4xl text-var3 dark:text-var3"
-                    placeholder={placeholder}
-                />
-            </div>
-        </div>
-    )
-}
+      <div className="relative">
+        {icon && <span className="absolute left-3 top-1/2 -translate-y-1/2">{icon}</span>}
+
+        <input
+          id={id}
+          name={id} 
+          type={type}
+          placeholder={placeholder}
+          value={value ?? ""}
+          disabled={disabled}
+          onChange={onChange}
+          className="w-full h-12 pl-12 pr-3 rounded-lg border-none bg-var5 dark:bg-var1 text-sm"
+          aria-label={label ?? id}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default LoginInput;

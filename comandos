@@ -21,7 +21,6 @@ npm install axios
 
 npm install prisma --save-dev
 npm install @prisma/client
-
 npx prisma generate
 
 npm run dev
