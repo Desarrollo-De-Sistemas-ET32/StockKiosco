@@ -1,3 +1,4 @@
+// src/app/main/page.tsx
 "use client";
 
 import {
@@ -18,7 +19,7 @@ import Venta from "@/components/sale-box";
 import StockBajo from "@/components/product-box";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import { useRouter } from "next/navigation";
+import RequireAuth from "@/components/requireAuth";
 
 type Producto = {
   name: string;
@@ -30,36 +31,11 @@ type Producto = {
   id: number;
 };
 
-export default function Menu() {
-  const router = useRouter();
+function MenuContent() {
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [checkingSession, setCheckingSession] = useState(true);
 
-  // Hook 1: Verificar sesión
+  // Cargar productos (asumiendo que el usuario ya está autenticado gracias a RequireAuth)
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("user");
-      if (!raw) {
-        router.replace("/login");
-        return;
-      }
-
-      const user = JSON.parse(raw);
-      if (!user || (!user.name && !user.nombre && !user.email)) {
-        router.replace("/login");
-        return;
-      }
-
-      setCheckingSession(false); // todo ok
-    } catch (err) {
-      console.error("Error comprobando sesión:", err);
-      router.replace("/login");
-    }
-  }, [router]);
-
-  // Hook 2: Cargar productos (solo si hay sesión)
-  useEffect(() => {
-    if (checkingSession) return;
     fetch("/productos.json")
       .then((res) => res.json())
       .then((data) => setProductos(data))
@@ -67,22 +43,14 @@ export default function Menu() {
         console.warn("No se pudieron cargar productos de prueba:", err);
         setProductos([]);
       });
-  }, [checkingSession]);
-
-  // Si aún está verificando sesión, mostramos un loader temporal
-  if (checkingSession) {
-    return (
-      <div className="w-full h-screen flex justify-center items-center text-xl">
-        Verificando sesión...
-      </div>
-    );
-  }
+  }, []);
 
   return (
     <main className="flex items-center flex-col gap-15 my-5 mx-50">
       <div className="w-full flex justify-center text-sm text-muted-foreground">
         <NavBar />
       </div>
+
       <div className="max-h-fit w-fit xl:w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 justify-items-center">
         <InfoCard
           title="Inventario total"
@@ -113,6 +81,7 @@ export default function Menu() {
           description="Productos"
         />
       </div>
+
       <div className="w-full flex flex-col xl:flex-row gap-5 justify-center items-start">
         <div className="w-full h-fit bg-var6 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-row justify-between items-center mb-5">
@@ -132,6 +101,7 @@ export default function Menu() {
               Ver todo
             </Button>
           </div>
+
           <div className="w-full h-fit gap-5 flex flex-col flex-wrap">
             <div className="max-h-fit flex flex-col gap-5">
               <StockBajo
@@ -157,6 +127,7 @@ export default function Menu() {
             </div>
           </div>
         </div>
+
         <div className="flex flex-col w-full xl:w-2/4 h-fit bg-var6 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-col justify-start mb-5 gap-1">
             <p className="flex justify-start items-center text-2xl gap-5">
@@ -165,6 +136,7 @@ export default function Menu() {
             </p>
             <p className="text-sm">Últimas transacciones del día</p>
           </div>
+
           <div className="w-full h-full gap-5 flex flex-col">
             <Venta
               nombreProducto={productos[0]?.name}
@@ -210,6 +182,7 @@ export default function Menu() {
           </div>
         </div>
       </div>
+
       <div className="w-full flex flex-col bg-var6 dark:bg-var2 rounded-2xl p-4">
         <div className="flex flex-col justify-center items-start">
           <p className="text-2xl text-center justify-center items-center flex gap-5">
@@ -229,5 +202,13 @@ export default function Menu() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function MainPage() {
+  return (
+    <RequireAuth>
+      <MenuContent />
+    </RequireAuth>
   );
 }
