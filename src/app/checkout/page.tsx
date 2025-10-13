@@ -9,7 +9,7 @@ export default function ChequePage() {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
-    <main className="h-screen bg-var7 dark:bg-neutral-800 flex flex-col">
+    <main className="h-screen flex flex-col mx-25">
       <div className="flex items-center justify-center gap-10 py-3">
         <NavBar />
       </div>
@@ -21,7 +21,7 @@ export default function ChequePage() {
           </h1>
 
           <Button
-            className="w-xl h-16 text-xl font-medium dark:bg-var1 dark:hover:bg-neutral-900 dark:text-white bg-var6 hover:bg-var3 hover:text-white"
+            className="w-xs h-16 text-xl font-medium dark:bg-var1 dark:hover:bg-neutral-900 dark:text-white bg-var6 hover:bg-var3 hover:text-white"
             onClick={() => setShowPopup(true)}
           >
             Agregar Productos
@@ -53,7 +53,6 @@ export default function ChequePage() {
             >
               <Button
                 className="absolute top-3 right-3 text-xl text-white"
-                variant="ghost"
                 onClick={() => setShowPopup(false)}
               >
                 
