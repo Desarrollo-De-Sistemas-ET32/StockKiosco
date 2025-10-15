@@ -23,7 +23,6 @@ export const readProductos = async () => {
         proveedores: true,
         categoria: true,
         stock: true,
-        detalles_venta: true,
       },
       orderBy: { id_producto: 'asc' },
     })

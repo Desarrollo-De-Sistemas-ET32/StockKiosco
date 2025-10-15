@@ -1,4 +1,4 @@
-'use server';
+"use server";
 import db from "@/lib/db";
 import { updateProductSchema } from "@/schemas/producto_scheme";
 import { z } from "zod";
@@ -41,7 +41,10 @@ export const updateProduct = async (values: unknown) => {
         where: { nombre: validatedData.categoria.toLowerCase() },
       });
       if (!categoriaRecord) {
-        return { success: false, message: `La categoría "${validatedData.categoria}" no existe` };
+        return {
+          success: false,
+          message: `La categoría "${validatedData.categoria}" no existe`,
+        };
       }
       updateData.id_categoria = categoriaRecord.id_categoria;
     }
@@ -81,16 +84,23 @@ export const updateProduct = async (values: unknown) => {
 
     const updatedProduct = await db.productos.findUnique({
       where: { id_producto: validatedData.id_producto },
-      include: { stock: true },
+      include: {
+        stock: true,
+        marcas: true,     // nombre correcto según tu schema
+        categoria: true,  // ya está correcto
+      },
     });
-
-    return { success: true, message: "Producto actualizado correctamente", product: bigintToString(updatedProduct) };
+    return {
+      success: true,
+      message: "Producto actualizado correctamente",
+      product: bigintToString(updatedProduct),
+    };
   } catch (err: any) {
     if (err instanceof z.ZodError) {
       return {
         success: false,
         message: "Error de validación en los datos enviados",
-        errors: err.errors.map(e => ({
+        errors: err.errors.map((e) => ({
           field: e.path.join("."),
           message: e.message,
         })),
@@ -105,6 +115,9 @@ export const updateProduct = async (values: unknown) => {
     }
 
     console.error("Error al actualizar el producto:", err);
-    return { success: false, message: "Ocurrió un error al actualizar el producto" };
+    return {
+      success: false,
+      message: "Ocurrió un error al actualizar el producto",
+    };
   }
 };
