@@ -9,7 +9,7 @@ export const proveedorService = {
       const response = await api.get('/proveedor/leerProveedor');
       const data = response.data;
 
-      // Normalizar: la API puede devolver directamente un array o un objeto { proveedores: [] }
+
       if (Array.isArray(data)) {
         return data;
       }
@@ -18,12 +18,10 @@ export const proveedorService = {
         return data.proveedores;
       }
 
-      // Caso fallback: si viene { message, proveedor } (un solo objeto), devolver arreglo con ese objeto
+    
       if (data && data.proveedor && typeof data.proveedor === 'object') {
         return [data.proveedor];
       }
-
-      // Si no hay nada reconocible, devolver array vacío
       return [];
     } catch (error) {
       console.error('Error obteniendo proveedores', error);

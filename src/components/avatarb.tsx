@@ -50,7 +50,6 @@ export default function Icono({ src, className = "" }: Props) {
     return (
       <div className={`relative ${className}`}>
         <img
-          src={src ?? "/PrincessCard.png"}
           alt="Avatar"
           className="w-10 h-10 rounded-full cursor-pointer object-cover"
           onClick={() => router.push("/login")}
