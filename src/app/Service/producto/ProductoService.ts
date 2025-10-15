@@ -4,22 +4,39 @@ import { ProductoPayload, ProductoWithId, CreateProductResponse } from './produc
 
 export const productoService = {
   // Obtener todos los productos
-  getAll: async (): Promise<ProductoWithId[]> => {
-    try {
-      const response = await api.get('/producto/leerProducto'); // ruta del backend
-      const data = response.data;
+getAll: async (): Promise<ProductoWithId[]> => {
+  try {
+    const response = await api.get('/producto/leerProducto'); // ruta del backend
+    console.log(response.data);
+    const data = response.data;
 
-      // Normalizar la respuesta
-      if (Array.isArray(data)) return data;
-      if (Array.isArray(data.products)) return data.products;
-      if (data && data.product && typeof data.product === 'object') return [data.product];
+    // Extraer los productos del objeto de respuesta
+    let productos: any[] = [];
+    if (Array.isArray(data)) productos = data;
+    else if (Array.isArray(data.products)) productos = data.products;
+    else if (data && data.product && typeof data.product === 'object') productos = [data.product];
 
-      return [];
-    } catch (error) {
-      console.error('Error obteniendo productos', error);
-      throw error;
-    }
-  },
+    // Normalizar los datos
+    const productosNormalizados = productos.map((p) => ({
+      ...p,
+      // Si precio viene como objeto tipo { d: [{ e: X, s: Y }] }, extraemos el número
+      precio:
+        typeof p.precio === 'object'
+          ? Number(p.precio?.d?.[0]?.e ?? 0)
+          : p.precio,
+      // Evitar que stock o descripción sean undefined
+      descripcion: p.descripcion ?? '',
+      stock: Array.isArray(p.stock) ? p.stock : [],
+      fecha_creacion: new Date(p.fecha_creacion),
+      fecha_actualizacion: new Date(p.fecha_actualizacion),
+    }));
+
+    return productosNormalizados;
+  } catch (error) {
+    console.error('Error obteniendo productos', error);
+    throw error;
+  }
+},
 
   // Obtener un producto por id
   getById: async (id: number): Promise<ProductoWithId | null> => {

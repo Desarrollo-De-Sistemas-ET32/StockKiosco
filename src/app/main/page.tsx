@@ -33,7 +33,6 @@ type Producto = {
 export default function MainPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
 
-  // Cargar productos — NavBar ya protege la vista
   useEffect(() => {
     fetch("/productos.json")
       .then((res) => res.json())
@@ -45,13 +44,14 @@ export default function MainPage() {
   }, []);
 
   return (
-    <main className="flex items-center flex-col gap-15 my-5 mx-50">
-      <div className="w-full flex justify-center text-sm text-muted-foreground">
-        {/* NavBar ya protege: trae RequireAuth internamente */}
+    <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-6 lg:mx-50">
+      {/* NAVBAR */}
+      <div className="w-full flex justify-center text-sm text-muted-foreground mb-6">
         <NavBar />
       </div>
 
-      <div className="max-h-fit w-fit xl:w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 justify-items-center">
+      {/* INFO CARDS */}
+      <div className="grid w-full gap-5 sm:grid-cols-2 xl:grid-cols-4 justify-items-center">
         <InfoCard
           title="Inventario total"
           icon={<BiBox className="size-7 text-neutral" />}
@@ -82,121 +82,83 @@ export default function MainPage() {
         />
       </div>
 
-      <div className="w-full flex flex-col xl:flex-row gap-5 justify-center items-start">
-        <div className="w-full h-fit bg-var6 dark:bg-var2 p-5 rounded-2xl">
-          <div className="flex flex-row justify-between items-center mb-5">
-            <div className="flex flex-col justify-start items-start gap-1">
-              <div className="flex justify-center items-center gap-5">
+      {/* STOCK BAJO Y VENTAS */}
+      <div className="flex flex-col xl:flex-row gap-5 w-full justify-center items-start">
+        {/* STOCK BAJO */}
+        <div className="w-full xl:w-3/5 bg-var6 dark:bg-var2 p-5 rounded-2xl">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+            <div className="flex flex-col items-start gap-1">
+              <div className="flex items-center gap-3">
                 <BiErrorCircle className="size-7 text-danger" />
-                <p className="text-xl xl:text-3xl flex items-center gap-5">
+                <p className="text-xl xl:text-2xl font-medium">
                   Productos con stock bajo
                 </p>
               </div>
-              <p className="text-sm">
+              <p className="text-sm text-muted-foreground">
                 Productos que deben reponerse lo antes posible
               </p>
             </div>
-            <Button className="bg-var5 dark:bg-var1 text-foreground hover:bg-var5/50 dark:hover:bg-var1/50 border-0">
+            <Button className="bg-var5 dark:bg-var1 text-foreground hover:bg-var5/50 dark:hover:bg-var1/50 border-0 w-full sm:w-auto">
               <BiShow className="size-5 text-foreground" />
               Ver todo
             </Button>
           </div>
 
-          <div className="w-full h-fit gap-5 flex flex-col flex-wrap">
-            <div className="max-h-fit flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
+            {productos.slice(0, 4).map((p, i) => (
               <StockBajo
-                nombreProducto={productos[0]?.name}
-                unidades={productos[0]?.unidades}
-                minimoUnidades={productos[0]?.minimoUnidades}
+                key={i}
+                nombreProducto={p?.name}
+                unidades={p?.unidades}
+                minimoUnidades={p?.minimoUnidades}
               />
-              <StockBajo
-                nombreProducto={productos[1]?.name}
-                unidades={productos[1]?.unidades}
-                minimoUnidades={productos[1]?.minimoUnidades}
-              />
-              <StockBajo
-                nombreProducto={productos[2]?.name}
-                unidades={productos[2]?.unidades}
-                minimoUnidades={productos[2]?.minimoUnidades}
-              />
-              <StockBajo
-                nombreProducto={productos[3]?.name}
-                unidades={productos[3]?.unidades}
-                minimoUnidades={productos[3]?.minimoUnidades}
-              />
-            </div>
+            ))}
           </div>
         </div>
 
-        <div className="flex flex-col w-full xl:w-2/4 h-fit bg-var6 dark:bg-var2 p-5 rounded-2xl">
+        {/* VENTAS RECIENTES */}
+        <div className="w-full xl:w-2/5 bg-var6 dark:bg-var2 p-5 rounded-2xl">
           <div className="flex flex-col justify-start mb-5 gap-1">
-            <p className="flex justify-start items-center text-2xl gap-5">
+            <p className="flex items-center text-2xl gap-3">
               <BiCart className="text-confirm size-7" />
               Ventas recientes
             </p>
-            <p className="text-sm">Últimas transacciones del día</p>
+            <p className="text-sm text-muted-foreground">
+              Últimas transacciones del día
+            </p>
           </div>
 
-          <div className="w-full h-full gap-5 flex flex-col">
-            <Venta
-              nombreProducto={productos[0]?.name}
-              horario="15:00"
-              precio={productos[0]?.price}
-              unidades={1}
-            />
-            <Separator className="dark:bg-var6 bg-var1" />
-            <Venta
-              nombreProducto={productos[1]?.name}
-              horario="15:00"
-              precio={productos[1]?.price}
-              unidades={13}
-            />
-            <Separator className="dark:bg-var6 bg-var1" />
-            <Venta
-              nombreProducto={productos[2]?.name}
-              horario="15:00"
-              precio={productos[2]?.price}
-              unidades={15}
-            />
-            <Separator className="dark:bg-var6 bg-var1" />
-            <Venta
-              nombreProducto={productos[3]?.name}
-              horario="15:00"
-              precio={productos[3]?.price}
-              unidades={5}
-            />
-            <Separator className="dark:bg-var6 bg-var1" />
-            <Venta
-              nombreProducto={productos[4]?.name}
-              horario="15:00"
-              precio={productos[4]?.price}
-              unidades={3}
-            />
-            <Separator className="dark:bg-var6 bg-var1" />
-            <Venta
-              nombreProducto={productos[0]?.name}
-              horario="15:00"
-              precio={productos[0]?.price}
-              unidades={2}
-            />
+          <div className="flex flex-col h-fit">
+            {productos.slice(0, 6).map((p, i) => (
+              <div className="flex flex-col gap-5">
+                <Venta
+                  key={i}
+                  nombreProducto={p?.name}
+                  horario="15:00"
+                  precio={p?.price}
+                  unidades={Math.floor(Math.random() * 10) + 1}
+                />
+                {i < 5 && <Separator className="dark:bg-var6 bg-var1" />}
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="w-full flex flex-col bg-var6 dark:bg-var2 rounded-2xl p-4">
-        <div className="flex flex-col justify-center items-start">
-          <p className="text-2xl text-center justify-center items-center flex gap-5">
-            <BiMedal className="text-random size-7" />
-            Acciones principales
-          </p>
+      {/* ACCIONES PRINCIPALES */}
+      <div className="w-full bg-var6 dark:bg-var2 rounded-2xl p-5 flex flex-col gap-5">
+        <div className="flex items-center gap-3">
+          <BiMedal className="text-random size-7" />
+          <p className="text-2xl font-medium">Acciones principales</p>
         </div>
-        <div className="grid grid-cols-1 justify-items-center gap-5 mt-5 sm:grid-cols-2">
-          <Button className="bg-var5 dark:bg-var1 w-full h-fit text-xl text-foreground hover:bg-var4 dark:hover:bg-var3">
-            <BiPlus className="size-7" />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Button className="bg-var5 dark:bg-var1 w-full text-lg text-foreground hover:bg-var4 dark:hover:bg-var3">
+            <BiPlus className="size-6" />
             Nuevo Producto
           </Button>
-          <Button className="bg-var5 dark:bg-var1 w-full h-fit text-xl text-foreground hover:bg-var4 dark:hover:bg-var3">
-            <BiCart className="size-7" />
+          <Button className="bg-var5 dark:bg-var1 w-full text-lg text-foreground hover:bg-var4 dark:hover:bg-var3">
+            <BiCart className="size-6" />
             Nueva Venta
           </Button>
         </div>

@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 
-// Define las propiedades que el componente espera recibir
 interface ProductCardProps {
   producto: {
     id_producto: number;
@@ -27,15 +26,12 @@ interface ProductCardProps {
     stock_minimo: number;
     codigo_barra: string;
     imagen?: string;
-    categoria?: { id_categoria: number; nombre: string }; // 👈 ya no es array
+    categoria?: { id_categoria: number; nombre: string };
   };
   onUpdateSuccess: () => void;
 }
 
-export default function ProductCard({
-  producto,
-  onUpdateSuccess,
-}: ProductCardProps) {
+export default function ProductCard({ producto, onUpdateSuccess }: ProductCardProps) {
   const [editedProduct, setEditedProduct] = useState({
     nombre: producto.nombre,
     codigo_barra: producto.codigo_barra,
@@ -49,48 +45,35 @@ export default function ProductCard({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setEditedProduct((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
+    setEditedProduct((prev) => ({ ...prev, [id]: value }));
   };
 
-
-    const handleDelete = async () => {
+  const handleDelete = async () => {
     const url = `/api/producto/${producto.id_producto}`;
     try {
       const response = await fetch(url, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_producto: producto.id_producto }),
       });
-      if (!response.ok) {
-        const errorResult = await response.json();
-        throw new Error(errorResult.message);
-      }
       const result = await response.json();
       if (result.success) {
         alert("Producto eliminado con éxito.");
-        onUpdateSuccess(); // Llama a la función para refrescar la lista
+        onUpdateSuccess();
       }
-    } catch (error: unknown | ErrorEvent) {
-      console.error("Error al eliminar el producto:", error);
+    } catch (error: any) {
       alert(`Error al eliminar el producto: ${error.message}`);
     }
-
   };
 
   const handleEdit = async () => {
     const { nombre, codigo_barra, stock, precio } = editedProduct;
-
-    const url = `/api/producto/${producto.id_producto}`; // Usa la prop id_producto
+    const url = `/api/producto/${producto.id_producto}`;
     const newData = {
       nombre,
       codigo_barra,
-      stock: stock ? parseInt(stock.toString(), 10) : 0,
-      precio: precio ? parseFloat(precio.toString()) : 0,
+      stock: parseInt(stock.toString(), 10) || 0,
+      precio: parseFloat(precio.toString()) || 0,
       id_producto: producto.id_producto,
       stock_minimo: producto.stock_minimo,
       imagen: producto.imagen,
@@ -100,167 +83,145 @@ export default function ProductCard({
     try {
       const response = await fetch(url, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newData),
       });
-
-      if (!response.ok) {
-        const errorResult = await response.json();
-        throw new Error(errorResult.message);
-      }
-
       const result = await response.json();
       if (result.success) {
         alert("Producto actualizado con éxito.");
-        onUpdateSuccess(); // Llama a la función para refrescar la lista
+        onUpdateSuccess();
       }
-    } catch (error) {
-      console.error("Error al actualizar el producto:", error);
+    } catch (error: any) {
       alert(`Error al actualizar el producto: ${error.message}`);
     }
-}
+  };
+
   return (
-    <div className="flex flex-col gap-5 dark:bg-var1 bg-var6 p-5 rounded-2xl w-xs lg:w-full">
-      <div className="flex flex-col lg:flex-row justify-between gap-5">
-        <div className="flex flex-col gap-5 justify-center items-center lg:items-start">
-          <div className="flex flex-wrap justify-start items-start h-5 gap-5">
-            <p className="text-xs lg:text-2xl">{producto.nombre}</p>
-            <Badge className={`text-xs rounded-2xl lg:rounded-4xl bg-confirm`}>
-              {producto.stock.length > 0 ? "Hay Stock" : "Sin Stock"}
+    <div className="flex gap-4 dark:bg-var1 bg-var6 p-5 rounded-2xl w-full shadow-md transition-all hover:shadow-lg">
+      {/* Información del producto */}
+      <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4">
+        <div className="flex flex-col items-center lg:items-start gap-3 w-full">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-3 text-center lg:text-left">
+            <p className="text-lg font-semibold">{producto.nombre}</p>
+            <Badge className="bg-confirm text-xs rounded-2xl">
+              {producto.stock.length > 0 ? "Hay stock" : "Sin stock"}
             </Badge>
-            <Badge className="bg-neutral text-xs rounded-3xl lg:rounded-4xl">
-              {producto.categoria ? producto.categoria.nombre : "Sin categoría"}  
+            <Badge className="bg-neutral text-xs rounded-2xl">
+              {producto.categoria ? producto.categoria.nombre : "Sin categoría"}
             </Badge>
           </div>
-          <div className="grid grid-cols-3 md:grid-cols-2 items-center justify-items-center lg:flex lg:flex-row gap-10">
-            <p className="text-xs lg:text-md">
-              {["Precio: " + producto.precio]}
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-muted-foreground">
+            <p>Precio: $ {producto.precio}</p>
+            <p>
+              Stock:{" "}
+              {producto.stock.length > 0
+                ? producto.stock[0].cantidad
+                : "No disponible"}
             </p>
-            <p className="text-xs lg:text-md">
-              {[
-                "Stock: ",
-                producto.stock.length > 0
-                  ? producto.stock[0].cantidad
-                  : "Stock: No disponible",
-              ]}
+            <p>Stock mínimo: {producto.stock_minimo}</p>
+            <p>
+              Valor total: $ {" "}
+              {producto.stock.length > 0
+                ? producto.stock[0].cantidad * producto.precio
+                : 0}
+              
             </p>
-            <p className="text-xs lg:text-md">
-              {["Stock Minimo: " + producto.stock_minimo]}
-            </p>
-            <p className="text-xs lg:text-md">
-              {["Valor total: " +  (producto.stock.length > 0 ? producto.stock[0].cantidad * producto.precio : 0)]}
-            </p>
+            <p className="col-span-full">Código: {producto.codigo_barra}</p>
           </div>
-          <p className="text-xs lg:text-md">
-            {`Còdigo de barras: ` + producto.codigo_barra}
-          </p>
         </div>
-        <div className="flex flex-row gap-5 justify-center items-center">
+
+        {/* Botones editar / eliminar */}
+        <div className="flex justify-center lg:justify-end gap-3 items-center">
+          {/* EDITAR */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <div className="flex flex-row">
-                <Button className="dark:bg-background hover:bg-background/70">
-                  <BiEdit className="h-5 w-5" />
-                </Button>
-              </div>
+              <Button className="dark:bg-background hover:bg-background/70 p-2">
+                <BiEdit className="h-5 w-5" />
+              </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="max-w-lg w-[90vw]">
               <AlertDialogHeader>
-                <AlertDialogTitle>Editar Producto</AlertDialogTitle>
+                <AlertDialogTitle>Editar producto</AlertDialogTitle>
                 <AlertDialogDescription>
-                  <div className="grid grid-cols-2 items-center gap-5">
-                    <div className="flex flex-col col-[1/2] gap-1">
-                      <Label htmlFor="nombre">Nombre del Producto</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                    <div className="flex flex-col gap-1">
+                      <Label htmlFor="nombre">Nombre</Label>
                       <Input
-                        className="bg-var1 rounded-4xl border-2"
-                        placeholder={producto.nombre}
                         id="nombre"
-                        onChange={handleInputChange}
                         value={editedProduct.nombre}
-                        label=""
+                        onChange={handleInputChange}
+                        className="bg-var1 border-2 rounded-xl"
                       />
                     </div>
-                    <div className="flex flex-col col-[1/2] gap-1">
+                    <div className="flex flex-col gap-1">
                       <Label htmlFor="codigo_barra">Código de barras</Label>
                       <Input
-                        className="bg-var1 rounded-4xl border-2"
-                        placeholder={producto.codigo_barra}
                         id="codigo_barra"
-                        onChange={handleInputChange}
                         value={editedProduct.codigo_barra}
-                        label=""
+                        onChange={handleInputChange}
+                        className="bg-var1 border-2 rounded-xl"
                       />
                     </div>
-                    <div className="flex flex-col col-[1/2] gap-1">
+                    <div className="flex flex-col gap-1">
                       <Label htmlFor="stock">Stock</Label>
                       <Input
-                        className="bg-var1 rounded-4xl border-2"
-                        placeholder="900"
                         id="stock"
-                        onChange={handleInputChange}
                         value={editedProduct.stock}
-                        label=""
+                        onChange={handleInputChange}
+                        className="bg-var1 border-2 rounded-xl"
                       />
                     </div>
-                    <div className="flex flex-col col-[1/3] gap-1">
+                    <div className="flex flex-col gap-1">
                       <Label htmlFor="precio">Precio</Label>
                       <Input
-                        type="number"
-                        className="bg-var1 rounded-4xl border-2"
-                        placeholder={producto.precio.toString()}
                         id="precio"
-                        onChange={handleInputChange}
+                        type="number"
                         value={editedProduct.precio}
-                        label=""
-                      />
-                    </div>
-                      <div className="flex flex-col row-1 col-[2/3] gap-1">
-                      <Label htmlFor="categoria">Categoria</Label>
-                      <Input
-                        type="text"
-                        className="bg-var1 rounded-4xl border-2"
-                        placeholder={producto.categoria ? producto.categoria.nombre : "Sin categoría"}
-                        id="categoria"
                         onChange={handleInputChange}
-                        value={editedProduct.categoria ? editedProduct.categoria.nombre : ""}
-                        label=""
+                        className="bg-var1 border-2 rounded-xl"
                       />
                     </div>
                   </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="bg-background hover:bg-background/70 px-5 w-fit border-none text-md">Cancelar</AlertDialogCancel>
-                <AlertDialogAction className="bg-background hover:bg-background/70 px-5 w-fit rounded-md" onClick={handleEdit}>Guardar</AlertDialogAction>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleEdit}>
+                  Guardar
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+
+          {/* ELIMINAR */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <div className="flex flex-row">
-                <Button className="dark:bg-background hover:bg-background/70">
-                  <BiTrash className="h-5 w-5" />
-                </Button>
-              </div>
+              <Button className="dark:bg-background hover:bg-background/70 p-2">
+                <BiTrash className="h-5 w-5" />
+              </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Eliminar Producto</AlertDialogTitle>
+                <AlertDialogTitle>Eliminar producto</AlertDialogTitle>
                 <AlertDialogDescription>
-                  ¿Estás seguro de que deseas eliminar este producto? Esta acción
-                  no se puede deshacer.
+                  ¿Seguro que deseas eliminar este producto? Esta acción no se
+                  puede deshacer.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction className="bg-destructive hover:bg-destructive/70" onClick={handleDelete}>Eliminar</AlertDialogAction>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  className="bg-destructive hover:bg-destructive/70"
+                >
+                  Eliminar
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          </div>
+        </div>
       </div>
     </div>
-  )
-};
+  );
+}

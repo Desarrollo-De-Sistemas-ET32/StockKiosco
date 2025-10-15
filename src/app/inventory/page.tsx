@@ -9,11 +9,16 @@ import { Button } from "@/components/ui/button";
 import { productoService } from "@/app/Service/producto/ProductoService";
 
 interface Producto {
+  imagen: any;
+  categoria: string | undefined;
+  marcas: any;
   id_producto: number;
   nombre: string;
   descripcion?: string;
   precio: number;
-  stock: number;
+  stock: { id_stock: number; cantidad: number }[];
+  stock_minimo: number;
+  codigo_barra: string;
 }
 
 export default function ProductManagement() {
@@ -25,7 +30,19 @@ export default function ProductManagement() {
   const fetchProductos = async () => {
     try {
       const data = await productoService.getAll();
-      setProductos(data);
+      const formattedData: Producto[] = data.map((item: any) => ({
+        id_producto: item.id_producto,
+        nombre: item.nombre,
+        descripcion: item.descripcion,
+        precio: item.precio,
+        stock: item.stock,
+        stock_minimo: item.stock_minimo,
+        codigo_barra: item.codigo_barra,
+        imagen: item.imagen,
+        categoria: item.categoria,
+        marcas: item.marcas,
+      }));
+      setProductos(formattedData);
     } catch (err: any) {
       setError(err.message || "Error al obtener productos");
     } finally {
@@ -47,6 +64,11 @@ export default function ProductManagement() {
         nombre: nuevoNombre,
         precio: producto.precio,
         stock: producto.stock,
+        stock_minimo: producto.stock_minimo,
+        codigo_barra: producto.codigo_barra,
+        images: producto.imagen,
+        categoria: producto.categoria,
+        marca: producto.marcas
       });
 
       if (!result.success) {
@@ -64,7 +86,7 @@ export default function ProductManagement() {
 
   if (loading) {
     return (
-      <main className="w-full h-full flex flex-col justify-center items-center gap-[19rem]">
+      <main className="flex justify-center items-center flex-col gap-15 my-5 mx-[10rem]">
         <NavBar />
         <div className="flex justify-center items-center flex-col bg-var6 dark:bg-var2 rounded-md p-5 gap-5">
           <p>Cargando Productos</p>
@@ -74,31 +96,38 @@ export default function ProductManagement() {
     );
   }
 
-  if (error) return <div>Error: {error}</div>;
+  if (error) return <div className="text-center mt-10 text-danger">{error}</div>;
 
-  return (
-    <main className="w-full flex flex-col items-center gap-5">
-      <NavBar />
+return (
+  <main className="flex flex-col justify-center items-center gap-10 my-8 px-4 mx-[10rem]">
+    <NavBar />
 
-      <div className="flex justify-center flex-wrap gap-5">
-        {productos.length > 0 ? (
-          productos.map((producto) => (
-            <ProductCard
-              key={producto.id_producto}
-              producto={producto}
-              onClick={() => handleEdit(producto)}
-              onUpdateSuccess={fetchProductos}
-            />
-          ))
-        ) : (
-          <p>No hay productos disponibles.</p>
-        )}
-      </div>
+    {/* Contenedor de productos */}
+    <div className="flex flex-col gap-6 w-full">
+      {productos.length > 0 ? (
+        productos.map((producto) => (
+          <ProductCard
+            key={producto.id_producto}
+            producto={producto}
+            onUpdateSuccess={fetchProductos}
+          />
+        ))
+      ) : (
+        <p className="col-span-full text-center text-muted-foreground">
+          No hay productos disponibles.
+        </p>
+      )}
+    </div>
 
-      {}
-      <div className="mt-6">
-        <Button onClick={() => router.push("/crear_productos")}>Agregar producto</Button>
-      </div>
-    </main>
-  );
+    {/* Botón agregar */}
+    <div className="w-full flex justify-center">
+      <Button
+        onClick={() => router.push("/crear_productos")}
+        className="w-full sm:w-auto bg-var5 dark:bg-var1 text-foreground hover:bg-var4 dark:hover:bg-var3 text-lg px-6 py-3 rounded-2xl"
+      >
+        Agregar producto
+      </Button>
+    </div>
+  </main>
+);
 }
