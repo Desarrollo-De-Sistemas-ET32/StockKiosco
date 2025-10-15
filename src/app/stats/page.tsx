@@ -51,7 +51,7 @@ export default function StatsPage() {
           <NavBar />
         </div>
       <div className="flex justify-center items-center flex-1 p-4">
-        <div className="w-full max-w-7xl bg-var7 dark:bg-[#2F363C] rounded-xl grid grid-rows-[auto_auto] gap-10 p-6 drop-shadow-xl">
+        <div className="w-full max-w-7xl bg-var5 dark:bg-[#2F363C] rounded-xl grid grid-rows-[auto_auto] gap-10 p-6 drop-shadow-xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <StatCard
                 title="Ingresos Totales"
@@ -59,7 +59,7 @@ export default function StatsPage() {
                 data={`$ ` + 1247}
                 percentage={10}
                 description=""
-                color="bg-linear-90 from-[#34A13B] to-[#009211]"
+                color="bg-linear-90 from-green-700 to-green-500"
               />
             
 
@@ -88,7 +88,7 @@ export default function StatsPage() {
                 data={`89`}
                 percentage={3}
                 description=""
-                color="bg-linear-90 from-var4 to-var6 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
+                color="bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
               />
 
               <StatCard
@@ -97,7 +97,7 @@ export default function StatsPage() {
                 data={`$3.85`}
                 percentage={31}
                 description=""
-                color="bg-linear-90 from-var4 to-var6 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
+                color="bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
               />
 
               <StatCard
@@ -106,21 +106,21 @@ export default function StatsPage() {
                 data={`2:30 PM`}
                 percentage={47}
                 description=""
-                color="bg-linear-90 from-var4 to-var6 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
+                color="bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
               />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="w-full bg-linear-90 from-var4 to-var6 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40] rounded-xl p-5 flex flex-col">
+            <div className="w-full bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40] rounded-xl p-5 flex flex-col">
               <p className="text-white p-2 font-bold">Productos Más Vendidos</p>
               <TopCard puesto={1} nombreProducto="Coca Cola 500ml" cantVendidos={145} precio={290} variacion={12} />
               <TopCard puesto={2} nombreProducto="Sándwich de Jamón" cantVendidos={89} precio={356} variacion={8} />
-              <TopCard puesto={4} nombreProducto="Galletitas Oreo" cantVendidos={65} precio={130} variacion={5} />
-              <TopCard puesto={5} nombreProducto="Agua Mineral" cantVendidos={54} precio={81} variacion={3} />
-              <TopCard puesto={3} nombreProducto="Café Americano" cantVendidos={76} precio={152} variacion={15} />
+              <TopCard puesto={3} nombreProducto="Galletitas Oreo" cantVendidos={65} precio={130} variacion={5} />
+              <TopCard puesto={4} nombreProducto="Agua Mineral" cantVendidos={54} precio={81} variacion={3} />
+              <TopCard puesto={5} nombreProducto="Café Americano" cantVendidos={76} precio={152} variacion={15} />
             </div>
 
-              <div className="w-full h-full bg-linear-90 from-var4 to-var6 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40] rounded-xl p-4 flex flex-col justify-between">
+              <div className="w-full h-full bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40] rounded-xl p-4 flex flex-col justify-between">
                 <p className="text-white font-bold p-4">Ingresos Semanales</p>
                 <ChartContainer config={chartConfig}>
                   <LineChart
@@ -146,7 +146,7 @@ export default function StatsPage() {
                     <Line
                       dataKey="incomes"
                       type="natural"
-                      stroke="var(--neutrals)"
+                      stroke="var(--positive)"
                       strokeWidth={2}
                       dot={{
                         fill: "var(--variant7)",
