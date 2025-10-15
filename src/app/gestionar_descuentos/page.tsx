@@ -21,7 +21,7 @@ export default function DiscountManagement() {
         {/* Ordenar por */}
         <Popover>
           <PopoverTrigger>
-            <Button variant="gray">
+            <Button>
               <SlMenu /> Ordenar por <SlArrowDown />
             </Button>
           </PopoverTrigger>

@@ -10,14 +10,13 @@ import { productoService } from "@/app/Service/producto/ProductoService";
 
 interface Producto {
   imagen: any;
-  categoria: string | undefined;
-  marcas: any;
+  categoria: {id_categoria: number; nombre: string};
+  marcas: {id_marca: number; nombre_marca: string}[];
   id_producto: number;
   nombre: string;
   descripcion?: string;
   precio: number;
-  stock: { id_stock: number; cantidad: number }[];
-  stock_minimo: number;
+  stock: { id_stock: number; cantidad: number ; cantidad_min: number}[];
   codigo_barra: string;
 }
 
@@ -36,7 +35,6 @@ export default function ProductManagement() {
         descripcion: item.descripcion,
         precio: item.precio,
         stock: item.stock,
-        stock_minimo: item.stock_minimo,
         codigo_barra: item.codigo_barra,
         imagen: item.imagen,
         categoria: item.categoria,
@@ -53,6 +51,7 @@ export default function ProductManagement() {
   useEffect(() => {
     fetchProductos();
   }, []);
+  console.log(productos)
 
   const handleEdit = async (producto: Producto) => {
     const nuevoNombre = prompt("Nuevo nombre:", producto.nombre);
@@ -64,11 +63,10 @@ export default function ProductManagement() {
         nombre: nuevoNombre,
         precio: producto.precio,
         stock: producto.stock,
-        stock_minimo: producto.stock_minimo,
         codigo_barra: producto.codigo_barra,
         images: producto.imagen,
-        categoria: producto.categoria,
-        marca: producto.marcas
+        categoria: producto.categoria.nombre,
+        marca: producto.marcas.length > 0 ? producto.marcas[0].nombre_marca : "nulo"
       });
 
       if (!result.success) {

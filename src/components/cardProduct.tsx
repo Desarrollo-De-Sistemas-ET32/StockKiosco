@@ -22,11 +22,11 @@ interface ProductCardProps {
     id_producto: number;
     nombre: string;
     precio: number;
-    stock: { id_stock: number; cantidad: number }[];
-    stock_minimo: number;
+    stock: { id_stock: number; cantidad: number, cantidad_min: number }[];
     codigo_barra: string;
     imagen?: string;
     categoria?: { id_categoria: number; nombre: string };
+    marcas?: {id_marca: number; nombre_marca: string}[]
   };
   onUpdateSuccess: () => void;
 }
@@ -36,11 +36,12 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
     nombre: producto.nombre,
     codigo_barra: producto.codigo_barra,
     stock: producto.stock.length > 0 ? producto.stock[0].cantidad : 0,
+    stock_minimo: producto.stock.length > 0 ? producto.stock[0].cantidad_min : 0,
     precio: producto.precio,
     id_producto: producto.id_producto,
-    stock_minimo: producto.stock_minimo,
     imagen: producto.imagen,
     categoria: producto.categoria,
+    marcas: (producto.marcas?.length ?? 0) > 0 ? producto.marcas![0].nombre_marca : ""
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,9 +74,8 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
       nombre,
       codigo_barra,
       stock: parseInt(stock.toString(), 10) || 0,
-      precio: parseFloat(precio.toString()) || 0,
+      precio: parseFloat(precio.toPrecision()) || 0,
       id_producto: producto.id_producto,
-      stock_minimo: producto.stock_minimo,
       imagen: producto.imagen,
       categoria: producto.categoria,
     };
@@ -112,14 +112,14 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-muted-foreground">
-            <p>Precio: $ {producto.precio}</p>
+            <p>Precio: $ {producto.precio.toString()}</p>
             <p>
               Stock:{" "}
               {producto.stock.length > 0
                 ? producto.stock[0].cantidad
                 : "No disponible"}
             </p>
-            <p>Stock mínimo: {producto.stock_minimo}</p>
+            <p>Stock mínimo: {producto.stock.length > 0 ? producto.stock[0].cantidad_min : 0}</p>
             <p>
               Valor total: $ {" "}
               {producto.stock.length > 0
@@ -140,52 +140,83 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
                 <BiEdit className="h-5 w-5" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="max-w-lg w-[90vw]">
+            <AlertDialogContent className="w-7xl border-none">
               <AlertDialogHeader>
-                <AlertDialogTitle>Editar producto</AlertDialogTitle>
+                <AlertDialogTitle className="mb-5">Editar producto</AlertDialogTitle>
                 <AlertDialogDescription>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-                    <div className="flex flex-col gap-1">
-                      <Label htmlFor="nombre">Nombre</Label>
+                  <div className="flex flex-col w-[50%] gap-5">
+                    <div className="flex flex-row gap-5 justify-center items-center">
+                      <div className="flex flex-col gap-1 w-full">
+                      <Label htmlFor="nombre">Nombre del producto</Label>
                       <Input
                         id="nombre"
                         value={editedProduct.nombre}
                         onChange={handleInputChange}
-                        className="bg-var1 border-2 rounded-xl"
+                        placeholder={producto.nombre}
+                        className="bg-var1 rounded-4xl border-none"
                       />
                     </div>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 w-full">
                       <Label htmlFor="codigo_barra">Código de barras</Label>
                       <Input
                         id="codigo_barra"
                         value={editedProduct.codigo_barra}
+                        placeholder="000000000000"
                         onChange={handleInputChange}
-                        className="bg-var1 border-2 rounded-xl"
+                        className="bg-var1 rounded-4xl border-none"
                       />
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <Label htmlFor="stock">Stock</Label>
-                      <Input
-                        id="stock"
-                        value={editedProduct.stock}
-                        onChange={handleInputChange}
-                        className="bg-var1 border-2 rounded-xl"
-                      />
                     </div>
                     <div className="flex flex-col gap-1">
                       <Label htmlFor="precio">Precio</Label>
                       <Input
                         id="precio"
                         type="number"
-                        value={editedProduct.precio}
                         onChange={handleInputChange}
-                        className="bg-var1 border-2 rounded-xl"
+                        placeholder={editedProduct.precio.toString()}
+                        className="bg-var1 rounded-4xl border-none"
                       />
+                    </div>
+                    <div className="flex flex-row gap-5 justify-between">
+                      <div className="flex flex-col gap-1 w-full">
+                      <Label htmlFor="stock">Stock</Label>
+                      <Input
+                        id="stock"
+                        type="number"
+                        value={editedProduct.stock}
+                        onChange={handleInputChange}
+                        placeholder={producto.stock.length > 0 ? producto.stock[0].cantidad.toString() : "0"}
+                        className="bg-var1 rounded-4xl border-none"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1 w-full">
+                      <Label htmlFor="stock">Stock Minimo</Label>
+                      <Input
+                        id="stock_minimo"
+                        type="number"
+                        value={editedProduct.stock_minimo}
+                        placeholder={producto.stock.length > 0 ? producto.stock[0].cantidad_min.toString() : "0"}
+                        onChange={handleInputChange}
+                        className="bg-var1 rounded-4xl border-none"
+                        />
+                      </div>
+                      <select id="marca">
+                        {(producto.marcas?.length ?? 0) > 0 ?(
+                          producto.marcas?.map((producto) =>(
+                            <option
+                            key={producto.nombre_marca}
+                            value={producto.nombre_marca}
+                            >
+                              {producto.nombre_marca}
+                            </option>
+                          ))
+                        ): (<option>hola</option>)}
+                      </select>
                     </div>
                   </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <AlertDialogFooter>
+              <AlertDialogFooter className="flex flex-row justify-center items-center">
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
                 <AlertDialogAction onClick={handleEdit}>
                   Guardar
