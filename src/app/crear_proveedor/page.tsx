@@ -10,10 +10,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BiUser } from "react-icons/bi";
+import { NavBar } from "@/components/navBar"
 
 export default function crearProveedor() {
   return (
-    <main className="flex h-screen items-center justify-center bg-blend-darken">
+    <main className="flex h-screen items-center flex-col bg-blend-darken">
+      <div className="flex w-full py-3 pb-25">
+        <NavBar/>
+      </div>
       <Image
         src={`/paquete.jpg`}
         layout="fill"

@@ -55,9 +55,8 @@ export default function EditarProductoPage() {
   };
 
   return (
-    <body>
-    <div className="min-h-screen bg-gray-50 dark:bg-[#2F363C] flex flex-col items-center justify-center p-4">
-      <div className="w-full flex items-center justify-center gap-10 py-3">
+    <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
+      <div className="w-full flex">
         <NavBar />
       </div>
       <div className="bg-white dark:bg-var2 rounded-2xl p-8 w-full max-w-3xl flex flex-col drop-shadow-2xl/10">
@@ -139,7 +138,6 @@ export default function EditarProductoPage() {
           </div>
         </form>
       </div>
-    </div>
-    </body>
+    </main>
   )
 }

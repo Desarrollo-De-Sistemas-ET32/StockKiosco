@@ -44,7 +44,7 @@ export default function MainPage() {
   }, []);
 
   return (
-    <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-6 lg:mx-50">
+    <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
       {/* NAVBAR */}
       <div className="w-full flex justify-center text-sm text-muted-foreground mb-6">
         <NavBar />

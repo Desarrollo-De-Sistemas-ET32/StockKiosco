@@ -84,7 +84,7 @@ export default function ProductManagement() {
 
   if (loading) {
     return (
-      <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-6 lg:mx-50">
+      <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
         <NavBar />
         <div className="flex justify-center items-center flex-col bg-var6 dark:bg-var2 rounded-md p-5 gap-5">
           <p>Cargando Productos</p>

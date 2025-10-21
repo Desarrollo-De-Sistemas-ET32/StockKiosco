@@ -59,7 +59,7 @@ export default function StatsPage() {
                 data={`$ ` + 1247}
                 percentage={10}
                 description=""
-                color="bg-linear-90 from-green-700 to-green-500"
+                color="dark:bg-linear-90 dark:from-green-700 dark:to-green-500 bg-green-700/50"
               />
             
 
@@ -69,7 +69,7 @@ export default function StatsPage() {
                 data={`324`}
                 percentage={12}
                 description=""
-                color="bg-linear-90 from-[#FF6A2A] to-[#FF8F20]"
+                color="dark:bg-linear-90 dark:from-[#FF6A2A] dark:to-[#FF8F20] bg-[#FF6A2A]/60"
               />
             
 
@@ -79,11 +79,11 @@ export default function StatsPage() {
                 data={`156`}
                 percentage={8}
                 description=""
-                color="bg-linear-90 from-[#0077FF] to-[#4CCFFF]"
+                color="dark:bg-linear-90 dark:from-[#0077FF] dark:to-[#4CCFFF] bg-[#0077FF]/50"
               />
 
               <StatCard
-                title="Inventario total"
+                title="Clientes Atendidos"
                 icon={<BiUser className="size-7 text-white" />}
                 data={`89`}
                 percentage={3}
@@ -92,7 +92,7 @@ export default function StatsPage() {
               />
 
               <StatCard
-                title="Inventario total"
+                title="Tickets Promedio"
                 icon={<BiTrendingUp className="size-7 text-white" />}
                 data={`$3.85`}
                 percentage={31}
@@ -101,7 +101,7 @@ export default function StatsPage() {
               />
 
               <StatCard
-                title="Inventario total"
+                title="Hora Pico"
                 icon={<BiTimeFive className="size-7 text-white" />}
                 data={`2:30 PM`}
                 percentage={47}
