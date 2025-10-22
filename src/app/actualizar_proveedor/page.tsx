@@ -19,6 +19,7 @@ export default function ActualizarProveedorPage() {
     direccion: '',
     contacto: '',
     telefono: '',
+
   })
 
   const [loading, setLoading] = useState(false)
@@ -44,8 +45,10 @@ export default function ActualizarProveedorPage() {
 
         // proveedorService.getById devuelve response.data (o null) según tu service
         const resp = await proveedorService.getById(Number(id))
+        const proveedor: ProveedorWithId | null = resp
 
-        // resp puede ser: null | ProveedorWithId | { proveedor: ProveedorWithId } | { data: ProveedorWithId }\        const proveedor: ProveedorWithId | null = resp
+        // resp puede ser: null | ProveedorWithId | { proveedor: ProveedorWithId } | { data: ProveedorWithId }\
+        // const proveedor: ProveedorWithId | null = resp
           ? ((resp as any).proveedor ?? (resp as any).data ?? resp) as ProveedorWithId
           : null
 
@@ -120,7 +123,7 @@ export default function ActualizarProveedorPage() {
       <div className="min-h-screen bg-var5 dark:bg-[#212529] flex items-center justify-center">
         <div className="text-center p-6">
           <p className="text-lg text-red-500 mb-4">{loadError}</p>
-          <Button onClick={() => router.back()}>Volver</Button>
+          <Button onClick={() => router.replace('/main')}>Volver</Button>
         </div>
       </div>
     )
@@ -222,7 +225,6 @@ export default function ActualizarProveedorPage() {
 
             <div className="flex gap-4 pt-2">
               <Button
-                variant="secondary"
                 type="button"
                 className="bg-gray-500 hover:bg-gray-600 text-white"
                 onClick={() => router.back()}

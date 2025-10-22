@@ -85,7 +85,6 @@ export default function ProductManagement() {
   if (loading) {
     return (
       <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
-        <NavBar />
         <div className="flex justify-center items-center flex-col bg-var6 dark:bg-var2 rounded-md p-5 gap-5">
           <p>Cargando Productos</p>
           <Spinner className="size-10" />
@@ -98,9 +97,6 @@ export default function ProductManagement() {
 
 return (
   <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-6 lg:mx-50">
-    <div className="w-full flex justify-center text-sm text-muted-foreground mb-6">
-      <NavBar />
-    </div>
     {/* Contenedor de productos */}
     <div className="flex flex-col gap-6 w-full">
       {productos.length > 0 ? (

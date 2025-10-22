@@ -7,8 +7,8 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/main"); // redirige sin dejar historial
+    router.replace("/main");
   }, [router]);
 
-  return null; // no muestra nada mientras redirige
+  return null;
 }

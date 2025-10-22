@@ -46,9 +46,6 @@ export default function MainPage() {
   return (
     <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
       {/* NAVBAR */}
-      <div className="w-full flex justify-center text-sm text-muted-foreground mb-6">
-        <NavBar />
-      </div>
 
       {/* INFO CARDS */}
       <div className="grid w-full gap-5 sm:grid-cols-2 xl:grid-cols-4 justify-items-center">
