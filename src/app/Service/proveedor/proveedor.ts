@@ -8,7 +8,6 @@ export interface ProveedorPayload {
   telefono: string;
 }
 
-// Proveedor tal como puede venir del backend (id opcional)
 export interface ProveedorWithId {
   id_proveedor?: number;
   nombre: string;
@@ -16,5 +15,4 @@ export interface ProveedorWithId {
   direccion: string;
   contacto: string;
   telefono: string;
-  // agrega otros campos que devuelva tu API si hace falta (por ejemplo createdAt, updatedAt)
 }
