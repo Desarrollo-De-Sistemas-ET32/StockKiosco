@@ -2,23 +2,20 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
 const api: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:3001/api', // tu API
+  baseURL: 'http://localhost:3000/api', 
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Interceptor de request
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Verificar que estamos en el cliente antes de acceder a localStorage
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
-      // Garantizar que headers no sea undefined
       config.headers = config.headers ?? {};
       if (token) {
-        // @ts-ignore (axios typings can ser pedorros con InternalAxiosRequestConfig.headers)
+        // @ts-ignore
         config.headers['Authorization'] = `Bearer ${token}`;
       }
     }
