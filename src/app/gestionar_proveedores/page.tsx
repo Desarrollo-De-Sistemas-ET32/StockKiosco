@@ -161,7 +161,7 @@ export default function ListaProveedores() {
   }
 
   return (
-    <div className="bg-white dark:bg-var1 min-h-screen p-6">
+    <main>
       <div className="flex flex-col items-center gap-4 mx-auto my-5 font-sans max-w-[900px]">
         <h1 className="text-2xl font-semibold dark:text-white">Lista Proveedores</h1>
 
@@ -215,7 +215,7 @@ export default function ListaProveedores() {
 
       {/* Modal Crear */}
       {isCreateOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
           <div className="bg-white p-7 rounded-2xl w-full max-w-md shadow-xl dark:bg-var1">
             <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 dark:text-white">Agregar Proveedor</h2>
 
@@ -250,7 +250,7 @@ export default function ListaProveedores() {
 
       {/* Modal Editar */}
       {isEditOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
           <div className="bg-white p-7 rounded-2xl w-full max-w-md shadow-xl dark:bg-var1">
             <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 dark:text-white">
               {loadingEditData ? 'Cargando...' : 'Editar Proveedor'}
@@ -288,6 +288,6 @@ export default function ListaProveedores() {
           </div>
         </div>
       )}
-    </div>
+    </main>
   )
 }
