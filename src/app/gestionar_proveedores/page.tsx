@@ -1,8 +1,9 @@
+// app/.../gestionar_proveedores/page.tsx  (o la ruta donde tengas la página)
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import CardProveedor from '@/components/gestion-card'
+import CardProveedor from '@/components/gestion-card' // asegúrate que la ruta coincida
 import { proveedorService } from '@/app/Service/proveedor/ProveedorService'
 import type { ProveedorPayload, ProveedorWithId } from '@/app/Service/proveedor/proveedor'
 
@@ -12,18 +13,16 @@ export default function ListaProveedores() {
   const [loadingData, setLoadingData] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const [isOpen, setIsOpen] = useState(false)
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
   const [search, setSearch] = useState('')
 
-  // modal form state (campos del payload)
-  const [modalForm, setModalForm] = useState<ProveedorPayload>({
-    nombre: '',
-    email: '',
-    direccion: '',
-    contacto: '',
-    telefono: '',
-  })
+  const emptyForm = { nombre: '', email: '', direccion: '', contacto: '', telefono: '' }
+  const [modalForm, setModalForm] = useState<ProveedorPayload>(emptyForm)
   const [submitting, setSubmitting] = useState(false)
+
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [loadingEditData, setLoadingEditData] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -75,38 +74,83 @@ export default function ListaProveedores() {
   const handleCreate = async (e?: React.FormEvent) => {
     e?.preventDefault()
     setError(null)
-
     if (!modalForm.nombre || !modalForm.email) {
       setError('Nombre y email son requeridos')
       return
     }
-
     try {
       setSubmitting(true)
-      const resp = await proveedorService.create(modalForm)
-      // intentar normalizar: resp puede ser { success, proveedor } o el proveedor directamente
-      const created =
-        (resp && (resp as any).proveedor) ?? (resp && !(resp as any).proveedor ? resp : null)
-
-      // refrescar lista
+      await proveedorService.create(modalForm)
       await refreshList()
-      setIsOpen(false)
-      setModalForm({ nombre: '', email: '', direccion: '', contacto: '', telefono: '' })
+      setIsCreateOpen(false)
+      setModalForm(emptyForm)
     } catch (err: any) {
       console.error('Error creando proveedor', err)
-      const msg = err?.response?.data?.error ?? err?.message ?? 'Error creando proveedor'
-      setError(String(msg))
+      setError(String(err?.response?.data?.error ?? err?.message ?? 'Error creando proveedor'))
     } finally {
       setSubmitting(false)
     }
   }
 
-  const handleDelete = async (id?: number) => {
-    if (!id) return
+  const openEditModal = async (id?: number | string) => {
+    const numericId = typeof id === 'string' ? Number(id) : id
+    if (!numericId) return setError('ID inválido')
+    setError(null)
+    setEditingId(numericId as number)
+    setIsEditOpen(true)
+    setLoadingEditData(true)
+    try {
+      const resp = await proveedorService.getById(Number(numericId))
+      if (!resp) {
+        setError('Proveedor no encontrado')
+        setIsEditOpen(false)
+        return
+      }
+      const provider = (resp as any).proveedor ?? (resp as any).data ?? resp
+      setModalForm({
+        nombre: provider.nombre ?? '',
+        email: provider.email ?? '',
+        direccion: provider.direccion ?? '',
+        contacto: provider.contacto ?? '',
+        telefono: provider.telefono ?? '',
+      })
+    } catch (err: any) {
+      console.error('Error al cargar proveedor para editar', err)
+      setError('Error al cargar datos para editar')
+      setIsEditOpen(false)
+    } finally {
+      setLoadingEditData(false)
+    }
+  }
+
+  const handleUpdate = async (e?: React.FormEvent) => {
+    e?.preventDefault()
+    if (!editingId) return setError('ID inválido para editar')
+    if (!modalForm.nombre || !modalForm.email) {
+      return setError('Nombre y email son requeridos')
+    }
+    try {
+      setSubmitting(true)
+      await proveedorService.update(editingId, modalForm)
+      await refreshList()
+      setIsEditOpen(false)
+      setEditingId(null)
+      setModalForm(emptyForm)
+    } catch (err: any) {
+      console.error('Error actualizando proveedor', err)
+      setError(String(err?.response?.data?.error ?? err?.message ?? 'Error actualizando proveedor'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async (id?: number | string) => {
+    const numericId = typeof id === 'string' ? Number(id) : id
+    if (!numericId) return
     if (!confirm('¿Eliminar este proveedor?')) return
     try {
       setLoading(true)
-      await proveedorService.delete(id)
+      await proveedorService.delete(Number(numericId))
       await refreshList()
     } catch (err: any) {
       console.error('Error eliminando proveedor', err)
@@ -130,7 +174,14 @@ export default function ListaProveedores() {
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm transition
                        focus:border-blue-500 focus:outline-none focus:shadow-md"
           />
-          <Button onClick={() => setIsOpen(true)} className="bg-green-600">
+          <Button
+            onClick={() => {
+              setIsCreateOpen(true)
+              setError(null)
+              setModalForm(emptyForm)
+            }}
+            className="bg-green-600"
+          >
             Agregar
           </Button>
         </div>
@@ -142,28 +193,18 @@ export default function ListaProveedores() {
           {loadingData ? (
             <div className="flex items-center justify-center py-6">Cargando proveedores...</div>
           ) : proveedoresFiltrados.length === 0 ? (
-            <div className="flex items-center justify-center py-6 text-gray-500">
-              No se encontraron proveedores
-            </div>
+            <div className="flex items-center justify-center py-6 text-gray-500">No se encontraron proveedores</div>
           ) : (
             proveedoresFiltrados.map((p) => (
               <div key={p.id_proveedor ?? p.nombre} className="flex items-center justify-between">
                 <CardProveedor
-                  // props esperados por tu componente
+                  id={p.id_proveedor}
                   nombre={p.nombre}
                   telefono={p.telefono}
-                  // si tu Card espera 'cuil' y no existe en el modelo, mandamos vacío
                   cuil={(p as any).cuil ?? ''}
+                  onEdit={openEditModal}
+                  onDelete={handleDelete}
                 />
-                <div className="ml-4 flex gap-2">
-                  <button
-                    onClick={() => handleDelete(p.id_proveedor)}
-                    className="px-3 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600"
-                    disabled={loading}
-                  >
-                    Eliminar
-                  </button>
-                </div>
               </div>
             ))
           )}
@@ -172,91 +213,78 @@ export default function ListaProveedores() {
         {error && <div className="text-sm text-red-500 mt-2">{error}</div>}
       </div>
 
-      {/* Modal */}
-      {isOpen && (
+      {/* Modal Crear */}
+      {isCreateOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
           <div className="bg-white p-7 rounded-2xl w-full max-w-md shadow-xl dark:bg-var1">
-            <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 dark:text-white">
-              Agregar Proveedor
-            </h2>
+            <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 dark:text-white">Agregar Proveedor</h2>
 
             <form onSubmit={handleCreate} className="flex flex-col gap-4">
-              <div className="flex flex-col">
-                <label className="mb-1 text-gray-600 text-xs font-medium dark:text-white">Nombre</label>
-                <input
-                  name="nombre"
-                  value={modalForm.nombre}
-                  onChange={handleModalChange}
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                />
-              </div>
+              <label className="text-xs">Nombre</label>
+              <input name="nombre" value={modalForm.nombre} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
 
-              <div className="flex flex-col">
-                <label className="mb-1 text-gray-600 text-xs font-medium dark:text-white">Email</label>
-                <input
-                  name="email"
-                  value={modalForm.email}
-                  onChange={handleModalChange}
-                  type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                />
-              </div>
+              <label className="text-xs">Email</label>
+              <input name="email" value={modalForm.email} onChange={handleModalChange} type="email" className="w-full px-3 py-2 border rounded" />
 
-              <div className="flex flex-col">
-                <label className="mb-1 text-gray-600 text-xs font-medium dark:text-white">Dirección</label>
-                <input
-                  name="direccion"
-                  value={modalForm.direccion}
-                  onChange={handleModalChange}
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                />
-              </div>
+              <label className="text-xs">Dirección</label>
+              <input name="direccion" value={modalForm.direccion} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
 
-              <div className="flex flex-col">
-                <label className="mb-1 text-gray-600 text-xs font-medium dark:text-white">Contacto</label>
-                <input
-                  name="contacto"
-                  value={modalForm.contacto}
-                  onChange={handleModalChange}
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                />
-              </div>
+              <label className="text-xs">Contacto</label>
+              <input name="contacto" value={modalForm.contacto} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
 
-              <div className="flex flex-col">
-                <label className="mb-1 text-gray-600 text-xs font-medium dark:text-white">Teléfono</label>
-                <input
-                  name="telefono"
-                  value={modalForm.telefono}
-                  onChange={handleModalChange}
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                />
-              </div>
+              <label className="text-xs">Teléfono</label>
+              <input name="telefono" value={modalForm.telefono} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
 
               <div className="flex justify-end gap-2 mt-2">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold text-sm hover:bg-blue-700"
-                >
+                <button type="submit" disabled={submitting} className="px-4 py-2 bg-blue-600 text-white rounded-lg">
                   {submitting ? 'Guardando...' : 'Guardar'}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsOpen(false)
-                    setError(null)
-                    setModalForm({ nombre: '', email: '', direccion: '', contacto: '', telefono: '' })
-                  }}
-                  className="px-4 py-2 bg-gray-300 text-gray-900 rounded-lg font-semibold text-sm hover:bg-gray-400"
-                >
+                <button type="button" onClick={() => { setIsCreateOpen(false); setModalForm(emptyForm); setError(null) }} className="px-4 py-2 bg-gray-300 rounded-lg">
                   Cerrar
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Editar */}
+      {isEditOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+          <div className="bg-white p-7 rounded-2xl w-full max-w-md shadow-xl dark:bg-var1">
+            <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 dark:text-white">
+              {loadingEditData ? 'Cargando...' : 'Editar Proveedor'}
+            </h2>
+
+            {loadingEditData ? (
+              <div className="py-6 text-center">Cargando datos...</div>
+            ) : (
+              <form onSubmit={handleUpdate} className="flex flex-col gap-4">
+                <label className="text-xs">Nombre</label>
+                <input name="nombre" value={modalForm.nombre} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
+
+                <label className="text-xs">Email</label>
+                <input name="email" value={modalForm.email} onChange={handleModalChange} type="email" className="w-full px-3 py-2 border rounded" />
+
+                <label className="text-xs">Dirección</label>
+                <input name="direccion" value={modalForm.direccion} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
+
+                <label className="text-xs">Contacto</label>
+                <input name="contacto" value={modalForm.contacto} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
+
+                <label className="text-xs">Teléfono</label>
+                <input name="telefono" value={modalForm.telefono} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
+
+                <div className="flex justify-end gap-2 mt-2">
+                  <button type="submit" disabled={submitting} className="px-4 py-2 bg-green-600 text-white rounded-lg">
+                    {submitting ? 'Actualizando...' : 'Actualizar'}
+                  </button>
+                  <button type="button" onClick={() => { setIsEditOpen(false); setEditingId(null); setModalForm(emptyForm); setError(null) }} className="px-4 py-2 bg-gray-300 rounded-lg">
+                    Cerrar
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
