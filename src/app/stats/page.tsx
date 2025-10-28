@@ -9,7 +9,6 @@ import {
   BiTimeFive,
 } from "react-icons/bi";
 import StatCard from "@/components/stat-card";
-import { NavBar } from "@/components/navBar";
 import TopCard from "@/components/top-cards";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
@@ -47,9 +46,6 @@ const chartConfig = {
 export default function StatsPage() {
   return (
     <main className="min-h-screen flex flex-col">
-        <div className="flex items-center justify-center gap-10 py-3">
-          <NavBar />
-        </div>
       <div className="flex justify-center items-center flex-1 p-4">
         <div className="w-full max-w-7xl bg-var5 dark:bg-[#2F363C] rounded-xl grid grid-rows-[auto_auto] gap-10 p-6 drop-shadow-xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

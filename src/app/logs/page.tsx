@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button'
 import { FaUser } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
-import { NavBar } from "@/components/navBar"
 
 interface Log {
   fecha: string
@@ -27,9 +26,6 @@ export default function LogsPage() {
 
   return (
     <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-6 lg:mx-50">
-      <div className="w-full flex justify-center text-sm text-muted-foreground mb-6">
-              <NavBar />
-            </div>
       <div className="bg-[#e9edf1] rounded-2xl w-full max-w-5xl p-4 sm:p-6 md:p-8 flex flex-col items-center dark:bg-[#2F363C]">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">
           Última actividad

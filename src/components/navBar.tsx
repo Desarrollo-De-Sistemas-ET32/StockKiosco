@@ -36,10 +36,10 @@ export function NavBar({ protect = true }: Props) {
         </NavigationMenuLink>
         <NavigationMenuLink
           className="flex justify-center items-center flex-row text-foreground dark:hover:text-shadow-md dark:hover:text-shadow-var7 hover:text-shadow-md hover:text-shadow-var3/75 "
-          href="/registro"
+          href="/logs"
         >
           <BiDetail className="size-4 text-foreground" />
-          Registro
+          Registros
         </NavigationMenuLink>
         <NavigationMenuLink
           className="flex justify-center items-center flex-row text-foreground dark:hover:text-shadow-md dark:hover:text-shadow-var7 hover:text-shadow-md hover:text-shadow-var3/75 "

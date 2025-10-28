@@ -5,7 +5,6 @@ import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { NavBar } from '@/components/navBar'
 import SubirImagen from '@/components/ui/subirImagen'
 
 export default function CrearProductoPage() {
@@ -65,9 +64,7 @@ export default function CrearProductoPage() {
   
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-neutral-800 flex flex-col items-center p-6 gap-10">
-       <div className=" w-full flex items-center justify-center gap-10 py-3 pb-24">
-          <NavBar />
-        </div>
+      
       <div className="w-full max-w-4xl bg-var7 dark:bg-var1 rounded-2xl shadow-lg overflow-hidden">
         <div className="p-6 md:p-8">
           <h1 className="text-center text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-6">
