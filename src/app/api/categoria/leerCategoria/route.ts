@@ -3,8 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createCategoria } from "@/actions/addCategoria";
 import { readCategoria } from "@/actions/readCategoria";
 
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000"
+
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': 'http://localhost:3000', // o '*' temporalmente en dev
+  'Access-Control-Allow-Origin': FRONTEND_ORIGIN, 
   'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Credentials': 'true',

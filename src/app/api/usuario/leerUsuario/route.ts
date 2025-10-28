@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 
-const FRONTEND_ORIGIN = "http://localhost:3000";
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000"
 const corsHeaders = {
   "Access-Control-Allow-Origin": FRONTEND_ORIGIN,
   "Access-Control-Allow-Methods": "GET, OPTIONS",

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteDescuento } from "@/actions/deleteDescuento";
 
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000"
+
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': 'http://localhost:3000',
+  'Access-Control-Allow-Origin': FRONTEND_ORIGIN,
   'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Credentials': 'true',
