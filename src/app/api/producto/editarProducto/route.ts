@@ -1,8 +1,8 @@
-// app/api/producto/editarProducto/route.ts
 import { updateProduct } from "@/actions/updateProducto";
 import { NextRequest, NextResponse } from "next/server";
+import db from "@/lib/db";
 
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000"
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": FRONTEND_ORIGIN,
@@ -21,6 +21,8 @@ export async function OPTIONS() {
 export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json();
+    console.log("Datos recibidos en PATCH /producto/editarProducto:", body);
+
     const result = await updateProduct(body);
 
     if (!result.success) {
@@ -30,9 +32,18 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
+    await db.logs.create({
+      data: {
+        id_usuario: body.id_usuario || null,
+        accion: "Edición de producto",
+        descripcion: `Se actualizó el producto con ID ${result.product.id} y nombre "${result.product.nombre}" por el usuario ${body.id_usuario || "desconocido"}.`,
+      },
+    });
+
+    console.log("Producto editado exitosamente:", result.product);
     return NextResponse.json(result, { status: 200, headers: CORS_HEADERS });
   } catch (err) {
-    console.error("API error:", err);
+    console.error("Error en API (editarProducto):", err);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500, headers: CORS_HEADERS }

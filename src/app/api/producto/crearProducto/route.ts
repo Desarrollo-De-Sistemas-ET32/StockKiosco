@@ -1,4 +1,3 @@
-// app/api/producto/crearProducto/route.ts
 import { createProduct } from "@/actions/addProducto";
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db"; 

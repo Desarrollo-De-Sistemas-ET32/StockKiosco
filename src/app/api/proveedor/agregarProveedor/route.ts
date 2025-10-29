@@ -1,7 +1,9 @@
+// app/api/proveedor/agregarProveedor/route.ts
 import { agregarProveedor } from "@/actions/addProveedor";
 import { NextResponse } from "next/server";
+import db from "@/lib/db";
 
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000"
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": FRONTEND_ORIGIN,
@@ -20,7 +22,7 @@ export async function OPTIONS() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("Datos recibidos en POST:", body);
+    console.log("Datos recibidos en POST /proveedor/agregarProveedor:", body);
 
     const result = await agregarProveedor(body);
 
@@ -32,10 +34,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: result.message }, { status: 400, headers: CORS_HEADERS });
     }
 
-    console.log("Resultado de la creación:", result);
+    await db.logs.create({
+      data: {
+        id_usuario: body.id_usuario || null,
+        accion: "Registro de proveedor",
+        descripcion: `Se registró un nuevo proveedor con nombre "${result.proveedor.nombre}" por el usuario ${body.id_usuario || "desconocido"}.`,
+      },
+    });
+
+    console.log("Proveedor registrado exitosamente:", result);
     return NextResponse.json(result, { status: 200, headers: CORS_HEADERS });
   } catch (err) {
-    console.error("API error (agregarProveedor):", err);
+    console.error("Error en API (agregarProveedor):", err);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500, headers: CORS_HEADERS }
