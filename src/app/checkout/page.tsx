@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Search } from "@/components/ui/search";
-import { BiChevronDown, BiChevronUp, BiMoneyWithdraw } from "react-icons/bi";
-import { BiTrashAlt } from "react-icons/bi";
+import { BiChevronDown, BiChevronUp, BiMoneyWithdraw, BiTrashAlt } from "react-icons/bi";
+import {  } from "react-icons/bi";
 
 export default function ChequePage() {
   const [showPopup, setShowPopup] = useState(false);

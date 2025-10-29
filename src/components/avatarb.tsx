@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -13,6 +14,8 @@ export default function Icono({ src, className = "" }: Props) {
   const [user, setUser] = useState<{id_usuario?: number; name?: string; nombre?: string; email?: string } | null>(null);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
+
 
   useEffect(() => {
     try {
@@ -76,7 +79,14 @@ export default function Icono({ src, className = "" }: Props) {
           <div className="px-3 py-2 border-b dark:border-gray-700">
             <div className="font-medium truncate">{name}</div>
             <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+          
           </div>
+           <button
+            onClick={() => setShowPopup(true)}
+            className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800  "
+          >
+            Panel Administrativo
+          </button>
           <button
             onClick={handleLogout}
             className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -84,7 +94,24 @@ export default function Icono({ src, className = "" }: Props) {
             Cerrar sesión
           </button>
         </div>
+        
       )}
+      {showPopup && (
+          <div
+            className="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
+            onClick={() => setShowPopup(false)} 
+          >
+            <div
+              className="bg-var5 dark:bg-var2 rounded-xl p-6 w-[500px] h-[500px] shadow-2xl flex flex-col items-center justify-evenly relative"
+              onClick={(e) => e.stopPropagation()} 
+            >
+              <h2 className="text-foreground text-2xl">Panel Administrativo</h2>
+              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10">Respaldos y Mantenimientos</Button>
+              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10">Control de Usuarios/Roles</Button>
+              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10">Exportar lista de Productos</Button>
+            </div>
+          </div>
+        )}
     </div>
   );
 }
