@@ -163,7 +163,7 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
 
             <AlertDialogContent className="border-none w-[50vh]">
               <AlertDialogHeader>
-                <AlertDialogTitle className="mb-5">Editar producto</AlertDialogTitle>
+                <AlertDialogTitle className="mb-5 flex justify-center">Editar producto</AlertDialogTitle>
 
                 <AlertDialogDescription asChild>
                   <div className="flex flex-col w-full gap-5">
