@@ -1,4 +1,3 @@
-// src/app/main/page.tsx
 "use client";
 
 import {
@@ -27,7 +26,7 @@ type Producto = {
   price: number;
   categoria: string;
   brand: string;
-  id: number;
+  id?: number;
 };
 
 export default function MainPage() {
@@ -102,9 +101,9 @@ export default function MainPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            {productos.slice(0, 4).map((p, i) => (
+            {productos.slice(0, 4).map((p, idx) => (
               <StockBajo
-                key={i}
+                key={p.id ?? `${p.name}-${idx}`}
                 nombreProducto={p?.name}
                 unidades={p?.unidades}
                 minimoUnidades={p?.minimoUnidades}
@@ -126,18 +125,22 @@ export default function MainPage() {
           </div>
 
           <div className="flex flex-col h-fit">
-            {productos.slice(0, 6).map((p, i) => (
-              <div className="flex flex-col gap-5">
-                <Venta
-                  key={i}
-                  nombreProducto={p?.name}
-                  horario="15:00"
-                  precio={p?.price}
-                  unidades={Math.floor(Math.random() * 10) + 1}
-                />
-                {i < 5 && <Separator className="dark:bg-var6 bg-var1" />}
-              </div>
-            ))}
+            {productos.slice(0, 6).map((p, i) => {
+              const key = p.id ?? `${p.name}-${i}`;
+              return (
+                <div key={key} className="flex flex-col gap-5">
+                  <Venta
+                    nombreProducto={p?.name}
+                    horario="15:00"
+                    precio={p?.price}
+                    unidades={Math.floor(Math.random() * 10) + 1}
+                  />
+                  {i < Math.min(productos.length, 6) - 1 && (
+                    <Separator className="dark:bg-var6 bg-var1" />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
