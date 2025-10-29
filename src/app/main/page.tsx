@@ -45,8 +45,6 @@ export default function MainPage() {
 
   return (
     <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
-      {/* NAVBAR */}
-
       {/* INFO CARDS */}
       <div className="grid w-full gap-5 sm:grid-cols-2 xl:grid-cols-4 justify-items-center">
         <InfoCard
@@ -104,7 +102,7 @@ export default function MainPage() {
           <div className="flex flex-col gap-4">
             {productos.slice(0, 4).map((p, i) => (
               <StockBajo
-                key={i}
+                key={p.id ?? `stock-${i}`}
                 nombreProducto={p?.name}
                 unidades={p?.unidades}
                 minimoUnidades={p?.minimoUnidades}
@@ -127,9 +125,8 @@ export default function MainPage() {
 
           <div className="flex flex-col h-fit">
             {productos.slice(0, 6).map((p, i) => (
-              <div className="flex flex-col gap-5">
+              <div key={p.id ?? `venta-${i}`} className="flex flex-col gap-5">
                 <Venta
-                  key={i}
                   nombreProducto={p?.name}
                   horario="15:00"
                   precio={p?.price}
