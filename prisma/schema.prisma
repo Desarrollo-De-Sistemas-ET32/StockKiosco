@@ -52,29 +52,28 @@ model descuentos {
 }
 
 model categorias {
-  id_categoria Int        @id @default(autoincrement())
-  nombre       String     @unique
+  id_categoria Int         @id @default(autoincrement())
+  nombre       String      @unique
   productos    productos[]
 }
 
 model productos {
-  id_producto         Int        @id @default(autoincrement())
-  nombre              String     @db.VarChar(36)
+  id_producto         Int              @id @default(autoincrement())
+  nombre              String           @db.VarChar(36)
   id_proveedor        Int
-  codigo_barra        BigInt     @unique
-  precio              Decimal    @db.Decimal(10, 2)
-  fecha_creacion      DateTime   @default(now())
+  precio              Decimal          @db.Decimal(10, 2)
+  fecha_creacion      DateTime         @default(now())
   fecha_actualizacion DateTime
   id_marca            Int?
-  id_categoria        Int?       // FK a categorias
   images              String?
+  codigo_barra        BigInt           @unique
+  id_categoria        Int?
   detalles_venta      detalles_venta[]
-  marcas              marcas?      @relation(fields: [id_marca], references: [id_marca])
-  proveedores         proveedores  @relation(fields: [id_proveedor], references: [id_proveedor])
-  categoria           categorias?  @relation(fields: [id_categoria], references: [id_categoria])
+  categoria           categorias?      @relation(fields: [id_categoria], references: [id_categoria])
+  marcas              marcas?          @relation(fields: [id_marca], references: [id_marca])
+  proveedores         proveedores      @relation(fields: [id_proveedor], references: [id_proveedor])
   stock               stock[]
 }
-
 
 model proveedores {
   id_proveedor        Int         @id @default(autoincrement())
@@ -92,8 +91,8 @@ model stock {
   id_stock            Int       @id @default(autoincrement())
   id_producto         Int
   cantidad            Int?
-  cantidad_min        Int?
   fecha_actualizacion DateTime
+  cantidad_min        Int?
   productos           productos @relation(fields: [id_producto], references: [id_producto])
 }
 
@@ -105,9 +104,8 @@ model usuarios {
   fecha_creacion      DateTime  @default(now())
   fecha_actualizacion DateTime
   usuarios_roles      rolesUser @default(usuario)
+  logs                logs[]
   ventas              ventas[]
-
-  logs logs[]
 }
 
 model ventas {
@@ -124,13 +122,12 @@ model ventas {
 }
 
 model logs {
-  id_log             Int       @id @default(autoincrement())
-  id_usuario         Int?
-  accion             String    @db.VarChar(100)
-  descripcion        String?   @db.VarChar(255)
-  fecha_creacion     DateTime  @default(now())
-  ip_origen          String?   @db.VarChar(45)
-  usuarios           usuarios? @relation(fields: [id_usuario], references: [id_usuario])
+  id_log         Int       @id @default(autoincrement())
+  id_usuario     Int?
+  accion         String    @db.VarChar(100)
+  descripcion    String?   @db.VarChar(255)
+  fecha_creacion DateTime  @default(now())
+  usuarios       usuarios? @relation(fields: [id_usuario], references: [id_usuario])
 }
 
 enum MetodoPago {
