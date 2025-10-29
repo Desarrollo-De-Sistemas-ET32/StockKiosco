@@ -106,9 +106,9 @@ export default function Icono({ src, className = "" }: Props) {
               onClick={(e) => e.stopPropagation()} 
             >
               <h2 className="text-foreground text-2xl">Panel Administrativo</h2>
-              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10">Respaldos y Mantenimientos</Button>
-              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10">Control de Usuarios/Roles</Button>
-              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10">Exportar lista de Productos</Button>
+              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10 hover:bg-foreground/20">Respaldos y Mantenimientos</Button>
+              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10 hover:bg-foreground/20">Control de Usuarios/Roles</Button>
+              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10 hover:bg-foreground/20">Exportar lista de Productos</Button>
             </div>
           </div>
         )}
