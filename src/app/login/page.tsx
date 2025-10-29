@@ -1,4 +1,4 @@
-// app/login/page.tsx
+// src/app/login/page.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -32,7 +32,6 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
 
-    // Validación cliente mínima
     if (!form.email || !form.password) {
       setError("Completa email y contraseña.");
       return;
@@ -45,18 +44,26 @@ export default function LoginPage() {
         password: form.password,
       });
 
-      // authService guarda token en localStorage si la API lo devuelve,
-      // pero por seguridad lo chequeamos también aquí:
-      const token = resp?.token;
+      // Guardar token si viene en la respuesta (opcional)
+      const token = resp?.token ?? resp?.accessToken ?? null;
       if (token && typeof window !== "undefined") {
         localStorage.setItem("token", token);
       }
 
-      // Redirigir a home u otra ruta
+      // Guardar el objeto usuario (safeUser) si viene en la respuesta
+      const usuario = resp?.usuario ?? resp?.user ?? resp?.usuario ?? null;
+      if (usuario && typeof window !== "undefined") {
+        try {
+          localStorage.setItem("usuario", JSON.stringify(usuario));
+        } catch (err) {
+          console.warn("Error saving usuario to localStorage", err);
+        }
+      }
+
+      // Redirigir al home (o a la ruta que prefieras)
       router.push("/");
     } catch (err: any) {
       console.error("Error en login:", err);
-      // Intentamos obtener mensaje del backend
       const msg =
         err?.message ||
         err?.response?.data?.error ||
@@ -92,7 +99,6 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent>
-          {/* Banner de error */}
           {error && (
             <div className="mb-4 px-3 py-2 rounded bg-red-100 text-red-700 text-sm text-center">
               {error}
