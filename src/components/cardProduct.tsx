@@ -54,7 +54,7 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
       codigo_barra: producto?.codigo_barra ?? "",
       stock: producto?.stock && producto.stock.length > 0 ? producto.stock[0].cantidad : 0,
       stock_minimo: producto?.stock && producto.stock.length > 0 ? producto.stock[0].cantidad_min : 0,
-      precio: producto?.precio ?? 0,
+      precio: producto.precio !== undefined ? Number(producto.precio) : 0,
       id_producto: producto?.id_producto ?? 0,
       imagen: producto?.imagen ?? "",
       categoria: producto?.categoria ?? null,
@@ -101,7 +101,7 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
       nombre: String(nombre ?? producto.nombre ?? ""),
       codigo_barra: String(codigo_barra ?? producto.codigo_barra ?? ""),
       stock: Number(stock ?? (producto.stock && producto.stock[0]?.cantidad) ?? 0),
-      precio: Number(precio ?? producto.precio ?? 0),
+      precio: Number(editedProduct.precio),
       images: imagen ?? producto.imagen ?? undefined,
     };
 
@@ -145,7 +145,7 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-muted-foreground">
-            <p>Precio: $ {String(editedProduct.precio)}</p>
+            <p>Precio: $ {producto.precio}</p>
             <p>Stock: {producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad : "No disponible"}</p>
             <p>Stock mínimo: {producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad_min : 0}</p>
             <p>Valor total: ${producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad * producto.precio : 0}</p>

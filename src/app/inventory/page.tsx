@@ -55,7 +55,7 @@ export default function ProductManagement() {
           id_producto: Number(item.id_producto ?? item.id ?? 0),
           nombre: String(item.nombre ?? item.title ?? ''),
           descripcion: item.descripcion ?? item.description ?? '',
-          precio: Number(item.precio ?? item.price ?? 0),
+          precio: item.precio !== undefined && item.precio !== null ? item.precio.toString() : "0",
           stock: Array.isArray(item.stock)
             ? item.stock.map((s: any) => ({
                 id_stock: Number(s.id_stock ?? s.id ?? 0),

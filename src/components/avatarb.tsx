@@ -10,7 +10,7 @@ type Props = {
 
 export default function Icono({ src, className = "" }: Props) {
   const router = useRouter();
-  const [user, setUser] = useState<{ name?: string; nombre?: string; email?: string } | null>(null);
+  const [user, setUser] = useState<{id_usuario?: number; name?: string; nombre?: string; email?: string } | null>(null);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -58,7 +58,7 @@ export default function Icono({ src, className = "" }: Props) {
     );
   }
 
-  const name = (user.name ?? user.nombre ?? user.email ?? "").toString();
+  const name = (user.name ?? user.nombre ?? user.email ?? user.id_usuario ?? "").toString();
   const inicial = name.trim().length ? name.trim()[0].toUpperCase() : "U";
 
   return (
