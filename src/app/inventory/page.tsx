@@ -55,9 +55,7 @@ export default function ProductManagement() {
           id_producto: Number(item.id_producto ?? item.id ?? 0),
           nombre: String(item.nombre ?? item.title ?? ''),
           descripcion: item.descripcion ?? item.description ?? '',
-          precio: Number(
-            typeof item.precio === 'object' ? item.precio?.d?.[0]?.e ?? 0 : item.precio ?? 0
-          ),
+          precio: Number(item.precio ?? item.price ?? 0),
           stock: Array.isArray(item.stock)
             ? item.stock.map((s: any) => ({
                 id_stock: Number(s.id_stock ?? s.id ?? 0),
@@ -101,7 +99,7 @@ export default function ProductManagement() {
       const payload: any = {
         id_producto: producto.id_producto,
         nombre: nuevoNombre,
-        precio: Number(producto.precio ?? 0),
+        precio: producto.precio,
         stock: producto.stock && producto.stock.length > 0 ? Number(producto.stock[0].cantidad ?? 0) : 0,
         codigo_barra: String(producto.codigo_barra ?? ''),
         images: producto.imagen ?? undefined,
@@ -175,8 +173,6 @@ export default function ProductManagement() {
               key={producto.id_producto}
               producto={producto}
               onUpdateSuccess={fetchProductos}
-              onEdit={() => handleEdit(producto)}
-              onDelete={(id) => handleDelete(id)}
             />
           ))
         ) : (

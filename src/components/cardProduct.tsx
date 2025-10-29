@@ -125,6 +125,9 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
         alert("Error al actualizar: " + (err?.response?.data?.message ?? err?.message ?? String(err)));
       }
     }
+
+    const data = await productoService.getAll()
+    console.log("DATA DESPUÉS DEL PATCH", data)
   };
 
   return (
@@ -142,7 +145,7 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-muted-foreground">
-            <p>Precio: $ {String(producto.precio ?? 0)}</p>
+            <p>Precio: $ {String(editedProduct.precio)}</p>
             <p>Stock: {producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad : "No disponible"}</p>
             <p>Stock mínimo: {producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad_min : 0}</p>
             <p>Valor total: ${producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad * producto.precio : 0}</p>
