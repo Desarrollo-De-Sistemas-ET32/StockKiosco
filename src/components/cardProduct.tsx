@@ -161,18 +161,17 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
               </Button>
             </AlertDialogTrigger>
 
-            <AlertDialogContent className="w-7xl border-none">
+            <AlertDialogContent className="border-none w-[50vh]">
               <AlertDialogHeader>
-                <AlertDialogTitle className="mb-5">Editar producto</AlertDialogTitle>
+                <AlertDialogTitle className="mb-5 flex justify-center">Editar producto</AlertDialogTitle>
 
                 <AlertDialogDescription asChild>
-                  <div className="flex flex-col w-[50%] gap-5">
+                  <div className="flex flex-col w-full gap-5">
                     <div className="flex flex-row gap-5 justify-center items-center">
                       <div className="flex flex-col gap-1 w-full">
                         <Label htmlFor="nombre">Nombre del producto</Label>
                         <Input id="nombre" value={String(editedProduct.nombre)} onChange={handleInputChange} placeholder={producto.nombre} className="bg-var1 rounded-4xl border-none" />
                       </div>
-
                       <div className="flex flex-col gap-1 w-full">
                         <Label htmlFor="codigo_barra">Código de barras</Label>
                         <Input id="codigo_barra" value={String(editedProduct.codigo_barra)} placeholder="000000000000" onChange={handleInputChange} className="bg-var1 rounded-4xl border-none" />
@@ -206,9 +205,9 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
-              <AlertDialogFooter className="flex flex-row justify-center items-center">
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleEdit}>Guardar</AlertDialogAction>
+              <AlertDialogFooter className="flex items-center w-full sm:justify-evenly">
+                <AlertDialogCancel className="bg-var2 hover:bg-foreground/50 w-[50%]">Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleEdit} className="bg-var2 hover:bg-foreground/50 w-[50%]">Guardar</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
