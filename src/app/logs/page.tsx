@@ -1,27 +1,30 @@
+// src/app/logs/page.tsx  (o donde tengas la vista)
 'use client'
 
 import { Button } from '@/components/ui/button'
 import { FaUser } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
-
-interface Log {
-  fecha: string
-  usuario: string
-  accion: string
-  producto?: string
-  cantidad?: number
-  ip?: string
-  hora?: string
-}
+import { logService } from '@/app/Service/logs/LogsService' 
+import type { Log } from '@/app/Service/logs/logs'
 
 export default function LogsPage() {
   const [logs, setLogs] = useState<Log[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/logs/logs.json')
-      .then((res) => res.json())
-      .then((data) => setLogs(data))
-      .catch((err) => console.error('Error cargando logs:', err))
+    setLoading(true)
+    logService
+      .getAll()
+      .then((data) => {
+        setLogs(data)
+        setError(null)
+      })
+      .catch((err) => {
+        console.error('Error cargando logs:', err)
+        setError(String(err?.message ?? err))
+      })
+      .finally(() => setLoading(false))
   }, [])
 
   return (
@@ -31,28 +34,43 @@ export default function LogsPage() {
           Última actividad
         </h1>
 
-        <div className="bg-var5 dark:bg-var2 rounded-xl p-3 sm:p-4 w-full">
-          <div className="bg-var4 dark:bg-var3 rounded-lg p-3 sm:p-4 max-h-80 sm:max-h-96 overflow-y-auto space-y-3 sm:space-y-4">
-            {logs.map((log, index) => (
-              <div
-                key={index}
-                className="bg-var7 dark:bg-var2 text-black dark:text-white rounded-md px-3 sm:px-4 py-2 flex items-start sm:items-center gap-3 sm:gap-4 text-sm sm:text-base"
-              >
-                <FaUser className="text-lg sm:text-xl mt-1 sm:mt-0" />
-                <span>
-                  <strong>{log.usuario}</strong> - {log.accion}
-                  {log.producto && (
-                    <>
-                      {' '}
-                      <strong>{log.producto}</strong>
-                      {log.cantidad !== undefined ? ` (Cantidad: ${log.cantidad})` : ''}
-                    </>
-                  )}
-                  {log.ip && <> (IP: {log.ip})</>}
-                  {' '}a las <strong>{log.hora}</strong>
-                </span>
-              </div>
-            ))}
+        <div className="w-full">
+          <div className="mb-4">
+            {loading && <p className="text-sm text-muted-foreground">Cargando...</p>}
+            {error && <p className="text-sm text-red-500">Error: {error}</p>}
+          </div>
+
+          <div className="bg-var5 dark:bg-var2 rounded-xl p-3 sm:p-4 w-full">
+            <div className="bg-var4 dark:bg-var3 rounded-lg p-3 sm:p-4 max-h-80 sm:max-h-96 overflow-y-auto space-y-3 sm:space-y-4">
+              {logs.length === 0 && !loading ? (
+                <p className="text-sm text-muted-foreground">No hay actividad reciente.</p>
+              ) : (
+                logs.map((log, index) => (
+                  <div
+                    key={`${log.fecha ?? 'nofecha'}-${index}`}
+                    className="bg-var7 dark:bg-var2 text-black dark:text-white rounded-md px-3 sm:px-4 py-2 flex items-start sm:items-center gap-3 sm:gap-4 text-sm sm:text-base"
+                  >
+                    <FaUser className="text-lg sm:text-xl mt-1 sm:mt-0" />
+                    <span>
+                      <strong>{log.usuario}</strong> - {log.accion}
+                      {log.producto && (
+                        <>
+                          {' '}
+                          <strong>{log.producto}</strong>
+                          {log.cantidad !== undefined ? ` (Cantidad: ${log.cantidad})` : ''}
+                        </>
+                      )}
+                      {log.ip && <> (IP: {log.ip})</>}
+                      {log.hora ? (
+                        <> a las <strong>{log.hora}</strong></>
+                      ) : (
+                        log.fecha && <> - {new Date(log.fecha).toLocaleString()}</>
+                      )}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
 

@@ -1,50 +1,71 @@
-// src/app/Service/logs/LogService.ts
-import api from "../API";
+// app/Service/logs/LogsService.ts
+import api from '../API';
+import type { Log } from './logs';
+import { mapRawToLog } from './logs';
 
-export type Log = {
-  fecha: string;
-  usuario: string;
-  accion: string;
-  producto?: string;
-  cantidad?: number;
-  ip?: string;
-  hora?: string;
-};
-
-const LogService = {
+export const logService = {
   /**
-   * Intenta obtener logs desde el backend via /api/logs
-   * Si falla (404 / no server), intenta cargar /logs/logs.json (static file).
+   * GET /api/logs/readLogs
+   * Devuelve array normalizado Log[]
    */
-  getLogs: async (): Promise<Log[]> => {
-    // 1) Intentar endpoint backend (usa baseURL de api, p.ej. http://localhost:3001/api)
+  getAll: async (): Promise<Log[]> => {
     try {
-      const res = await api.get("/logs");
-      const data = res.data;
-      // Normalizar: si viene { logs: [...] } o directamente [...]
-      if (Array.isArray(data)) return data as Log[];
-      if (Array.isArray(data.logs)) return data.logs as Log[];
-      // si viene en wrapper distinto, intenta devolver lo que parezca array
-      const maybeArray = Object.values(data).find((v) => Array.isArray(v));
-      if (Array.isArray(maybeArray)) return maybeArray as Log[];
-      // fallback a data (siempre que sea array)
-      return Array.isArray(data) ? data : [];
-    } catch (err) {
-      // 2) Fallback a static file en /logs/logs.json (public/logs/logs.json)
-      try {
-        const fallback = await fetch("/logs/logs.json");
-        if (!fallback.ok) {
-          console.warn("LogService: fallback /logs/logs.json failed", fallback.status);
-          return [];
+      const resp = await api.get('/logs/readLogs');
+      const data = resp.data as any;
+
+      let rawLogs: any[] = [];
+
+      if (!data) {
+        rawLogs = [];
+      } else if (Array.isArray(data)) {
+        rawLogs = data;
+      } else if (Array.isArray(data.logs)) {
+        rawLogs = data.logs;
+      } else if (Array.isArray(data.data)) {
+        rawLogs = data.data;
+      } else if (data.log && typeof data.log === 'object') {
+        rawLogs = [data.log];
+      } else {
+        // fallback: tomar primer array encontrado dentro del objeto
+        const keys = Object.keys(data ?? {});
+        for (const k of keys) {
+          if (Array.isArray((data as any)[k])) {
+            rawLogs = (data as any)[k];
+            break;
+          }
         }
-        const j = await fallback.json();
-        return Array.isArray(j) ? j : (j.logs ?? []);
-      } catch (err2) {
-        console.error("LogService fallback read error:", err2);
-        return [];
+        // último recurso: si es objeto con registros indexados (valores array)
+        if (rawLogs.length === 0 && typeof data === 'object') {
+          const vals = Object.values(data);
+          if (vals.length > 0 && Array.isArray(vals[0])) rawLogs = vals[0] as any[];
+        }
       }
+
+      const normalized = rawLogs.map((r: any) => mapRawToLog(r));
+
+      // ordenar por fecha descendente (siempre que haya fecha)
+      normalized.sort((a, b) => {
+        const ta = a.fecha ? new Date(a.fecha).getTime() : 0;
+        const tb = b.fecha ? new Date(b.fecha).getTime() : 0;
+        return tb - ta;
+      });
+
+      return normalized;
+    } catch (error: any) {
+      console.error('logService.getAll error:', error);
+      const message =
+        error?.response?.data?.error ??
+        error?.response?.data ??
+        error?.message ??
+        'Error al obtener logs';
+      throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
     }
+  },
+
+  getRecent: async (limit = 10): Promise<Log[]> => {
+    const all = await logService.getAll();
+    return all.slice(0, limit);
   },
 };
 
-export default LogService;
+export default logService;
