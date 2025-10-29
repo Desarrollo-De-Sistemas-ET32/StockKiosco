@@ -14,7 +14,7 @@ function normalize(obj: any): any {
   return obj
 }
 
-export const readLogs = async () => {
+export const readLogs = async () => {   
   try {
     const logs = await db.logs.findMany({
       include: {
