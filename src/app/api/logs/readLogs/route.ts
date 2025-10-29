@@ -1,3 +1,4 @@
+// app/api/logs/readLogs/route.ts
 import { NextResponse } from 'next/server'
 import { readLogs } from '@/actions/readLogs'
 
