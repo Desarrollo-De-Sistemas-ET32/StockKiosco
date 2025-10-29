@@ -106,6 +106,8 @@ model usuarios {
   fecha_actualizacion DateTime
   usuarios_roles      rolesUser @default(usuario)
   ventas              ventas[]
+
+  logs logs[]
 }
 
 model ventas {
@@ -119,6 +121,16 @@ model ventas {
   detalles_venta      detalles_venta[]
   pagos               pagos[]
   usuarios            usuarios         @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+model logs {
+  id_log             Int       @id @default(autoincrement())
+  id_usuario         Int?
+  accion             String    @db.VarChar(100)
+  descripcion        String?   @db.VarChar(255)
+  fecha_creacion     DateTime  @default(now())
+  ip_origen          String?   @db.VarChar(45)
+  usuarios           usuarios? @relation(fields: [id_usuario], references: [id_usuario])
 }
 
 enum MetodoPago {

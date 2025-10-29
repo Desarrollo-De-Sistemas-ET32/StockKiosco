@@ -1,4 +1,3 @@
-// src/app/api/usuario/agregarUsuario/route.ts
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import db from "@/lib/db"
@@ -21,12 +20,17 @@ export async function POST(req: Request) {
     const name = body.name ?? body.nombre
     const email = body.email
     const password = body.password
+    const id_usuario_admin = body.id_usuario_admin || null
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Faltan campos obligatorios" }, { status: 400, headers: corsHeaders })
     }
 
-    const existe = await db.usuarios.findUnique({ where: { email }, select: { id_usuario: true } })
+    const existe = await db.usuarios.findUnique({
+      where: { email },
+      select: { id_usuario: true },
+    })
+
     if (existe) {
       return NextResponse.json({ error: "El email ya está registrado" }, { status: 409, headers: corsHeaders })
     }
@@ -39,6 +43,14 @@ export async function POST(req: Request) {
         password: hashed,
         fecha_creacion: new Date(),
         fecha_actualizacion: new Date(),
+      },
+    })
+
+    await db.logs.create({
+      data: {
+        id_usuario: id_usuario_admin, 
+        accion: "Creación de usuario",
+        descripcion: `El usuario '${name}' (${email}) fue creado correctamente.`,
       },
     })
 
