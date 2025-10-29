@@ -32,7 +32,6 @@ export default function ProductManagement() {
     try {
       const data = await productoService.getAll();
 
-      // data puede venir en varias formas, nos aseguramos que sea array
       const lista = Array.isArray(data) ? data : [data];
 
       const formattedData: Producto[] = lista.map((item: any) => {
@@ -95,7 +94,6 @@ export default function ProductManagement() {
     if (!nuevoNombre) return;
 
     try {
-      // Construimos el payload que espera tu server: stock como número, id_producto, id_marca (si existe), categoria como nombre
       const payload: any = {
         id_producto: producto.id_producto,
         nombre: nuevoNombre,
@@ -105,12 +103,10 @@ export default function ProductManagement() {
         images: producto.imagen ?? undefined,
       };
 
-      // categoría: pasar el nombre (tu updateProduct busca la categoría por nombre)
       if (producto.categoria?.nombre) {
         payload.categoria = String(producto.categoria.nombre).toLowerCase();
       }
 
-      // enviar id_marca si existe (updateProduct acepta id_marca)
       if (producto.marcas && producto.marcas.length > 0 && producto.marcas[0].id_marca) {
         payload.id_marca = Number(producto.marcas[0].id_marca);
       }
@@ -126,7 +122,6 @@ export default function ProductManagement() {
       await fetchProductos();
     } catch (err: any) {
       console.error('Error al actualizar el producto:', err);
-      // si el backend devolvió HTML (404 page) evitamos crash y damos indicación
       if (err?.response && typeof err.response.data === 'string' && err.response.data.trim().startsWith('<')) {
         alert('El backend devolvió HTML en vez de JSON. Revisa que /producto/editarProducto exista y devuelva JSON.');
       } else {

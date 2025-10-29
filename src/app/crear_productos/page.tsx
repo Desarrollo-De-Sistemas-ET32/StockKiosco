@@ -1,11 +1,11 @@
+// app/crear_productos/page.tsx
 'use client'
 
-import { useState, FormEvent, useEffect } from 'react'
+import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import SubirImagen from '@/components/ui/subirImagen'
-import { NavBar } from '@/components/navBar'
 import { productoService } from '@/app/Service/producto/ProductoService'
 
 export default function CrearProductoPage() {
@@ -25,23 +25,6 @@ export default function CrearProductoPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // ✅ Se agrega solo esto: obtener id_usuario desde localStorage
-  const [idUsuario, setIdUsuario] = useState<number | null>(null)
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('user')
-      if (raw) {
-        const user = JSON.parse(raw)
-        if (user.id_usuario) {
-          setIdUsuario(user.id_usuario)
-        }
-      }
-    } catch (e) {
-      console.error('Error parseando usuario en localStorage', e)
-    }
-  }, [])
-
   const handleImagenSubida = (url: string) => {
     setImagenUrl(url)
     console.log('Imagen subida con URL:', url)
@@ -51,16 +34,13 @@ export default function CrearProductoPage() {
     e.preventDefault()
     setErrors({})
 
+    // Validaciones básicas
     if (!nombre.trim()) {
       setErrors({ nombre: 'El nombre es requerido' })
       return
     }
     if (!precio || Number(precio) <= 0) {
       setErrors({ precio: 'El precio debe ser mayor a 0' })
-      return
-    }
-    if (!idUsuario) {
-      setErrors({ general: 'No se encontró el usuario. Iniciá sesión nuevamente.' })
       return
     }
 
@@ -76,20 +56,18 @@ export default function CrearProductoPage() {
         images: imagenUrl || '',
         id_proveedor: Number(idProveedor) || 1,
         id_marca: idMarca ? Number(idMarca) : undefined,
-
-        // ✅ Se agrega únicamente esto
-        id_usuario: idUsuario
       }
 
       const result = await productoService.create(payload)
 
       if (result.error) {
+        // Mostrar errores del backend
         setErrors(result.error)
         return
       }
 
       console.log('Producto creado exitosamente:', result.product)
-      router.push('main')
+      router.push('/productos')
     } catch (err: any) {
       console.error('Error guardar producto', err)
       setErrors({ general: err?.message || 'Error desconocido al conectar con el servidor' })
@@ -99,7 +77,7 @@ export default function CrearProductoPage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col p-6">
+    <main className="min-h-screen min-w-0.5 bg-gray-50 dark:bg-neutral-800 flex flex-col p-6">
       <div className="w-full max-w-4xl bg-white dark:bg-var1 rounded-2xl shadow-lg overflow-hidden flex self-center">
         <div className="p-6 md:p-8">
           <h1 className="text-center text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-6">
