@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import ProductCard from "@/components/cardProduct";
 import handleEdit from "@/components/cardProduct";
-import { NavBar } from "@/components/navBar";
 
 interface Producto {
   id_producto: number;
@@ -48,9 +47,6 @@ export default function ProductManagement() {
 
   return (
     <main className="w-full flex flex-col items-center gap-5">
-       <div className="w-full flex justify-center text-sm text-muted-foreground">
-          <NavBar></NavBar>
-        </div>
       <div className="flex justify-center flex-wrap gap-5">
         {productos.length > 0 ? (
           productos.map((producto) => (

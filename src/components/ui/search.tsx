@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useId } from 'react';
 import { SlMagnifier } from "react-icons/sl";
+import { twMerge } from 'tailwind-merge'
 
 export interface SearchProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -21,7 +22,9 @@ export const Search: React.FC<SearchProps> = ({
     <div className="w-full">
       <input
         id={searchId}
-        className='bg-foreground text-background text-sm h-10 border-2 border-accent px-3 block w-full py-2 rounded-md hover:border-muted-foreground focus:outline-none focus:ring-2 focus:ring-black-400'
+        className={twMerge  ('bg-foreground text-background text-sm h-10 border-2 border-accent px-3 block w-full py-2 rounded-md hover:border-muted-foreground focus:outline-none focus:ring-2 focus:ring-black-400',
+          className,
+        )}
         {...props}
       />
     </div>

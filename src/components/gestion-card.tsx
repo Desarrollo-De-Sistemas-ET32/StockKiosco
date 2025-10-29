@@ -2,7 +2,10 @@
 'use client'
 
 import React from 'react'
-import { Edit2, Trash2 } from 'lucide-react'
+import { 
+  BiEditAlt,
+  BiTrash
+ } from "react-icons/bi";
 
 type Proveedor = {
   id?: number | string
@@ -34,7 +37,7 @@ export default function CardProveedor({ id, nombre, telefono, cuil, onEdit, onDe
           title="Editar"
           type="button"
         >
-          <Edit2 size={14} />
+          <BiEditAlt size={14} />
           <span className="hidden sm:inline">Editar</span>
         </button>
 
@@ -45,7 +48,7 @@ export default function CardProveedor({ id, nombre, telefono, cuil, onEdit, onDe
           title="Borrar"
           type="button"
         >
-          <Trash2 size={14} />
+          <BiTrash size={14} />
           <span className="hidden sm:inline">Borrar</span>
         </button>
       </div>

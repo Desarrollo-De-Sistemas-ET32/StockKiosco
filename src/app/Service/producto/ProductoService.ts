@@ -4,46 +4,42 @@ import { ProductoPayload, ProductoWithId, CreateProductResponse } from './produc
 
 export const productoService = {
   // Obtener todos los productos
-getAll: async (): Promise<ProductoWithId[]> => {
-  try {
-    const response = await api.get('/producto/leerProducto'); // ruta del backend
-    console.log(response.data);
-    const data = response.data;
+  getAll: async (): Promise<any[]> => {
+    try {
+      const response = await api.get('/producto/leerProducto');
+      const data = response.data;
 
-    // Extraer los productos del objeto de respuesta
-    let productos: any[] = [];
-    if (Array.isArray(data)) productos = data;
-    else if (Array.isArray(data.products)) productos = data.products;
-    else if (data && data.product && typeof data.product === 'object') productos = [data.product];
+      let productos: any[] = [];
+      if (Array.isArray(data)) productos = data;
+      else if (Array.isArray(data.products)) productos = data.products;
+      else if (data && data.product && typeof data.product === 'object') productos = [data.product];
+      else if (data && Array.isArray(data.productos)) productos = data.productos;
+      else if (data && data.proveedores) productos = data.proveedores; // fallback improbable
 
-    // Normalizar los datos
-    const productosNormalizados = productos.map((p) => ({
-      ...p,
-      // Si precio viene como objeto tipo { d: [{ e: X, s: Y }] }, extraemos el número
-      precio:
-        typeof p.precio === 'object'
-          ? Number(p.precio?.d?.[0]?.e ?? 0)
-          : p.precio,
-      // Evitar que stock o descripción sean undefined
-      descripcion: p.descripcion ?? '',
-      stock: Array.isArray(p.stock) ? p.stock : [],
-      fecha_creacion: new Date(p.fecha_creacion),
-      fecha_actualizacion: new Date(p.fecha_actualizacion),
-    }));
+      const productosNormalizados = productos.map((p: any) => ({
+        ...p,
+        precio: typeof p.precio === 'object' ? Number(p.precio?.d?.[0]?.e ?? 0) : Number(p.precio ?? 0),
+        descripcion: p.descripcion ?? '',
+        stock: Array.isArray(p.stock) ? p.stock : [],
+        fecha_creacion: p.fecha_creacion ? new Date(p.fecha_creacion) : null,
+        fecha_actualizacion: p.fecha_actualizacion ? new Date(p.fecha_actualizacion) : null,
+      }));
 
-    return productosNormalizados;
-  } catch (error) {
-    console.error('Error obteniendo productos', error);
-    throw error;
-  }
-},
+      return productosNormalizados;
+    } catch (error) {
+      console.error('Error obteniendo productos', error);
+      throw error;
+    }
+  },
 
-  // Obtener un producto por id
+  // Obtener un producto por id (ruta estándar en muchos backends)
   getById: async (id: number): Promise<ProductoWithId | null> => {
     try {
-      const response = await api.get(`/productos/${id}`);
+      const response = await api.get(`/producto/${id}`);
       return response.data ?? null;
-    } catch (error) {
+    } catch (error: any) {
+      // si no existe la ruta exacta, devolvemos null para que el frontend haga fallback
+      if (error?.response?.status === 404) return null;
       console.error(`Error obteniendo producto ${id}`, error);
       throw error;
     }
@@ -52,10 +48,7 @@ getAll: async (): Promise<ProductoWithId[]> => {
   // Crear un nuevo producto
   create: async (data: ProductoPayload): Promise<CreateProductResponse> => {
     try {
-      const response = await api.post<CreateProductResponse>(
-        '/producto/crearProducto',
-        data
-      );
+      const response = await api.post<CreateProductResponse>('/producto/crearProducto', data);
       return response.data;
     } catch (error: any) {
       console.error('Error creando producto', error);
@@ -66,24 +59,57 @@ getAll: async (): Promise<ProductoWithId[]> => {
     }
   },
 
-  // Actualizar producto por PATCH
+  // Actualizar producto por PATCH (usa la ruta coherente /producto/editarProducto)
   updatePatch: async (data: Partial<ProductoPayload> & { id_producto: number }): Promise<any> => {
+  try {
+    const response = await api.patch('/producto/editarProducto', data);
+    return response.data;
+  } catch (error: any) {
+    // intento de extraer el body del error para mostrarlo en frontend
+    const resp = error?.response;
+    const status = resp?.status;
+    const contentType = resp?.headers?.['content-type'] ?? resp?.headers?.['Content-Type'];
+    let serverBody: any = null;
+
     try {
-      const response = await api.patch('/api/producto/editarProducto', data);
-      return response.data;
-    } catch (error) {
-      console.error(`Error actualizando producto ${data.id_producto}`, error);
-      throw error;
+      if (resp?.data) serverBody = resp.data;
+      else if (typeof resp?.text === 'function') {
+        serverBody = await resp.text();
+      }
+    } catch (e) {
+      serverBody = resp?.data ?? resp?.statusText ?? String(error);
     }
-  },
+
+    console.error(`productoService.updatePatch failed (status ${status})`, serverBody ?? error);
+    // Lanzamos un error con datos útiles
+    const err = new Error(
+      serverBody && typeof serverBody === 'object'
+        ? JSON.stringify(serverBody)
+        : String(serverBody ?? error.message ?? error)
+    );
+    // @ts-ignore
+    err.status = status;
+    throw err;
+  }
+},
 
   // Eliminar producto por id
-  delete: async (id: number): Promise<void> => {
-    try {
-      await api.delete(`/productos/${id}`);
-    } catch (error) {
-      console.error(`Error eliminando producto ${id}`, error);
-      throw error;
-    }
+  // Intentamos DELETE /producto/{id} y si falla, intentamos POST /producto/eliminarProducto con { id_producto }
+delete: async (id: number): Promise<void> => {
+  try {
+    // Llamada principal: método DELETE a /producto/eliminarProducto
+    await api.delete("/producto/eliminarProducto", {
+      data: { id_producto: id },
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error: any) {
+    console.error(`Error eliminando producto ${id}`, error);
+    throw new Error(
+      error?.response?.data?.message ??
+      error?.response?.data?.error ??
+      "Error al eliminar el producto"
+    );
   }
+},
+
 };
