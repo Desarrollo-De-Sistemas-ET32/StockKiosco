@@ -8,7 +8,7 @@ type DetalleVenta = {
 };
 
 type NuevaVenta = {
-  id_usuario: number;
+  id_usuario: number | string;
   detalles: DetalleVenta[];
   total: number;
   pagado?: boolean;
@@ -16,63 +16,70 @@ type NuevaVenta = {
 
 export const addVenta = async (values: NuevaVenta) => {
   try {
+    const id_usuario = Number(values.id_usuario);
 
-    if (!values.id_usuario || values.id_usuario <= 0) {
-      return { success: false, message: "Debe especificar un usuario válido." };
+    // 🔹 Validar usuario existente
+    const usuarioExiste = await db.usuarios.findUnique({
+      where: { id_usuario },
+    });
+    if (!usuarioExiste) {
+      return { success: false, message: `El usuario con ID ${id_usuario} no existe.` };
     }
 
-    if (!values.detalles || values.detalles.length === 0) {
-      return { success: false, message: "Debe agregar al menos un producto en la venta." };
+    // 🔹 Validar productos
+    const idsProductos = values.detalles.map((d) => d.id_producto);
+    const productosExistentes = await db.productos.findMany({
+      where: { id_producto: { in: idsProductos } },
+      select: { id_producto: true },
+    });
+
+    const idsEncontrados = productosExistentes.map((p) => p.id_producto);
+    const idsFaltantes = idsProductos.filter((id) => !idsEncontrados.includes(id));
+
+    if (idsFaltantes.length > 0) {
+      return { success: false, message: `Los siguientes productos no existen: ${idsFaltantes.join(", ")}` };
     }
 
+    // 🔹 Crear venta
     const nuevaVenta = await db.ventas.create({
       data: {
-        id_usuario: values.id_usuario,
-        fecha_venta: new Date(),
+        id_usuario,
         total: values.total,
         pagado: values.pagado ?? false,
         fecha_creacion: new Date(),
         fecha_actualizacion: new Date(),
         detalles_venta: {
-          create: values.detalles.map((detalle) => ({
-            id_producto: detalle.id_producto,
-            cantidad: detalle.cantidad,
-            precio_unitario: detalle.precio_unitario,
-            subtotal: detalle.cantidad * detalle.precio_unitario,
+          create: values.detalles.map((d) => ({
+            id_producto: d.id_producto,
+            cantidad: d.cantidad,
+            precio_unitario: d.precio_unitario,
+            subtotal: d.cantidad * d.precio_unitario,
             fecha_creacion: new Date(),
             fecha_actualizacion: new Date(),
           })),
         },
       },
-      include: {
-        detalles_venta: true,
-      },
+      include: { detalles_venta: true },
     });
 
-    // Actualizar stock de cada producto vendido
-    for (const item of values.detalles) {
+    // 🔹 Actualizar stock
+    for (const d of values.detalles) {
       await db.stock.updateMany({
-        where: { id_producto: item.id_producto },
+        where: { id_producto: d.id_producto },
         data: {
-          cantidad: {
-            decrement: item.cantidad,
-          },
+          cantidad: { decrement: d.cantidad },
           fecha_actualizacion: new Date(),
         },
       });
     }
 
-    return {
-      success: true,
-      message: "Venta registrada correctamente.",
-      venta: nuevaVenta,
-    };
-  } catch (error) {
+    return { success: true, message: "Venta registrada correctamente.", venta: nuevaVenta };
+  } catch (error: any) {
     console.error("Error al registrar la venta:", error);
     return {
       success: false,
       message: "Ocurrió un error al registrar la venta.",
-      error: String(error),
+      error: error.message || error,
     };
   }
 };
