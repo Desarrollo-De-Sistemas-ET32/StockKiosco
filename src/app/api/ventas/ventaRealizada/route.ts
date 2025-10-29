@@ -1,5 +1,6 @@
 import { addVenta } from "@/actions/ventaAction";
 import { NextResponse } from "next/server";
+import db from "@/lib/db";
 
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
@@ -37,6 +38,15 @@ export async function POST(req: Request) {
         { status: 400, headers: CORS_HEADERS }
       );
     }
+
+    // 🔹 Registrar el log de la venta
+    await db.logs.create({
+      data: {
+        id_usuario: body.id_usuario || null,
+        accion: "Registro de venta",
+        descripcion: `Se registró una venta con ID ${result.venta?.id_venta || "(sin ID)"} realizada por el usuario ${body.id_usuario || "desconocido"}.`,
+      },
+    });
 
     console.log("✅ Venta registrada exitosamente:", result);
     return NextResponse.json(result, { status: 200, headers: CORS_HEADERS });
