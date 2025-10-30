@@ -34,47 +34,47 @@ interface ProductCardProps {
   onUpdateSuccess: () => void;
 }
 
-export default function ProductCard({ producto, onUpdateSuccess }: ProductCardProps) {
-  const [editedProduct, setEditedProduct] = useState(() => ({
+export default function ProductCard({
+  producto,
+  onUpdateSuccess,
+}: ProductCardProps) {
+  const mapProductToState = (producto: any) => ({
     nombre: producto?.nombre ?? "",
     codigo_barra: producto?.codigo_barra ?? "",
-    stock: producto?.stock && producto.stock.length > 0 ? producto.stock[0].cantidad : 0,
-    stock_minimo: producto?.stock && producto.stock.length > 0 ? producto.stock[0].cantidad_min : 0,
+    stock: producto?.stock?.[0]?.cantidad ?? 0,
+    stock_minimo: producto?.stock?.[0]?.cantidad_min ?? 0,
     precio: producto?.precio ?? 0,
     id_producto: producto?.id_producto ?? 0,
     imagen: producto?.imagen ?? "",
     categoria: producto?.categoria ?? null,
-    marcaSeleccionada: producto?.marcas && producto.marcas.length > 0 ? producto.marcas[0].nombre_marca : "",
-  }));
+    marcaSeleccionada: producto?.marcas?.[0]?.nombre_marca ?? "",
+  });
 
-  // Sincronizar cuando cambie la prop producto
+  const [editedProduct, setEditedProduct] = useState(() =>
+    mapProductToState(producto)
+  );
+
   useEffect(() => {
-    setEditedProduct({
-      nombre: producto?.nombre ?? "",
-      codigo_barra: producto?.codigo_barra ?? "",
-      stock: producto?.stock && producto.stock.length > 0 ? producto.stock[0].cantidad : 0,
-      stock_minimo: producto?.stock && producto.stock.length > 0 ? producto.stock[0].cantidad_min : 0,
-      precio: producto.precio !== undefined ? Number(producto.precio) : 0,
-      id_producto: producto?.id_producto ?? 0,
-      imagen: producto?.imagen ?? "",
-      categoria: producto?.categoria ?? null,
-      marcaSeleccionada: producto?.marcas && producto.marcas.length > 0 ? producto.marcas[0].nombre_marca : "",
-    });
+    setEditedProduct(mapProductToState(producto));
   }, [producto]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const target = e.target as HTMLInputElement;
-    const key = target.id || target.name;
-    const value = target.value;
-    if (target.type === "number") {
-      setEditedProduct((prev) => ({ ...prev, [key]: value === "" ? "" : Number(value) }));
-    } else {
-      setEditedProduct((prev) => ({ ...prev, [key]: value }));
-    }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const target = e.target;
+    const key = target.name ?? target.id;
+    if (!key) return;
+
+    const value =
+      target.type === "number" ? Number(target.value) : target.value;
+    setEditedProduct((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleMarcaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setEditedProduct((prev) => ({ ...prev, marcaSeleccionada: e.target.value }));
+    setEditedProduct((prev) => ({
+      ...prev,
+      marcaSeleccionada: e.target.value,
+    }));
   };
 
   const handleDelete = async () => {
@@ -85,49 +85,64 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
       onUpdateSuccess();
     } catch (err: any) {
       console.error("Error al eliminar producto:", err);
-      if (err?.response && typeof err.response.data === "string" && err.response.data.trim().startsWith("<")) {
-        alert("El servidor devolvió HTML en vez de JSON al eliminar. Revisa la ruta /producto/eliminarProducto.");
-      } else {
-        alert("Error al eliminar: " + (err?.response?.data?.message ?? err?.message ?? String(err)));
-      }
+      alert(
+        "Error al eliminar: " + (err?.response?.data?.message ?? err?.message)
+      );
     }
   };
 
   const handleEdit = async () => {
-    const { nombre, codigo_barra, stock, precio, marcaSeleccionada, imagen } = editedProduct as any;
-
+    const { nombre, codigo_barra, stock, precio, marcaSeleccionada, imagen, stock_minimo, ...rest } = editedProduct;
     const payload: any = {
-      id_producto: Number(producto.id_producto),
-      nombre: String(nombre ?? producto.nombre ?? ""),
-      codigo_barra: String(codigo_barra ?? producto.codigo_barra ?? ""),
-      stock: Number(stock ?? (producto.stock && producto.stock[0]?.cantidad) ?? 0),
-      precio: Number(editedProduct.precio),
-      images: imagen ?? producto.imagen ?? undefined,
+      id_producto: Number(editedProduct.id_producto),
+      nombre,
+      codigo_barra,
+      stock: stock,
+      precio: precio,
+      stock_minimo: stock_minimo,
+      images: imagen ?? undefined,
     };
 
-    if (producto.categoria?.nombre) payload.categoria = String(producto.categoria.nombre).toLowerCase();
-    if (producto.marcas && producto.marcas.length > 0 && producto.marcas[0].id_marca) payload.id_marca = Number(producto.marcas[0].id_marca);
+    // Estos solo se agregan si existen (no ensucian el payload)
+    if (producto.categoria?.nombre)
+      payload.categoria = producto.categoria.nombre.toLowerCase();
+
+    if (producto.marcas?.[0]?.id_marca)
+      payload.id_marca = Number(producto.marcas[0].id_marca);
+
     if (marcaSeleccionada) payload.marca = String(marcaSeleccionada);
 
     try {
       const result = await productoService.updatePatch(payload);
-      if (result && result.success === false) {
-        alert("Error al actualizar: " + (result.message ?? JSON.stringify(result)));
+
+      if (result.success === false) {
+        alert("Error al actualizar: " + (result.message ?? "Desconocido"));
         return;
       }
+
       alert("Producto actualizado con éxito.");
       onUpdateSuccess();
     } catch (err: any) {
       console.error("Error al actualizar producto:", err);
-      if (err?.response && typeof err.response.data === "string" && err.response.data.trim().startsWith("<")) {
-        alert("El servidor devolvió HTML en vez de JSON al actualizar. Revisa que la ruta /producto/editarProducto exista y responda JSON.");
+
+      if (
+        err?.response &&
+        typeof err.response.data === "string" &&
+        err.response.data.trim().startsWith("<")
+      ) {
+        alert(
+          "El servidor devolvió HTML en vez de JSON. Revisa /producto/editarProducto."
+        );
       } else {
-        alert("Error al actualizar: " + (err?.response?.data?.message ?? err?.message ?? String(err)));
+        alert(
+          "Error al actualizar: " +
+            (err?.response?.data?.message ?? err?.message)
+        );
       }
     }
 
-    const data = await productoService.getAll()
-    console.log("DATA DESPUÉS DEL PATCH", data)
+    const data = await productoService.getAll();
+    console.log("DATA DESPUÉS DEL PATCH", data);
   };
 
   return (
@@ -137,7 +152,9 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
           <div className="flex flex-wrap justify-center lg:justify-start gap-3 text-center lg:text-left">
             <p className="text-lg font-semibold">{producto.nombre}</p>
             <Badge className="bg-confirm text-xs rounded-2xl">
-              {producto.stock && producto.stock.length > 0 ? "Hay stock" : "Sin stock"}
+              {producto.stock && producto.stock.length > 0
+                ? "Hay stock"
+                : "Sin stock"}
             </Badge>
             <Badge className="bg-neutral text-xs rounded-2xl">
               {producto.categoria ? producto.categoria.nombre : "Sin categoría"}
@@ -146,9 +163,24 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-muted-foreground">
             <p>Precio: $ {producto.precio}</p>
-            <p>Stock: {producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad : "No disponible"}</p>
-            <p>Stock mínimo: {producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad_min : 0}</p>
-            <p>Valor total: ${producto.stock && producto.stock.length > 0 ? producto.stock[0].cantidad * producto.precio : 0}</p>
+            <p>
+              Stock:{" "}
+              {producto.stock && producto.stock.length > 0
+                ? producto.stock[0].cantidad
+                : "No disponible"}
+            </p>
+            <p>
+              Stock mínimo:{" "}
+              {producto.stock && producto.stock.length > 0
+                ? producto.stock[0].cantidad_min
+                : 0}
+            </p>
+            <p>
+              Valor total: $
+              {producto.stock && producto.stock.length > 0
+                ? producto.stock[0].cantidad * producto.precio
+                : 0}
+            </p>
             <p className="col-span-full">Código: {producto.codigo_barra}</p>
           </div>
         </div>
@@ -161,43 +193,92 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
               </Button>
             </AlertDialogTrigger>
 
-            <AlertDialogContent className="border-none w-[50vh]">
+            <AlertDialogContent className="w-7xl border-none">
               <AlertDialogHeader>
-                <AlertDialogTitle className="mb-5 flex justify-center">Editar producto</AlertDialogTitle>
+                <AlertDialogTitle className="mb-5">
+                  Editar producto
+                </AlertDialogTitle>
 
                 <AlertDialogDescription asChild>
-                  <div className="flex flex-col w-full gap-5">
+                  <div className="flex flex-col w-[50%] gap-5">
                     <div className="flex flex-row gap-5 justify-center items-center">
                       <div className="flex flex-col gap-1 w-full">
                         <Label htmlFor="nombre">Nombre del producto</Label>
-                        <Input id="nombre" value={String(editedProduct.nombre)} onChange={handleInputChange} placeholder={producto.nombre} className="bg-var1 rounded-4xl border-none" />
+                        <Input
+                          id="nombre"
+                          name="nombre"
+                          placeholder={editedProduct.nombre}
+                          onChange={handleInputChange}
+                          className="bg-var1 rounded-4xl border-none"
+                        />
                       </div>
+
                       <div className="flex flex-col gap-1 w-full">
                         <Label htmlFor="codigo_barra">Código de barras</Label>
-                        <Input id="codigo_barra" value={String(editedProduct.codigo_barra)} placeholder="000000000000" onChange={handleInputChange} className="bg-var1 rounded-4xl border-none" />
+                        <Input
+                          id="codigo_barra"
+                          name="codigo_barra"
+                          placeholder={editedProduct.codigo_barra}
+                          onChange={handleInputChange}
+                          className="bg-var1 rounded-4xl border-none"
+                        />
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-1">
                       <Label htmlFor="precio">Precio</Label>
-                      <Input id="precio" type="number" value={String(editedProduct.precio)} onChange={handleInputChange} placeholder={String(editedProduct.precio)} className="bg-var1 rounded-4xl border-none" />
+                      <Input
+                        id="precio"
+                        name="precio"
+                        type="number"
+                        placeholder={editedProduct.precio}
+                        onChange={handleInputChange}
+                        className="bg-var1 rounded-4xl border-none"
+                      />
                     </div>
 
                     <div className="flex flex-row gap-5 justify-between">
                       <div className="flex flex-col gap-1 w-full">
                         <Label htmlFor="stock">Stock</Label>
-                        <Input id="stock" type="number" value={String(editedProduct.stock)} onChange={handleInputChange} placeholder={producto.stock && producto.stock.length > 0 ? String(producto.stock[0].cantidad) : "0"} className="bg-var1 rounded-4xl border-none" />
+                        <Input
+                          id="stock"
+                          name="stock"
+                          type="number"
+                          placeholder={editedProduct.stock}
+                          onChange={handleInputChange}
+                          className="bg-var1 rounded-4xl border-none"
+                        />
                       </div>
 
                       <div className="flex flex-col gap-1 w-full">
                         <Label htmlFor="stock_minimo">Stock Minimo</Label>
-                        <Input id="stock_minimo" type="number" value={String(editedProduct.stock_minimo)} placeholder={producto.stock && producto.stock.length > 0 ? String(producto.stock[0].cantidad_min) : "0"} onChange={handleInputChange} className="bg-var1 rounded-4xl border-none" />
+                        <Input
+                          id="stock_minimo"
+                          name="stock_minimo"
+                          type="number"
+                          placeholder={editedProduct.stock_minimo}
+                          onChange={handleInputChange}
+                          className="bg-var1 rounded-4xl border-none"
+                        />
                       </div>
 
                       <div className="flex flex-col gap-1 w-full">
                         <Label htmlFor="marca">Marca</Label>
-                        <select id="marca" value={(editedProduct as any).marcaSeleccionada} onChange={handleMarcaChange} className="p-2 rounded">
-                          {(producto.marcas?.length ?? 0) > 0 ? producto.marcas!.map((m) => (<option key={m.id_marca} value={m.nombre_marca}>{m.nombre_marca}</option>)) : (<option value="">Sin marcas</option>)}
+                        <select
+                          id="marca"
+                          value={(editedProduct as any).marcaSeleccionada}
+                          onChange={handleMarcaChange}
+                          className="p-2 rounded"
+                        >
+                          {(producto.marcas?.length ?? 0) > 0 ? (
+                            producto.marcas!.map((m) => (
+                              <option key={m.id_marca} value={m.nombre_marca}>
+                                {m.nombre_marca}
+                              </option>
+                            ))
+                          ) : (
+                            <option value="">Sin marcas</option>
+                          )}
                         </select>
                       </div>
                     </div>
@@ -205,9 +286,11 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
-              <AlertDialogFooter className="flex items-center w-full sm:justify-evenly">
-                <AlertDialogCancel className="bg-var2 hover:bg-foreground/50 w-[50%]">Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleEdit} className="bg-var2 hover:bg-foreground/50 w-[50%]">Guardar</AlertDialogAction>
+              <AlertDialogFooter className="flex flex-row justify-center items-center">
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleEdit}>
+                  Guardar
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -222,12 +305,20 @@ export default function ProductCard({ producto, onUpdateSuccess }: ProductCardPr
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Eliminar producto</AlertDialogTitle>
-                <AlertDialogDescription>¿Seguro que deseas eliminar este producto? Esta acción no se puede deshacer.</AlertDialogDescription>
+                <AlertDialogDescription>
+                  ¿Seguro que deseas eliminar este producto? Esta acción no se
+                  puede deshacer.
+                </AlertDialogDescription>
               </AlertDialogHeader>
 
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/70">Eliminar</AlertDialogAction>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  className="bg-destructive hover:bg-destructive/70"
+                >
+                  Eliminar
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

@@ -92,7 +92,7 @@ model stock {
   id_stock            Int       @id @default(autoincrement())
   id_producto         Int       @unique
   cantidad            Int?
-  fecha_actualizacion DateTime
+  fecha_actualizacion DateTime  @updatedAt
   productos           productos @relation(fields: [id_producto], references: [id_producto])
 }
 

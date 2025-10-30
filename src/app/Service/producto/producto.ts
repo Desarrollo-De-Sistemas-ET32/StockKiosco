@@ -5,7 +5,7 @@ export interface ProductoPayload {
   nombre: string;
   codigo_barra: string | bigint;
   precio: number;
-  stock: { id_stock: number; cantidad: number }[];
+  stock: { id_stock: number; cantidad: number ; cantidad_min: number }[];
   categoria: string; // nombre de la categoría (el backend busca por nombre)
   images?: string;
   stock_minimo?: number;
@@ -22,6 +22,7 @@ export interface ProductoWithId {
   nombre: string;
   codigo_barra: string;
   precio: number;
+  stock: { id_stock: number; cantidad: number ; cantidad_min: number }[];
   fecha_creacion: string;
   fecha_actualizacion: string;
   id_proveedor: number;
