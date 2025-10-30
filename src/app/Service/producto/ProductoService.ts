@@ -3,8 +3,9 @@ import api from '../API';
 import { ProductoPayload, ProductoWithId, CreateProductResponse } from './producto';
 
 export const productoService = {
+
   // Obtener todos los productos
-  getAll: async (): Promise<any[]> => {
+  getAll: async (): Promise<ProductoWithId[]> => {
     try {
       const response = await api.get('/producto/leerProducto');
       const data = response.data;
@@ -16,11 +17,17 @@ export const productoService = {
       else if (data && Array.isArray(data.productos)) productos = data.productos;
       else if (data && data.proveedores) productos = data.proveedores; // fallback improbable
 
-      const productosNormalizados = productos.map((p: any) => ({
+      const productosNormalizados = productos.map((p) => ({
         ...p,
-        precio: typeof p.precio === 'object' ? Number(p.precio?.d?.[0]?.e ?? 0) : Number(p.precio ?? 0),
+        precio: p.precio !== undefined && p.precio !== null ? p.precio.toString() : "0",
         descripcion: p.descripcion ?? '',
-        stock: Array.isArray(p.stock) ? p.stock : [],
+        stock: Array.isArray(p.stock)
+          ? p.stock.map((s: any) => ({
+              id_stock: Number(s.id_stock ?? s.id ?? 0),
+              cantidad: Number(s.cantidad ?? 0),
+              cantidad_min: Number(s.cantidad_min ?? s.cantidad_minima ?? 0),
+            }))
+          : [],
         fecha_creacion: p.fecha_creacion ? new Date(p.fecha_creacion) : null,
         fecha_actualizacion: p.fecha_actualizacion ? new Date(p.fecha_actualizacion) : null,
       }));
@@ -60,7 +67,7 @@ export const productoService = {
   },
 
   // Actualizar producto por PATCH (usa la ruta coherente /producto/editarProducto)
-  updatePatch: async (data: Partial<ProductoPayload> & { id_producto: number }): Promise<any> => {
+  updatePatch: async (data: Partial<ProductoPayload> & { id_producto: number }): Promise<ProductoWithId> => {
   try {
     const response = await api.patch('/producto/editarProducto', data);
     return response.data;
