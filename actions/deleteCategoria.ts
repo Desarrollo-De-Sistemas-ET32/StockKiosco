@@ -3,16 +3,7 @@
 import { z } from 'zod'
 import db from '@/lib/db'
 import { deleteCategoriaSchema } from '@/schemas/categoria_scheme'
-
-function bigintToString(obj: any): any {
-  if (typeof obj === 'bigint') return obj.toString()
-  if (Array.isArray(obj)) return obj.map(bigintToString)
-  if (obj && typeof obj === 'object')
-    return Object.fromEntries(
-      Object.entries(obj).map(([k, v]) => [k, bigintToString(v)])
-    )
-  return obj
-}
+import { serializePrismaObject } from '@/lib/utils'
 
 interface ResultadoDeleteCategoria {
   success: boolean
@@ -43,7 +34,7 @@ export const deleteCategoria = async (values: unknown): Promise<ResultadoDeleteC
     return {
       success: true,
       message: 'Categoría eliminada correctamente',
-      categoria: bigintToString(categoriaEliminada),
+      categoria: serializePrismaObject(categoriaEliminada),
     }
   } catch (err: any) {
     if (err instanceof z.ZodError) {

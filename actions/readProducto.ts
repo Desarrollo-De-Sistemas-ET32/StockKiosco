@@ -2,18 +2,7 @@
 'use server'
 
 import db from '@/lib/db'
-
-function normalizeProduct(obj: any): any {
-  if (typeof obj === 'bigint') return obj.toString()
-  if (obj && obj.constructor?.name === 'Decimal') return Number(obj.toString())
-  if (obj instanceof Date) return obj.toISOString()
-  if (Array.isArray(obj)) return obj.map(normalizeProduct)
-  if (obj && typeof obj === 'object')
-    return Object.fromEntries(
-      Object.entries(obj).map(([k, v]) => [k, normalizeProduct(v)])
-    )
-  return obj
-}
+import { serializePrismaObject } from '@/lib/utils'
 
 export const readProductos = async () => {
   try {
@@ -27,7 +16,7 @@ export const readProductos = async () => {
       orderBy: { id_producto: 'asc' },
     })
 
-    const normalized = normalizeProduct(products)
+    const normalized = serializePrismaObject(products)
     return { products: normalized }
   } catch (error: any) {
     console.error('Error leyendo productos:', error)

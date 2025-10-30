@@ -4,18 +4,7 @@
 import db from '@/lib/db'
 import { z } from 'zod'
 import { readCategoriaSchema } from '@/schemas/categoria_scheme' 
-
-function normalize(obj: any): any {
-  if (typeof obj === 'bigint') return obj.toString()
-  if (obj && obj.constructor?.name === 'Decimal') return Number(obj.toString())
-  if (obj instanceof Date) return obj.toISOString()
-  if (Array.isArray(obj)) return obj.map(normalize)
-  if (obj && typeof obj === 'object')
-    return Object.fromEntries(
-      Object.entries(obj).map(([k, v]) => [k, normalize(v)])
-    )
-  return obj
-}
+import { serializePrismaObject } from '@/lib/utils'
 
 type ReadCategoriaParams = z.infer<typeof readCategoriaSchema>
 
@@ -39,7 +28,7 @@ export const readCategoria = async (params?: ReadCategoriaParams) => {
       orderBy: { id_categoria: 'asc' },
     })
 
-    return { categorias: normalize(categorias) }
+    return { categorias: serializePrismaObject(categorias) }
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       const formattedErrors = error.errors.reduce((acc, curr) => {

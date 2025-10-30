@@ -1,102 +1,89 @@
 "use server";
 import db from "@/lib/db";
 import { updateProductSchema } from "@/schemas/producto_scheme";
-import { z } from "zod";
-
-function bigintToString(obj: any): any {
-  if (typeof obj === "bigint") return obj.toString();
-  if (Array.isArray(obj)) return obj.map(bigintToString);
-  if (obj && typeof obj === "object")
-    return Object.fromEntries(
-      Object.entries(obj).map(([k, v]) => [k, bigintToString(v)])
-    );
-  return obj;
-}
+import { serializePrismaObject } from "@/lib/utils";
+import { z } from "zod"; // Asegúrate de importar 'z'
 
 export const updateProduct = async (values: unknown) => {
   try {
     const validatedData = updateProductSchema.parse(values);
 
-    const updateData: any = {};
+    // ¡AÑADE ESTA LÍNEA DE DEBUGGING!
+    console.log("Datos DESPUÉS de Zod:", validatedData);
 
-    if (validatedData.nombre) updateData.nombre = validatedData.nombre;
-    if (validatedData.precio) updateData.precio = validatedData.precio;
-    if (validatedData.codigo_barra)
-      updateData.codigo_barra =
-        typeof validatedData.codigo_barra === "string"
-          ? BigInt(validatedData.codigo_barra)
-          : validatedData.codigo_barra;
-    if (validatedData.id_proveedor !== undefined)
-      updateData.id_proveedor = validatedData.id_proveedor;
-    if (validatedData.id_marca !== undefined)
-      updateData.id_marca = validatedData.id_marca;
-    if (validatedData.images !== undefined)
-      updateData.images = validatedData.images;
-    if (validatedData.fecha_actualizacion)
-      updateData.fecha_actualizacion = validatedData.fecha_actualizacion;
-    else updateData.fecha_actualizacion = new Date();
+    // 1. DESESTRUCTURACIÓN CORREGIDA:
+    //    Cambiamos 'stock_min' por 'stock_minimo' para que coincida con tus datos
+    const { id_producto, stock, categoria, stock_minimo, ...productData } =
+      validatedData;
 
-    if (validatedData.categoria) {
+    const updateData: any = { ...productData };
+
+    // 2. Convertir BigInt (String -> BigInt)
+    if (updateData.codigo_barra) {
+      updateData.codigo_barra = BigInt(updateData.codigo_barra);
+    }
+
+    // 3. AÑADIR FECHA DE ACTUALIZACIÓN (para la tabla 'productos')
+    //    Tu schema 'productos' lo requiere y no tiene @updatedAt
+    updateData.fecha_actualizacion = new Date();
+
+
+    // 4. Resolver Categoría
+    if (categoria) {
       const categoriaRecord = await db.categorias.findUnique({
-        where: { nombre: validatedData.categoria.toLowerCase() },
+        where: { nombre: categoria.toLowerCase() },
       });
       if (!categoriaRecord) {
         return {
           success: false,
-          message: `La categoría "${validatedData.categoria}" no existe`,
+          message: `La categoría "${categoria}" no existe`,
         };
       }
       updateData.id_categoria = categoriaRecord.id_categoria;
     }
 
-    const product = await db.productos.update({
-      where: { id_producto: validatedData.id_producto },
+    // 5. Preparar actualización de Stock (anidada)
+    const stockUpdatePayload: any = {};
+    if (stock !== undefined) {
+      stockUpdatePayload.cantidad = stock;
+    }
+
+    // 6. CORRECCIÓN CLAVE: Usar las variables correctas
+    if (stock_minimo !== undefined) {
+      // 'cantidad_min' es el nombre del campo en tu BD (según tu 2da imagen)
+      // 'stock_minimo' es la variable que viene de validatedData
+      stockUpdatePayload.cantidad_min = stock_minimo;
+    }
+
+    // 7. Lógica del upsert (Solo si hay algo que actualizar en stock)
+    if (Object.keys(stockUpdatePayload).length > 0) {
+      updateData.stock = {
+        upsert: {
+          where: { id_producto: id_producto },
+          update: stockUpdatePayload,
+          create: stockUpdatePayload,
+        },
+      };
+    }
+
+    // 8. Ejecutar la transacción (una sola llamada a la BD)
+    const updatedProduct = await db.productos.update({
+      where: { id_producto: id_producto },
       data: updateData,
       include: {
         stock: true,
+        marcas: true,
+        categoria: true,
       },
     });
 
-    // Actualización de stock automáticamente
-    if (validatedData.stock !== undefined) {
-      const stockRecord = await db.stock.findFirst({
-        where: { id_producto: validatedData.id_producto },
-      });
-
-      if (stockRecord) {
-        await db.stock.update({
-          where: { id_stock: stockRecord.id_stock },
-          data: {
-            cantidad: validatedData.stock,
-            fecha_actualizacion: new Date(),
-          },
-        });
-      } else {
-        await db.stock.create({
-          data: {
-            id_producto: validatedData.id_producto,
-            cantidad: validatedData.stock,
-            fecha_actualizacion: new Date(),
-          },
-        });
-      }
-    }
-
-    const updatedProduct = await db.productos.findUnique({
-      where: { id_producto: validatedData.id_producto },
-      include: {
-        stock: true,
-        marcas: true,     // nombre correcto según tu schema
-        categoria: true,  // ya está correcto
-      },
-    });
     return {
       success: true,
       message: "Producto actualizado correctamente",
-      product: bigintToString(updatedProduct),
+      product: serializePrismaObject(updatedProduct),
     };
   } catch (err: any) {
-    if (err instanceof z.ZodError) {
+    if (err instanceof z.ZodError) { // Manejo de ZodError
       return {
         success: false,
         message: "Error de validación en los datos enviados",
@@ -114,10 +101,10 @@ export const updateProduct = async (values: unknown) => {
       };
     }
 
-    console.error("Error al actualizar el producto:", err);
+    console.error("Error en updateProduct:", err);
     return {
       success: false,
-      message: "Ocurrió un error al actualizar el producto",
+      message: "Error interno del servidor",
     };
   }
 };

@@ -40,7 +40,10 @@ export async function PATCH(req: NextRequest) {
       },
     });
 
-    console.log("Producto editado exitosamente:", result.product);
+    console.log(
+  "Producto editado exitosamente:",
+  JSON.stringify(result, null, 2)
+);
     return NextResponse.json(result, { status: 200, headers: CORS_HEADERS });
   } catch (err) {
     console.error("Error en API (editarProducto):", err);

@@ -3,16 +3,7 @@
 import db from "@/lib/db"
 import { updateCategoriaSchema } from "@/schemas/categoria_scheme"
 import { z } from "zod"
-
-function bigintToString(obj: any): any {
-  if (typeof obj === "bigint") return obj.toString()
-  if (Array.isArray(obj)) return obj.map(bigintToString)
-  if (obj && typeof obj === "object")
-    return Object.fromEntries(
-      Object.entries(obj).map(([k, v]) => [k, bigintToString(v)])
-    )
-  return obj
-}
+import { serializePrismaObject } from "@/lib/utils"
 
 interface ResultadoUpdateCategoria {
   success: boolean
@@ -40,7 +31,7 @@ export const updateCategoria = async (values: unknown): Promise<ResultadoUpdateC
       return {
         success: true,
         message: "Sin cambios en la categoría",
-        categoria: bigintToString(categoriaExistente),
+        categoria: serializePrismaObject(categoriaExistente),
       }
     }
 
@@ -66,7 +57,7 @@ export const updateCategoria = async (values: unknown): Promise<ResultadoUpdateC
     return {
       success: true,
       message: "Categoría actualizada correctamente",
-      categoria: bigintToString(categoriaActualizada),
+      categoria: serializePrismaObject(categoriaActualizada),
     }
   } catch (err: any) {
     if (err instanceof z.ZodError) {
