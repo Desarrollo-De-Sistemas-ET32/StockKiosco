@@ -31,7 +31,7 @@ export const productoService = {
         fecha_creacion: p.fecha_creacion ? new Date(p.fecha_creacion) : null,
         fecha_actualizacion: p.fecha_actualizacion ? new Date(p.fecha_actualizacion) : null,
       }));
-
+      
       return productosNormalizados;
     } catch (error) {
       console.error('Error obteniendo productos', error);

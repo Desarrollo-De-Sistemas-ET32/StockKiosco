@@ -10,7 +10,7 @@ import { productoService } from '@/app/Service/producto/ProductoService';
 interface Producto {
   imagen: any;
   categoria: { id_categoria: number; nombre: string };
-  marcas: { id_marca: number; nombre_marca: string }[];
+  marcas: { id_marca: number; nombre_marca: string };
   id_producto: number;
   nombre: string;
   descripcion?: string;
@@ -35,11 +35,14 @@ export default function ProductManagement() {
       const lista = Array.isArray(data) ? data : [data];
 
       const formattedData: Producto[] = lista.map((item: any) => {
-        const marcas: { id_marca: number; nombre_marca: string }[] = Array.isArray(item.marcas)
-          ? item.marcas
-          : item.marca
-            ? [{ id_marca: item.id_marca ?? 0, nombre_marca: String(item.marca) }]
-            : [];
+        const marcas =
+          item.marcas && typeof item.marcas === 'object'
+            ? item.marcas
+            : item.marca_nombre
+              ? { id_marca: item.id_marca ?? 0, nombre_marca: String(item.marca_nombre) }
+              : item.marcas
+                ? { id_marca: item.id_marca ?? 0, nombre_marca: String(item.marcas) }
+                : { id_marca: 0, nombre_marca: '' };
 
         const categoria =
           item.categoria && typeof item.categoria === 'object'
@@ -66,7 +69,7 @@ export default function ProductManagement() {
           imagen: item.images ?? item.imagen ?? null,
           categoria,
           marcas,
-        } as Producto;
+        }
       });
 
       setProductos(formattedData);
@@ -107,8 +110,8 @@ export default function ProductManagement() {
         payload.categoria = String(producto.categoria.nombre).toLowerCase();
       }
 
-      if (producto.marcas && producto.marcas.length > 0 && producto.marcas[0].id_marca) {
-        payload.id_marca = Number(producto.marcas[0].id_marca);
+      if (producto.marcas?.id_marca) {
+        payload.id_marca = Number(producto.marcas.id_marca);
       }
 
       const result = await productoService.updatePatch(payload);
@@ -160,7 +163,7 @@ export default function ProductManagement() {
   if (error) return <div className="text-center mt-10 text-danger">{error}</div>;
 
   return (
-    <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-6 lg:mx-50">
+    <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-6 lg:mx-100">
       <div className="flex flex-col gap-6 w-full">
         {productos.length > 0 ? (
           productos.map((producto) => (

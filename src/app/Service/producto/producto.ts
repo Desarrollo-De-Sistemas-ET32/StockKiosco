@@ -18,6 +18,8 @@ export interface ProductoPayload {
 
 // Producto tal como viene del backend
 export interface ProductoWithId {
+  success: boolean;
+  message: string;
   id_producto?: number;
   nombre: string;
   codigo_barra: string;

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
+import { Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -19,30 +19,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
+interface ComboboxProps {
+  marcas: { id_marca: number; nombre_marca: string }[];
+}
 
-export function ExampleCombobox() {
+export function ComboboxDemo({ marcas }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
 
@@ -52,36 +33,34 @@ export function ExampleCombobox() {
         <Button
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="justify-between dark:bg-var1 bg-var6 w-full"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
-          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            ? marcas.find((marca) => marca.id_marca.toString() === value)?.nombre_marca
+            : "Seleccionar marca"}
+          <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="p-0 dark:bg-var1 bg-var6 w-full">
         <Command>
-          <CommandInput placeholder="Search framework..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {marcas.map((marca) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={marca.id_marca}
+                  value={marca.id_marca.toString()}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue)
                     setOpen(false)
                   }}
                 >
-                  <CheckIcon
+                  {marca.nombre_marca}
+                  <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      "ml-auto",
+                      value === marca.id_marca.toString() ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {framework.label}
                 </CommandItem>
               ))}
             </CommandGroup>
