@@ -17,6 +17,7 @@ export const readProductos = async () => {
     })
 
     const normalized = serializePrismaObject(products)
+    console.log
     return { products: normalized }
   } catch (error: any) {
     console.error('Error leyendo productos:', error)

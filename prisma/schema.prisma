@@ -93,7 +93,7 @@ model stock {
   cantidad            Int?
   fecha_actualizacion DateTime @updatedAt
   cantidad_min        Int?
-  productos           productos @relation(fields: [id_producto], references: [id_producto])
+  productos           productos @relation(fields: [id_producto], references: [id_producto], onDelete: Cascade)
 }
 
 model usuarios {
