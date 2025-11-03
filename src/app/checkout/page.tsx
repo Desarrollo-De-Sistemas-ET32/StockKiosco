@@ -90,7 +90,7 @@ export default function ChequePage() {
   return (
     <main className="h-screen flex flex-col mx-25">
       <div className="grid grid-cols-[3fr_1fr] gap-6 p-4 h-full">
-        <div className="bg-var5 dark:bg-var2 rounded-xl p-6 drop-shadow-xl flex flex-col items-center justify-center gap-4">
+        <div className="bg-light-30 dark:bg-dark-30 rounded-xl p-6 drop-shadow-xl flex flex-col items-center justify-center gap-4">
           {productosAgregados.length === 0 ? (
             <>
               <h1 className="pb-10 text-black dark:text-white">
@@ -98,7 +98,7 @@ export default function ChequePage() {
               </h1>
 
               <Button
-                className="w-xs h-16 text-xl font-medium dark:bg-var1 dark:hover:bg-neutral-900 dark:text-white bg-var6 hover:bg-var3 hover:text-white"
+                className="w-xs h-16 text-xl font-medium dark:bg-dark-60 dark:hover:bg-neutral-900 dark:text-white bg-light-60 hover:bg-var3 hover:text-white"
                 onClick={() => setShowPopup(true)}
               >
                 Agregar Productos
@@ -108,7 +108,7 @@ export default function ChequePage() {
             productosAgregados.map((producto, index) => (
               <div
                 key={index}
-                className="w-full dark:bg-var1 dark:hover:bg-neutral-900 transition-colors rounded-lg flex items-center justify-between p-4"
+                className="w-full dark:bg-dark-60 dark:hover:bg-neutral-900 transition-colors rounded-lg flex items-center justify-between p-4"
               >
                 <span className="text-sm text-gray-400 w-[15%]">
                   {producto.codigo_barra ?? "—"}
@@ -133,8 +133,8 @@ export default function ChequePage() {
           )}
         </div>
 
-        <div className="bg-var5 dark:bg-var2 rounded-xl p-4 drop-shadow-xl flex flex-col">
-          <div className="w-full bg-var7 dark:bg-var1 rounded-md flex flex-col items-center transition-all cursor-pointer overflow-hidden">
+        <div className="bg-light-30 dark:bg-dark-30 rounded-xl p-4 drop-shadow-xl flex flex-col">
+          <div className="w-full bg-light-60 dark:bg-dark-60 rounded-md flex flex-col items-center transition-all cursor-pointer overflow-hidden">
             <div
               onClick={() => setShowAplicarMenu(!showAplicarMenu)}
               className="flex justify-center items-center h-15 w-full dark:hover:bg-neutral-900 transition-colors"
@@ -157,7 +157,7 @@ export default function ChequePage() {
                 className={`w-full h-12 rounded-md flex items-center justify-center ${
                   processing
                     ? "bg-gray-500 cursor-not-allowed"
-                    : "bg-neutral-800 hover:bg-neutral-700 cursor-pointer"
+                    : "bg-light-10 dark:bg-dark-30 dark:hover:bg-neutral-900 cursor-pointer"
                 } transition-colors mb-2`}
               >
                 {processing ? "Procesando..." : "Confirmar Venta"}
@@ -166,7 +166,7 @@ export default function ChequePage() {
           </div>
 
           <div
-            className="w-full h-25 bg-var7 dark:bg-var1 rounded-md flex items-center justify-center hover:bg-green-400 transition-colors mt-4 cursor-pointer"
+            className="w-full h-25 bg-light-60 dark:bg-dark-60 rounded-md flex items-center justify-center hover:bg-green-400 transition-colors mt-4 cursor-pointer"
             onClick={handleCrearVenta}
           >
             <BiMoneyWithdraw className="size-10" />
@@ -189,13 +189,13 @@ export default function ChequePage() {
           onClick={() => setShowPopup(false)}
         >
           <div
-            className="bg-var5 dark:bg-var2 rounded-xl p-6 w-[500px] h-[500px] shadow-2xl flex flex-col items-start justify-start relative overflow-hidden"
+            className="bg-light-30 dark:bg-dark-30 rounded-xl p-6 w-[500px] h-[500px] shadow-2xl flex flex-col items-start justify-start relative overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <Search
               id="search-producto"
               placeholder="Buscar nombre de Producto"
-              className="w-full bg-background dark:bg-background text-foreground border-0 focus:ring-0"
+              className="w-full bg-light-10 dark:bg-dark-60 text-foreground border-0 focus:ring-0"
               label=""
             />
 
@@ -207,7 +207,7 @@ export default function ChequePage() {
                   <div
                     key={index}
                     onClick={() => handleAgregarProducto(detalle)}
-                    className="w-full bg-var1 hover:bg-foreground/20 transition-colors rounded-md flex items-center justify-between p-3 mb-2 cursor-pointer"
+                    className="w-full bg-light-10 dark:bg-dark-60 hover:bg-light-60 hover:dark:bg-dark-10 transition-colors rounded-md flex items-center justify-between p-3 mb-2 cursor-pointer"
                   >
                     <span className="text-sm text-foreground">
                       ID Producto: {detalle.id_producto}
