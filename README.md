@@ -29,6 +29,7 @@ Copia el resultado en tu `.env` como `NEXTAUTH_SECRET`.
 `npm run dev`  
 La aplicación estará disponible en: `http://localhost:3000`  
 
+
 🛠️ **Tecnologías clave:** Next.js, React, TypeScript, Prisma ORM, NextAuth.js, Zod (validación de datos), Tailwind CSS (estilos modernos y responsivos).  
 
 💡 **Descripción:** StockKiosco permite gestionar inventario de kioscos de manera **eficiente, segura y moderna**, con autenticación robusta y tecnología full-stack actual.
