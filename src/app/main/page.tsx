@@ -16,7 +16,7 @@ import StockBajo from "@/components/product-box";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { productoService } from "@/app/Service/producto/ProductoService";
-import { ventasService } from "@/app/Service/ventas/VentasService";
+import ventasService from "@/app/Service/ventas/VentasService";
 
 type Producto = {
   id: number;
@@ -39,75 +39,158 @@ export default function MainPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [ventas, setVentas] = useState<VentaInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingVentas, setLoadingVentas] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const prods = await productoService.getAll();
-        const productosNormalizados = prods.map((p) => ({
-          id: p.id_producto ?? p.id ?? 0,
-          name: p.nombre ?? "Sin nombre",
-          unidades: p.stock?.[0]?.cantidad ?? 0,
-          minimoUnidades: p.stock?.[0]?.cantidad_min ?? 0,
-          price: Number(p.precio ?? 0),
-          categoria: p.categoria ?? "Sin categoría",
-          brand: p.marca ?? "Sin marca",
-        }));
-        setProductos(productosNormalizados);
+        // Productos
+        let prods = [];
+        try {
+          prods = await productoService.getAll();
+        } catch (err) {
+          console.error("Error obteniendo productos:", err);
+          prods = [];
+        }
 
-        const ventasData = await ventasService.getAll();
-        const ventasNormalizadas: VentaInfo[] = ventasData.map((v: any) => ({
-          id_venta: Number(v.id_venta),
-          detalles: Array.isArray(v.detalles)
-            ? v.detalles.map((d) => ({
-                id_producto: Number(d.id_producto),
-                cantidad: Number(d.cantidad),
-              }))
-            : [],
-          total: Number(v.total ?? 0),
-          fecha: v.fecha_venta ?? v.fecha ?? new Date().toISOString(),
-        }));
-        setVentas(ventasNormalizadas);
-      } catch (err) {
-        console.error("Error cargando datos:", err);
-        setProductos([]);
-        setVentas([]);
+        const productosNormalizados: Producto[] = (prods ?? []).map((p: any) => {
+          // precio: puede venir como string o number o un objeto Decimal-like
+          const precioRaw = p.precio ?? p.price ?? p.valor ?? "0";
+          const precio = Number(String(precioRaw).replace(/[^0-9.-]/g, "")) || 0;
+
+          // stock puede venir como array o objeto o undefined
+          const stockEntry =
+            Array.isArray(p.stock) && p.stock.length > 0
+              ? p.stock[0]
+              : p.stock && typeof p.stock === "object"
+              ? p.stock
+              : null;
+
+          const unidades = Number(stockEntry?.cantidad ?? 0) || 0;
+          const minimoUnidades =
+            Number(stockEntry?.cantidad_min ?? stockEntry?.cantidad_minima ?? 0) || 0;
+
+          const categoria =
+            (p.categoria && (p.categoria.nombre ?? p.categoria)) ??
+            p.categoria_nombre ??
+            p.id_categoria ??
+            "Sin categoría";
+
+          const brand =
+            (p.marcas && (p.marcas.nombre_marca ?? p.marcas)) ??
+            p.marca ??
+            p.nombre_marca ??
+            "Sin marca";
+
+          return {
+            id: Number(p.id_producto ?? p.id ?? 0),
+            name: String(p.nombre ?? p.title ?? "Sin nombre"),
+            unidades,
+            minimoUnidades,
+            price: precio,
+            categoria: String(categoria ?? "Sin categoría"),
+            brand: String(brand ?? "Sin marca"),
+          };
+        });
+
+        setProductos(productosNormalizados);
       } finally {
         setLoading(false);
       }
     };
 
+    // Cargamos ventas por separado (para que un fallo en productos no corte todo)
+    const fetchVentas = async () => {
+      setLoadingVentas(true);
+      try {
+        let ventasRaw: any[] = [];
+        try {
+          ventasRaw = await ventasService.getAll();
+        } catch (err) {
+          console.error("Error obteniendo ventas:", err);
+          ventasRaw = [];
+        }
+
+        const ventasNormalizadas: VentaInfo[] = (ventasRaw ?? []).map((v: any) => {
+          const rawDetalles =
+            Array.isArray(v.detalles) && v.detalles.length > 0
+              ? v.detalles
+              : Array.isArray(v.detalles_venta) && v.detalles_venta.length > 0
+              ? v.detalles_venta
+              : v.detalles ?? [];
+
+          const detalles = (rawDetalles ?? []).map((d: any) => ({
+            id_producto: Number(d.id_producto ?? d.id ?? 0),
+            cantidad: Number(d.cantidad ?? d.cant ?? d.qty ?? 0),
+          }));
+
+          const totalFromServer = v.total ?? v.total_vendido ?? v.monto ?? null;
+          const total =
+            totalFromServer != null
+              ? Number(String(totalFromServer).replace(/[^0-9.-]/g, "")) || 0
+              : detalles.reduce((acc: number, det: any) => acc + (Number(det.cantidad) || 0) * 0, 0); // fallback 0
+
+          const fecha =
+            v.fecha_venta ??
+            v.fecha_creacion ??
+            v.fecha ??
+            v.createdAt ??
+            new Date().toISOString();
+
+          return {
+            id_venta: Number(v.id_venta ?? v.id ?? 0),
+            detalles,
+            total,
+            fecha: String(fecha),
+          };
+        });
+
+        setVentas(ventasNormalizadas);
+      } finally {
+        setLoadingVentas(false);
+      }
+    };
+
     fetchData();
+    fetchVentas();
   }, []);
 
   const isToday = (dateString: string) => {
-    const d = new Date(dateString);
-    const today = new Date();
-    return (
-      d.getFullYear() === today.getFullYear() &&
-      d.getMonth() === today.getMonth() &&
-      d.getDate() === today.getDate()
-    );
+    try {
+      const d = new Date(dateString);
+      if (isNaN(d.getTime())) return false;
+      const today = new Date();
+      return (
+        d.getFullYear() === today.getFullYear() &&
+        d.getMonth() === today.getMonth() &&
+        d.getDate() === today.getDate()
+      );
+    } catch {
+      return false;
+    }
   };
 
-  const totalInventario = productos.reduce((acc, p) => acc + p.unidades, 0);
-  const stockBajoCount = productos.filter((p) => p.unidades < p.minimoUnidades)
-    .length;
-  const stockBajoPercent = productos.length
-    ? (stockBajoCount / productos.length) * 100
-    : 0;
+  const totalInventario = productos.reduce((acc, p) => acc + (Number(p.unidades) || 0), 0);
+  const stockBajoCount = productos.filter((p) => Number(p.unidades) < Number(p.minimoUnidades)).length;
+  const stockBajoPercent = productos.length ? +(stockBajoCount / productos.length) * 100 : 0;
 
   const totalVendidoHoy = ventas
     .filter((v) => isToday(v.fecha))
-    .reduce(
-      (acc, v) => acc + v.detalles.reduce((a, d) => a + d.cantidad, 0),
-      0
-    );
+    .reduce((acc, v) => acc + v.detalles.reduce((a, d) => a + (Number(d.cantidad) || 0), 0), 0);
 
   const totalProductosVendidos = ventas.reduce(
-    (acc, v) => acc + v.detalles.reduce((a, d) => a + d.cantidad, 0),
+    (acc, v) => acc + v.detalles.reduce((a, d) => a + (Number(d.cantidad) || 0), 0),
     0
   );
+
+  if (loading && loadingVentas) {
+    return (
+      <main className="flex items-center justify-center h-[60vh]">
+        <div>Cargando dashboard...</div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
@@ -116,28 +199,28 @@ export default function MainPage() {
           title="Inventario total"
           icon={<BiBox className="size-7 text-neutral" />}
           data={totalInventario}
-          percentage={stockBajoPercent}
+          percentage={Number.isFinite(stockBajoPercent) ? +stockBajoPercent.toFixed(1) : 0}
           description="Productos"
         />
         <InfoCard
           title="Vendido hoy"
           icon={<BiMoney className="size-7 text-confirm" />}
           data={totalVendidoHoy}
-          percentage={productos.length ? (totalVendidoHoy / totalInventario) * 100 : 0}
+          percentage={totalInventario ? +((totalVendidoHoy / totalInventario) * 100).toFixed(1) : 0}
           description="Productos"
         />
         <InfoCard
           title="Productos vendidos"
           icon={<BiShoppingBag className="size-7 text-random" />}
           data={totalProductosVendidos}
-          percentage={productos.length ? (totalProductosVendidos / totalInventario) * 100 : 0}
+          percentage={totalInventario ? +((totalProductosVendidos / totalInventario) * 100).toFixed(1) : 0}
           description="Productos"
         />
         <InfoCard
           title="Stock bajo"
           icon={<BiError className="size-7 text-danger" />}
           data={stockBajoCount}
-          percentage={stockBajoPercent}
+          percentage={Number.isFinite(stockBajoPercent) ? +stockBajoPercent.toFixed(1) : 0}
           description="Productos"
         />
       </div>
@@ -152,14 +235,18 @@ export default function MainPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            {productos.slice(0, 4).map((p, i) => (
-              <StockBajo
-                key={p.id ?? `stock-${i}`}
-                nombreProducto={p.name}
-                unidades={p.unidades}
-                minimoUnidades={p.minimoUnidades}
-              />
-            ))}
+            {productos.length === 0 ? (
+              <div className="text-sm text-muted-foreground">No hay productos para mostrar.</div>
+            ) : (
+              productos.slice(0, 4).map((p, i) => (
+                <StockBajo
+                  key={p.id ?? `stock-${i}`}
+                  nombreProducto={p.name}
+                  unidades={p.unidades}
+                  minimoUnidades={p.minimoUnidades}
+                />
+              ))
+            )}
           </div>
         </div>
 
@@ -173,17 +260,21 @@ export default function MainPage() {
           </div>
 
           <div className="flex flex-col h-fit">
-            {ventas.slice(0, 6).map((v, i) => (
-              <div key={v.id_venta ?? `venta-${i}`} className="flex flex-col gap-5">
-                <Venta
-                  nombreProducto={`Venta ${v.id_venta}`}
-                  horario={new Date(v.fecha).toLocaleTimeString()}
-                  precio={v.total}
-                  unidades={v.detalles.reduce((a, d) => a + d.cantidad, 0)}
-                />
-                {i < 5 && <Separator className="dark:bg-light-10 bg-dark-10" />}
-              </div>
-            ))}
+            {ventas.length === 0 ? (
+              <div className="text-sm text-muted-foreground">No hay ventas registradas.</div>
+            ) : (
+              ventas.slice(0, 6).map((v, i) => (
+                <div key={v.id_venta ?? `venta-${i}`} className="flex flex-col gap-5">
+                  <Venta
+                    nombreProducto={`Venta ${v.id_venta}`}
+                    horario={new Date(v.fecha).toLocaleTimeString()}
+                    precio={v.total}
+                    unidades={v.detalles.reduce((a, d) => a + (Number(d.cantidad) || 0), 0)}
+                  />
+                  {i < 5 && <Separator className="dark:bg-light-10 bg-dark-10" />}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
