@@ -33,10 +33,8 @@ export function DialogProveedor({
   modalForm,
 }: DialogProveedorProps) {
   return (
-    // Usamos las props para controlar el estado
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      {/* Ya no hay un <form> exterior ni <DialogTrigger> */}
-      <DialogContent className="border-none shadow-lg sm:max-w-lg bg-dark-60">
+      <DialogContent className="border-none shadow-lg sm:max-w-lg bg-light-60 dark:bg-dark-60">
         <DialogHeader>
           <DialogTitle>Crear Proveedor</DialogTitle>
           <DialogDescription className="">
@@ -52,7 +50,7 @@ export function DialogProveedor({
             placeholder="Nombre"
             value={modalForm.nombre}
             onChange={handleModalChange}
-            className="w-full px-3 py-2 rounded-lg text-sm border-none dark:bg-dark-30"
+            className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
             required
           />
           <label className="size-3">Email</label>
@@ -62,7 +60,7 @@ export function DialogProveedor({
             placeholder="Email"
             value={modalForm.email}
             onChange={handleModalChange}
-            className="w-full px-3 py-2 rounded-lg text-sm border-none dark:bg-dark-30"
+            className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
             required
           />
           <label className="size-3">Dirección</label>
@@ -72,7 +70,7 @@ export function DialogProveedor({
             placeholder="Dirección"
             value={modalForm.direccion}
             onChange={handleModalChange}
-            className="w-full px-3 py-2 rounded-lg text-sm border-none dark:bg-dark-30"
+            className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
           />
           <div className="flex flex-row">
             <div className="mr-4">
@@ -83,7 +81,7 @@ export function DialogProveedor({
                 placeholder="Contacto"
                 value={modalForm.contacto}
                 onChange={handleModalChange}
-                className="w-full px-3 py-2 rounded-lg text-sm border-none dark:bg-dark-30"
+                className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
               />
             </div>
             <div className="w-full">
@@ -94,28 +92,24 @@ export function DialogProveedor({
                 placeholder="Teléfono"
                 value={modalForm.telefono}
                 onChange={handleModalChange}
-                className="w-full px-3 py-2 rounded-lg text-sm border-none dark:bg-dark-30"
+                className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
               />
             </div>
           </div>
 
           <DialogFooter className="mt-4">
             <DialogClose asChild>
-              {/* Usamos type="button" para que no envíe el form */}
               <Button
                 type="button"
-                className="dark:bg-dark-30 hover:dark:bg-dark-30/70"
+                className="dark:bg-dark-30 bg-light-30 hover:bg-light-30/70 hover:dark:bg-dark-30/70"
               >
                 Cancelar
               </Button>
             </DialogClose>
-            {/* Este botón SÍ envía el formulario porque está dentro del <form> 
-              y su type por defecto es "submit".
-            */}
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="dark:bg-dark-30 hover:dark:bg-dark-30/70"
+              className="bg-light-30 hover:bg-light-30/70 dark:bg-dark-30 hover:dark:bg-dark-30/70"
             >
               {isSubmitting ? "Guardando..." : "Guardar"}
             </Button>
