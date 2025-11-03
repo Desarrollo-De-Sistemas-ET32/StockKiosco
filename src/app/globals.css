@@ -3,15 +3,12 @@
 @import "tw-animate-css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --variant1: #343A40;
-  --variant2: #495057;  
-  --variant3: #6C757D;
-  --variant4: #ADB5BD;
-  --variant5: #ced4da;
-  --variant6: #dee2e6;
-  --variant7: #e9ecef;
+  --light-60: #E9ECEF;
+  --light-30: #CED4DA;
+  --light-10: #ADB5BD;
+  --dark-60: #343A40;
+  --dark-30: #495057;
+  --dark-10: #6C757D;
   --dangereous: #EE6352;
   --positive: #59CD90;
   --neutrals: #3FA7D6;
@@ -24,13 +21,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-var1: var(--variant1);
-  --color-var2: var(--variant2);
-  --color-var3: var(--variant3);
-  --color-var4: var(--variant4);
-  --color-var5: var(--variant5);
-  --color-var6: var(--variant6);
-  --color-var7: var(--variant7);
+  --color-light-60: var(--light-60);
+  --color-light-30: var(--light-30);
+  --color-light-10: var(--light-10);
+  --color-dark-60: var(--dark-60);
+  --color-dark-30: var(--dark-30);
+  --color-dark-10: var(--dark-10);
   --color-danger: var(--dangereous);
   --color-confirm: var(--positive);
   --color-neutral: var(--neutrals);

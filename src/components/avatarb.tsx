@@ -1,21 +1,32 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 
 type Props = {
-  src?: string; // mantiene compatibilidad si antes pasabas src="/PrincessCard.png"
+  src?: string;
   className?: string;
 };
 
 export default function Icono({ src, className = "" }: Props) {
   const router = useRouter();
-  const [user, setUser] = useState<{id_usuario?: number; name?: string; nombre?: string; email?: string } | null>(null);
+  const [user, setUser] = useState<{
+    id_usuario?: number;
+    name?: string;
+    nombre?: string;
+    email?: string;
+    usuarios_roles?: string;
+  } | null>(null);
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [showPopup, setShowPopup] = useState(false);
-
 
   useEffect(() => {
     try {
@@ -26,16 +37,6 @@ export default function Icono({ src, className = "" }: Props) {
     } catch (e) {
       console.error("Error parsing user from localStorage:", e);
     }
-  }, []);
-
-  useEffect(() => {
-    function onDoc(e: MouseEvent) {
-      if (!ref.current) return;
-      if (!(e.target instanceof Node)) return;
-      if (!ref.current.contains(e.target)) setOpen(false);
-    }
-    document.addEventListener("click", onDoc);
-    return () => document.removeEventListener("click", onDoc);
   }, []);
 
   const handleLogout = () => {
@@ -61,57 +62,50 @@ export default function Icono({ src, className = "" }: Props) {
     );
   }
 
-  const name = (user.name ?? user.nombre ?? user.email ?? user.id_usuario ?? "").toString();
+  const name = (
+    user.name ??
+    user.nombre ??
+    user.email ??
+    user.id_usuario ??
+    user.usuarios_roles ??
+    ""
+  ).toString();
+
   const inicial = name.trim().length ? name.trim()[0].toUpperCase() : "U";
 
-  return (
-    <div ref={ref} className={`relative ${className}`}>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-md focus:outline-none"
-        aria-label="Abrir menú de usuario"
-      >
-        {inicial}
-      </button>
+  const isAdmin = user?.usuarios_roles?.includes("administrador") ?? false;
 
-      {open && (
-        <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-var2 text-sm rounded-lg shadow-lg overflow-hidden z-50">
-          <div className="px-3 py-2 border-b dark:border-gray-700">
-            <div className="font-medium truncate">{name}</div>
-            <div className="text-xs text-muted-foreground truncate">{user.email}</div>
-          
-          </div>
-           <button
-            onClick={() => setShowPopup(true)}
-            className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800  "
-          >
-            Panel Administrativo
-          </button>
-          <button
-            onClick={handleLogout}
-            className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            Cerrar sesión
-          </button>
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div
+          className={`w-10 h-10 rounded-full bg-neutral flex items-center justify-center text-lg font-semibold text-primary-foreground cursor-pointer select-none ${className} `}
+        >
+          {inicial}
         </div>
-        
-      )}
-      {showPopup && (
-          <div
-            className="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
-            onClick={() => setShowPopup(false)} 
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        className={`w-full bg-light-60 dark:bg-dark-60 p-4 rounded-md shadow-md`
+        }
+      >
+        <DropdownMenuLabel className="font-semibold text-foreground mb-2">
+          {name.length > 20 ? name.slice(0, 17) + "..." : name}
+        </DropdownMenuLabel>
+        <DropdownMenuGroup className="flex flex-col gap-2">
+          {isAdmin && (
+            <DropdownMenuItem className="cursor-pointer p-2 rounded-md hover:bg-dark-30/70 hover:text-accent-foreground border-none outline-none">
+              Panel de Administración
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem
+            onSelect={handleLogout}
+            className="cursor-pointer p-2 rounded-md hover:bg-dark-30/70 hover:text-accent-foreground border-none outline-none"
           >
-            <div
-              className="bg-var5 dark:bg-var2 rounded-xl p-6 w-[500px] h-[500px] shadow-2xl flex flex-col items-center justify-evenly relative"
-              onClick={(e) => e.stopPropagation()} 
-            >
-              <h2 className="text-foreground text-2xl">Panel Administrativo</h2>
-              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10 hover:bg-foreground/20">Respaldos y Mantenimientos</Button>
-              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10 hover:bg-foreground/20">Control de Usuarios/Roles</Button>
-              <Button className="flex items-center justify-center bg-var6 dark:bg-var1 w-full h-10 hover:bg-foreground/20">Exportar lista de Productos</Button>
-            </div>
-          </div>
-        )}
-    </div>
+            Cerrar Sesión
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

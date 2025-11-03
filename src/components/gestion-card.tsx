@@ -19,8 +19,7 @@ type Proveedor = {
 export default function CardProveedor({ id, nombre, telefono, cuil, onEdit, onDelete }: Proveedor) {
   return (
     <div
-      className="card-proveedor flex-none w-full h-16 box-border overflow-hidden bg-white rounded-lg border border-gray-200
-                 shadow-sm flex items-center justify-between px-4 dark:bg-var1"
+      className="card-proveedor flex-none w-full h-16 box-border overflow-hidden bg-light-30 rounded-md shadow-sm flex items-center justify-between px-4 dark:bg-dark-30"
     >
       <div className="flex-1 min-w-0">
         <h2 className="text-lg font-semibold text-gray-800 truncate leading-tight m-0 dark:text-white">

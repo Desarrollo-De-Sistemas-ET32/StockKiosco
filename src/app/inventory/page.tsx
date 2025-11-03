@@ -6,6 +6,7 @@ import ProductCard from '@/components/cardProduct';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import { productoService } from '@/app/Service/producto/ProductoService';
+import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 
 interface Producto {
   imagen: any;
@@ -92,67 +93,10 @@ export default function ProductManagement() {
     };
   }, []);
 
-  const handleEdit = async (producto: Producto) => {
-    const nuevoNombre = prompt('Nuevo nombre:', producto.nombre);
-    if (!nuevoNombre) return;
-
-    try {
-      const payload: any = {
-        id_producto: producto.id_producto,
-        nombre: nuevoNombre,
-        precio: producto.precio,
-        stock: producto.stock && producto.stock.length > 0 ? Number(producto.stock[0].cantidad ?? 0) : 0,
-        codigo_barra: String(producto.codigo_barra ?? ''),
-        images: producto.imagen ?? undefined,
-      };
-
-      if (producto.categoria?.nombre) {
-        payload.categoria = String(producto.categoria.nombre).toLowerCase();
-      }
-
-      if (producto.marcas?.id_marca) {
-        payload.id_marca = Number(producto.marcas.id_marca);
-      }
-
-      const result = await productoService.updatePatch(payload);
-
-      if (result && result.success === false) {
-        alert('Error al actualizar producto: ' + (result.message ?? 'desconocido'));
-        return;
-      }
-
-      alert('Producto actualizado correctamente');
-      await fetchProductos();
-    } catch (err: any) {
-      console.error('Error al actualizar el producto:', err);
-      if (err?.response && typeof err.response.data === 'string' && err.response.data.trim().startsWith('<')) {
-        alert('El backend devolvió HTML en vez de JSON. Revisa que /producto/editarProducto exista y devuelva JSON.');
-      } else {
-        alert('Error al actualizar el producto: ' + (err?.response?.data?.message ?? err?.message ?? 'desconocido'));
-      }
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm('¿Eliminar este producto?')) return;
-
-    try {
-      setLoading(true);
-      await productoService.delete(id);
-      await fetchProductos();
-      alert('Producto eliminado');
-    } catch (err: any) {
-      console.error('Error eliminando producto:', err);
-      alert('No se pudo eliminar el producto: ' + (err?.message ?? 'desconocido'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (loading) {
     return (
       <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
-        <div className="flex justify-center items-center flex-col bg-var6 dark:bg-var2 rounded-md p-5 gap-5">
+        <div className="flex justify-center items-center flex-col bg-light-60 dark:bg-dark-30 rounded-md p-5 gap-5">
           <p>Cargando Productos</p>
           <Spinner className="size-10" />
         </div>
@@ -181,7 +125,7 @@ export default function ProductManagement() {
       <div className="w-full flex justify-center">
         <Button
           onClick={() => router.push('/crear_productos')}
-          className="w-full sm:w-auto bg-var5 dark:bg-var1 text-foreground hover:bg-var4 dark:hover:bg-var3 text-lg px-6 py-3 rounded-2xl"
+          className="w-full sm:w-auto bg-light-30 dark:bg-dark-30 text-foreground hover:bg-light-30/70 dark:hover:bg-dark-30/70 text-lg px-6 py-3 rounded-2xl"
         >
           Agregar producto
         </Button>

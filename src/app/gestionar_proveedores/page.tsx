@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import CardProveedor from '@/components/gestion-card' // asegúrate que la ruta coincida
 import { proveedorService } from '@/app/Service/proveedor/ProveedorService'
 import type { ProveedorPayload, ProveedorWithId } from '@/app/Service/proveedor/proveedor'
+import { DialogProveedor } from '@/components/dialogProveedorCreate'
 
 export default function ListaProveedores() {
   const [proveedores, setProveedores] = useState<ProveedorWithId[]>([])
@@ -164,7 +165,14 @@ export default function ListaProveedores() {
     <main>
       <div className="flex flex-col items-center gap-4 mx-auto my-5 font-sans max-w-[900px]">
         <h1 className="text-2xl font-semibold dark:text-white">Lista Proveedores</h1>
-
+      <DialogProveedor
+                isOpen={isCreateOpen}
+                onOpenChange={setIsCreateOpen}
+                handleCreate={handleCreate}
+                handleModalChange={handleModalChange}
+                modalForm={modalForm}
+                isSubmitting={submitting}
+              />
         <div className="flex items-center w-full gap-4">
           <input
             type="text"
@@ -180,15 +188,14 @@ export default function ListaProveedores() {
               setError(null)
               setModalForm(emptyForm)
             }}
-            className="bg-green-600"
+            className="bg-confirm"
           >
             Agregar
           </Button>
         </div>
 
         <div
-          className="h-[70vh] w-full bg-gray-100 overflow-y-auto p-4 rounded-xl flex flex-col gap-3 dark:bg-var2"
-          style={{ scrollbarWidth: 'thin', scrollbarColor: '#888 #f1f1f1' }}
+          className="h-full w-full bg-light-60 overflow-y-auto p-4 rounded-xl flex flex-col gap-3 dark:bg-dark-60"
         >
           {loadingData ? (
             <div className="flex items-center justify-center py-6">Cargando proveedores...</div>
@@ -210,48 +217,13 @@ export default function ListaProveedores() {
           )}
         </div>
 
-        {error && <div className="text-sm text-red-500 mt-2">{error}</div>}
+        {error && <div className="text-sm text-danger mt-2">{error}</div>}
       </div>
-
-      {/* Modal Crear */}
-      {isCreateOpen && (
-        <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
-          <div className="bg-white p-7 rounded-2xl w-full max-w-md shadow-xl dark:bg-var1">
-            <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 dark:text-white">Agregar Proveedor</h2>
-
-            <form onSubmit={handleCreate} className="flex flex-col gap-4">
-              <label className="text-xs">Nombre</label>
-              <input name="nombre" value={modalForm.nombre} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
-
-              <label className="text-xs">Email</label>
-              <input name="email" value={modalForm.email} onChange={handleModalChange} type="email" className="w-full px-3 py-2 border rounded" />
-
-              <label className="text-xs">Dirección</label>
-              <input name="direccion" value={modalForm.direccion} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
-
-              <label className="text-xs">Contacto</label>
-              <input name="contacto" value={modalForm.contacto} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
-
-              <label className="text-xs">Teléfono</label>
-              <input name="telefono" value={modalForm.telefono} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
-
-              <div className="flex justify-end gap-2 mt-2">
-                <button type="submit" disabled={submitting} className="px-4 py-2 bg-blue-600 text-white rounded-lg">
-                  {submitting ? 'Guardando...' : 'Guardar'}
-                </button>
-                <button type="button" onClick={() => { setIsCreateOpen(false); setModalForm(emptyForm); setError(null) }} className="px-4 py-2 bg-gray-300 rounded-lg">
-                  Cerrar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Modal Editar */}
       {isEditOpen && (
-        <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
-          <div className="bg-white p-7 rounded-2xl w-full max-w-md shadow-xl dark:bg-var1">
+        <div className="fixed inset-0 bg-light-30/70 flex justify-center items-center z-50">
+          <div className="bg-light-60 p-7 rounded-2xl w-full max-w-md shadow-xl dark:bg-dark-60">
             <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 dark:text-white">
               {loadingEditData ? 'Cargando...' : 'Editar Proveedor'}
             </h2>
@@ -276,7 +248,7 @@ export default function ListaProveedores() {
                 <input name="telefono" value={modalForm.telefono} onChange={handleModalChange} className="w-full px-3 py-2 border rounded" />
 
                 <div className="flex justify-end gap-2 mt-2">
-                  <button type="submit" disabled={submitting} className="px-4 py-2 bg-green-600 text-white rounded-lg">
+                  <button type="submit" disabled={submitting} className="px-4 py-2 bg-confirm text-white rounded-lg">
                     {submitting ? 'Actualizando...' : 'Actualizar'}
                   </button>
                   <button type="button" onClick={() => { setIsEditOpen(false); setEditingId(null); setModalForm(emptyForm); setError(null) }} className="px-4 py-2 bg-gray-300 rounded-lg">

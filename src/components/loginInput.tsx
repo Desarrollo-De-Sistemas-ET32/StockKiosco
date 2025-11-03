@@ -43,7 +43,7 @@ const LoginInput: React.FC<Props> = ({
           value={value ?? ""}
           disabled={disabled}
           onChange={onChange}
-          className="w-full h-12 pl-12 pr-3 rounded-lg border-none bg-var5 dark:bg-var1 text-sm"
+          className="w-full h-12 pl-12 pr-3 rounded-lg border-none bg-light-30 dark:bg-dark-30 text-sm"
           aria-label={label ?? id}
         />
       </div>

@@ -76,7 +76,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center overflow-hidden">
+    <main className="min-h-screen flex items-center justify-center overflow-hidden">
       <Image
         src="/background.avif"
         alt="fondo de kiosco"
@@ -91,7 +91,7 @@ export default function LoginPage() {
           filter: "brightness(50%)",
         }}
       />
-      <Card className="w-lg max-h-[50rem] h-[30rem] border-none bg-var6 dark:bg-var2 z-1 m-5 flex flex-col justify-evenly drop-shadow-xl/75">
+      <Card className="w-lg max-h-[50rem] h-[30rem] border-none bg-light-60 dark:bg-dark-60 z-1 m-5 flex flex-col justify-evenly drop-shadow-xl/75">
         <CardHeader className="flex justify-center items-center text-center">
           <CardTitle className="text-3xl font-bold text-var text-black dark:text-white">
             INICIAR SESIÓN
@@ -131,7 +131,7 @@ export default function LoginPage() {
             <div className="flex justify-center mt-2">
               <button
                 type="submit"
-                className="bg-foreground dark:bg-background font-bold cursor-pointer w-3/7 py-4 border-none text-white rounded-md drop-shadow-xl/10 disabled:opacity-60"
+                className="bg-light-10 dark:bg-background font-bold cursor-pointer w-3/7 py-4 border-none text-foreground rounded-md drop-shadow-xl/10 disabled:opacity-60"
                 disabled={loading}
               >
                 {loading ? "Iniciando..." : "Iniciar Sesión"}

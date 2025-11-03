@@ -10,6 +10,7 @@ export interface UsuarioWithId {
   nombre?: string;
   name?: string; // por compatibilidad
   email: string;
+  usuarios_roles?: string[];
   createdAt?: string;
   // otros campos opcionales que devuelva tu API
 }

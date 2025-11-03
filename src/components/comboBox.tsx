@@ -33,7 +33,7 @@ export function ComboboxDemo({ marcas }: ComboboxProps) {
         <Button
           role="combobox"
           aria-expanded={open}
-          className="justify-between dark:bg-var1 bg-var6 w-full"
+          className="justify-between dark:bg-dark-30 bg-light-30 w-full"
         >
           {value
             ? marcas.find((marca) => marca.id_marca.toString() === value)?.nombre_marca
@@ -41,7 +41,7 @@ export function ComboboxDemo({ marcas }: ComboboxProps) {
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 dark:bg-var1 bg-var6 w-full">
+      <PopoverContent className="p-0 dark:bg-dark-30 bg-light-30 w-full">
         <Command>
           <CommandList>
             <CommandGroup>

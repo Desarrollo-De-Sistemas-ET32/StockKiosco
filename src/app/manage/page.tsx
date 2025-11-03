@@ -4,7 +4,7 @@ export default function Gestion() {
       {/* Contenedor de tarjetas */}
       <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-8">
         {/* Card Proveedores */}
-        <div className="flex flex-col gap-5 bg-var5 dark:bg-var2 rounded-[40px] overflow-hidden shadow-lg hover:scale-[1.02] transition-transform cursor-pointer p-[25px]">
+        <div className="flex flex-col gap-5 bg-light-60 dark:bg-dark-60 rounded-[40px] overflow-hidden shadow-lg hover:scale-[1.02] transition-transform cursor-pointer p-[25px]">
           <img
             src={"/img/proveedor.jpg"}
             alt="Proveedores"
@@ -17,7 +17,7 @@ export default function Gestion() {
           </div>
         </div>
         {/* Card Descuentos */}
-        <div className="flex flex-col gap-5 bg-var5 dark:bg-var2 rounded-[40px] overflow-hidden shadow-lg hover:scale-[1.02] transition-transform cursor-pointer p-[25px]">
+        <div className="flex flex-col gap-5 bg-light-60 dark:bg-dark-60 rounded-[40px] overflow-hidden shadow-lg hover:scale-[1.02] transition-transform cursor-pointer p-[25px]">
           <img
             src={"/img/descuentos.jpg"}
             alt="Descuentos"

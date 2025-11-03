@@ -172,7 +172,7 @@ export default function ProductCard({
   };
 
   return (
-    <div className="flex gap-4 dark:bg-var1 bg-var6 p-5 rounded-2xl w-full shadow-md transition-all hover:shadow-lg">
+    <div className="flex gap-4 dark:bg-dark-30 bg-light-30 p-5 rounded-2xl w-full shadow-md transition-all hover:shadow-lg">
       <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4">
         <div className="flex flex-col items-start gap-3 w-full">
           <div className="flex flex-wrap justify-start gap-3 text-center lg:text-left">
@@ -214,7 +214,7 @@ export default function ProductCard({
         <div className="flex justify-center lg:justify-end gap-3 items-center">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className="dark:bg-background bg-background hover:bg-background/70 p-2" onClick={loadMarcas}>
+              <Button className="dark:bg-dark-60 dark:hover:bg-dark-60/70 bg-light-60 hover:bg-light-60/70 p-2" onClick={loadMarcas}>
                 <BiEdit className="h-5 w-5" />
               </Button>
             </AlertDialogTrigger>
@@ -233,7 +233,7 @@ export default function ProductCard({
                         name="nombre"
                         placeholder={editedProduct.nombre}
                         onChange={handleInputChange}
-                        className="border-none dark:bg-var1 bg-var6"
+                        className="border-none dark:bg-dark-30 bg-light-30"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -243,7 +243,7 @@ export default function ProductCard({
                         name="codigo_barra"
                         placeholder={editedProduct.codigo_barra}
                         onChange={handleInputChange}
-                        className="border-none dark:bg-var1 bg-var6"
+                        className="border-none dark:bg-dark-30 bg-light-30"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -254,7 +254,7 @@ export default function ProductCard({
                         placeholder={editedProduct.precio.toString()}
                         type="number"
                         onChange={handleInputChange}
-                        className="border-none dark:bg-var1 bg-var6"
+                        className="border-none dark:bg-dark-30 bg-light-30"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -265,7 +265,7 @@ export default function ProductCard({
                         placeholder={editedProduct.stock.toString()}
                         type="number"
                         onChange={handleInputChange}
-                        className="border-none dark:bg-var1 bg-var6"
+                        className="border-none dark:bg-dark-30 bg-light-30"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -276,7 +276,7 @@ export default function ProductCard({
                         placeholder={editedProduct.stock_minimo.toString()}
                         type="number"
                         onChange={handleInputChange}
-                        className="border-none dark:bg-var1 bg-var6"
+                        className="border-none dark:bg-dark-30 bg-light-30"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -288,8 +288,8 @@ export default function ProductCard({
                 </div>
               </AlertDialogHeader>
               <AlertDialogFooter className="flex flex-row justify-center items-center">
-                <AlertDialogCancel className="bg-var6 dark:bg-var1 dark:hover:bg-var1/70 hover:bg-var6/70">Cancelar</AlertDialogCancel>
-                <AlertDialogAction className="bg-var6 dark:bg-var1 dark:hover:bg-var1/70 hover:bg-var6/70" onClick={handleEdit}>
+                <AlertDialogCancel className="bg-light-30 dark:bg-dark-30 dark:hover:bg-dark-30/70 hover:bg-light-30/70">Cancelar</AlertDialogCancel>
+                <AlertDialogAction className="bg-light-30 dark:bg-dark-30 dark:hover:bg-dark-30/70 hover:bg-light-30/70" onClick={handleEdit}>
                   Guardar
                 </AlertDialogAction>
               </AlertDialogFooter>
@@ -298,7 +298,7 @@ export default function ProductCard({
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className="dark:bg-background bg-background hover:bg-background/70 p-2">
+              <Button className="dark:bg-dark-60 dark:hover:bg-dark-60/70 bg-light-60 hover:bg-light-60/70 p-2">
                 <BiTrash className="h-5 w-5" />
               </Button>
             </AlertDialogTrigger>
@@ -312,10 +312,10 @@ export default function ProductCard({
               </AlertDialogHeader>
 
               <AlertDialogFooter>
-                <AlertDialogCancel className="bg-var6 dark:bg-var1 dark:hover:bg-var1/70 hover:bg-var6/70">Cancelar</AlertDialogCancel>
+                <AlertDialogCancel className="bg-light-30 dark:bg-dark-30 dark:hover:bg-dark-30/70 hover:bg-light-30/70">Cancelar</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDelete}
-                  className="bg-var6 dark:bg-var1 dark:hover:bg-var1/70 hover:bg-var6/70"
+                  className="bg-light-30 dark:bg-dark-30 dark:hover:bg-dark-30/70 hover:bg-light-30/70"
                 >
                   Eliminar
                 </AlertDialogAction>
