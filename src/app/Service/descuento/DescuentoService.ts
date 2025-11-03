@@ -1,3 +1,4 @@
+// app/Service/DescuentoService.ts
 import api from "../API";
 import type { DescuentoPayload, DescuentoDB, CreateDescuentoResponse } from "./descuento";
 
@@ -23,7 +24,7 @@ export const descuentoService = {
   // 🔹 Leer todos los descuentos
   getAll: async (): Promise<DescuentoDB[]> => {
     try {
-      const resp = await api.get("/api/descuento/leerDescuento");
+      const resp = await api.get("/descuento/leerDescuento");
       const data = resp.data;
       const items = Array.isArray(data)
         ? data
@@ -66,7 +67,7 @@ export const descuentoService = {
   // 🔹 Obtener descuento por ID
   getById: async (id: number): Promise<DescuentoDB | null> => {
     try {
-      const resp = await api.get(`/api/descuento/${id}`);
+      const resp = await api.get(`/descuento/${id}`);
       const d = resp.data;
       if (!d) return null;
 
@@ -111,7 +112,7 @@ export const descuentoService = {
         activo: payload.activo ?? true,
       };
 
-      const resp = await api.post("/api/descuento/crearDescuento", body);
+      const resp = await api.post("/descuento/crearDescuento", body);
       const data = resp.data;
 
       if (!data) return { error: "Respuesta inválida del servidor" };
@@ -145,7 +146,7 @@ export const descuentoService = {
         body.fecha_fin = toISODate(body.fecha_fin as any);
       if (body.activo !== undefined) body.activo = Boolean(body.activo);
 
-      const resp = await api.patch("/api/descuento/editarDescuento", body);
+      const resp = await api.patch("/descuento/editarDescuento", body);
       return resp.data as DescuentoDB;
     } catch (err: any) {
       console.error("descuentoService.updatePatch error", err);
@@ -164,7 +165,7 @@ export const descuentoService = {
     id: number
   ): Promise<{ success: true } | { success: false; error: string }> => {
     try {
-      await api.delete("/api/descuento/eliminarDescuento", {
+      await api.delete("/descuento/eliminarDescuento", {
         data: { id_descuento: id },
       });
       return { success: true };
