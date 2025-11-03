@@ -58,7 +58,7 @@ export default function RegisterPage() {
         alt="Background"
         className="absolute opacity-100"
       />
-      <Card className="flex flex-col justify-center m-5 w-[28rem] [@media(max-height:550px)]:grow max-w-[50rem] border-none bg-var7 dark:bg-var2 drop-shadow-xl/75 ">
+      <Card className="flex flex-col justify-center m-5 w-[28rem] [@media(max-height:550px)]:grow max-w-[50rem] border-none bg-light-60 dark:bg-dark-60 drop-shadow-xl/75 ">
         <CardHeader className="flex items-center justify-center">
           <CardTitle className="text-3xl text-black dark:text-white cursor-default">REGISTRARSE</CardTitle>
         </CardHeader>
@@ -76,7 +76,7 @@ export default function RegisterPage() {
                 <Label htmlFor="nombre" className="text-black dark:text-white font-semibold">Nombre Completo</Label>
                 <div className="relative">
                   <Input
-                    className="h-12 rounded-lg border-none bg-var5 pl-12  dark:text-white dark:bg-var1"
+                    className="h-12 rounded-lg border-none bg-light-30 dark:bg-dark-30 pl-12  dark:text-white "
                     id="nombre"
                     type="text"
                     placeholder="John Doe"
@@ -95,7 +95,7 @@ export default function RegisterPage() {
                 <Label htmlFor="email" className="text-black dark:text-white font-semibold">Correo electrónico</Label>
                 <div className="relative">
                   <Input
-                    className="h-12 rounded-lg border-none bg-var5 pl-12 dark:text-white dark:bg-var1"
+                    className="h-12 rounded-lg border-none bg-light-30 dark:bg-dark-30 pl-12 dark:text-white"
                     id="email"
                     type="email"
                     placeholder="john_doe@example.com"
@@ -114,7 +114,7 @@ export default function RegisterPage() {
                 <Label htmlFor="password" className="text-black dark:text-white font-semibold">Contraseña</Label>
                 <div className="relative">
                   <Input
-                    className="h-12 rounded-lg border-none bg-var5 pl-12 dark:text-white dark:bg-var1"
+                    className="h-12 rounded-lg border-none bg-light-30 dark:bg-dark-30 pl-12 dark:text-white"
                     id="password"
                     type="password"
                     placeholder="••••••••"
@@ -136,7 +136,7 @@ export default function RegisterPage() {
           <Button
             form="register-form"
             type="submit"
-            className="h-12 w-3/4 cursor-pointer bg-white text-black dark:text-var4 font-semibold transition-colors border border-transparent hover:border-white hover:text-white duration:350 hover:border-1 ease-in-out dark:bg-var1"
+            className="h-12 w-3/4 cursor-pointer bg-light-30 text-black dark:text-dark-10 font-semibold transition-colors border border-transparent hover:dark:text-white hover:border-black hover:dark:border-white hover:border-1 ease-in-out dark:bg-dark-30"
             disabled={loading}
           >
             {loading ? 'Registrando...' : 'Registrarse'}

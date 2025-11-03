@@ -32,7 +32,7 @@ export default function CardProveedor({ id, nombre, telefono, cuil, onEdit, onDe
         <button
           onClick={() => onEdit?.(id)}
           className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-md
-                     whitespace-nowrap"
+                     whitespace-nowrap cursor-pointer"
           title="Editar"
           type="button"
         >
@@ -43,7 +43,7 @@ export default function CardProveedor({ id, nombre, telefono, cuil, onEdit, onDe
         <button
           onClick={() => onDelete?.(id)}
           className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium bg-red-500 text-white rounded-md
-                     whitespace-nowrap"
+                     whitespace-nowrap cursor-pointer"
           title="Borrar"
           type="button"
         >

@@ -33,9 +33,7 @@ export function DialogProveedorUpd({
   modalForm,
 }: DialogProveedorProps) {
   return (
-    // Usamos las props para controlar el estado
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      {/* Ya no hay un <form> exterior ni <DialogTrigger> */}
       <DialogContent className="border-none shadow-lg sm:max-w-lg bg-dark-60">
         <DialogHeader>
           <DialogTitle>Crear Proveedor</DialogTitle>
@@ -43,7 +41,6 @@ export function DialogProveedorUpd({
             Completa los datos para crear un nuevo proveedor.{<br></br>} Al ingresar número de telefono {<b>hagalo sin espacios ni ' - '.</b>}
           </DialogDescription>
         </DialogHeader>
-        {/* Este es el ÚNICO formulario */}
         <form onSubmit={handleUpdate} className="flex flex-col gap-4 py-4">
           <label className="size-3">Nombre</label>
           <input
