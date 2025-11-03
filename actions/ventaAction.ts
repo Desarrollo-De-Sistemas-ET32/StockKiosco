@@ -1,14 +1,20 @@
 'use server'
-
 import db from "@/lib/db";
-import { nuevaVentaSchema } from "@/schemas/ventas_scheme"; 
 
-export const addVenta = async (values: unknown) => {
+type DetalleVenta = {
+  id_producto: number;
+  cantidad: number;
+};
+
+type NuevaVenta = {
+  id_usuario: number | string;
+  detalles: DetalleVenta[];
+  pagado?: boolean;
+};
+
+export const addVenta = async (values: NuevaVenta) => {
   try {
-
-    const parsed = nuevaVentaSchema.parse(values);
-
-    const id_usuario = parsed.id_usuario;
+    const id_usuario = Number(values.id_usuario);
 
 
     const usuario = await db.usuarios.findUnique({
@@ -20,11 +26,12 @@ export const addVenta = async (values: unknown) => {
     }
 
 
-    const idsProductos = parsed.detalles.map((d) => d.id_producto);
+    const idsProductos = values.detalles.map((d) => d.id_producto);
     const productos = await db.productos.findMany({
       where: { id_producto: { in: idsProductos } },
       select: { id_producto: true, precio: true },
     });
+
 
     const idsEncontrados = productos.map((p) => p.id_producto);
     const faltantes = idsProductos.filter((id) => !idsEncontrados.includes(id));
@@ -37,7 +44,7 @@ export const addVenta = async (values: unknown) => {
     }
 
 
-    const detallesCalculados = parsed.detalles.map((d) => {
+    const detallesCalculados = values.detalles.map((d) => {
       const producto = productos.find((p) => p.id_producto === d.id_producto)!;
       const subtotal = Number(producto.precio) * d.cantidad;
       return {
@@ -57,7 +64,7 @@ export const addVenta = async (values: unknown) => {
       data: {
         id_usuario,
         total,
-        pagado: parsed.pagado ?? false,
+        pagado: values.pagado ?? false,
         fecha_creacion: new Date(),
         fecha_actualizacion: new Date(),
         detalles_venta: {
@@ -67,8 +74,8 @@ export const addVenta = async (values: unknown) => {
       include: { detalles_venta: true },
     });
 
-
-    for (const d of parsed.detalles) {
+ 
+    for (const d of values.detalles) {
       await db.stock.updateMany({
         where: { id_producto: d.id_producto },
         data: {
@@ -80,16 +87,6 @@ export const addVenta = async (values: unknown) => {
 
     return { success: true, message: "Venta registrada correctamente.", venta: nuevaVenta };
   } catch (error: any) {
-
-    if (error.name === "ZodError") {
-      return {
-        success: false,
-        message: "Datos inválidos.",
-        errors: error.errors, 
-      };
-    }
-
-
     console.error("Error al registrar la venta:", error);
     return {
       success: false,
