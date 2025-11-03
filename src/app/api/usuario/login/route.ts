@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     const where = body.email ? { email: body.email } : { name: body.name as string };
     const user = await db.usuarios.findUnique({
       where,
-      select: { id_usuario: true, name: true, email: true, password: true },
+      select: { id_usuario: true, name: true, email: true, password: true, usuarios_roles: true },
     });
 
     if (!user) {
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Contraseña incorrecta" }, { status: 401, headers: corsHeaders });
     }
 
-    const safeUser = { id_usuario: user.id_usuario, name: user.name, email: user.email };
+    const safeUser = { id_usuario: user.id_usuario, name: user.name, email: user.email, usuarios_roles: [user.usuarios_roles] };
     return NextResponse.json({ authenticated: true, usuario: safeUser }, { status: 200, headers: corsHeaders });
   } catch (err: any) {
     console.error("Error en login:", err);

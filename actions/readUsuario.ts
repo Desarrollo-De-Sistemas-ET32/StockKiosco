@@ -12,6 +12,7 @@ export const readUsuarios = async () => {
         id_usuario: true,
         name: true,
         email: true,
+        usuarios_roles: true
       }
     })
 

@@ -17,7 +17,7 @@ export async function GET() {
   try {
     const usuarios = await db.usuarios.findMany({
       orderBy: { id_usuario: "asc" },
-      select: { id_usuario: true, name: true, email: true },
+      select: { id_usuario: true, name: true, email: true, usuarios_roles: true },
     });
     return NextResponse.json({ usuarios }, { status: 200, headers: corsHeaders });
   } catch (err: any) {
