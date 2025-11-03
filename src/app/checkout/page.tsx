@@ -8,6 +8,7 @@ import {
   BiChevronUp,
   BiMoneyWithdraw,
   BiTrashAlt,
+  BiCheck,
 } from "react-icons/bi";
 import ventasService from "@/app/Service/ventas/VentasService";
 import { productoService } from "@/app/Service/producto/ProductoService";
@@ -116,11 +117,11 @@ export default function ChequePage() {
   };
 
   return (
-    <main className="h-screen flex flex-col mx-25">
+    <main className="h-[80vh] flex flex-col mx-25">
       <div className="grid grid-cols-[3fr_1fr] gap-6 p-4 h-full">
-        <div className="bg-var5 dark:bg-var2 rounded-xl p-6 drop-shadow-xl flex flex-col items-center justify-start gap-4 overflow-y-auto">
+        <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-6 drop-shadow-xl flex flex-col items-center justify-start gap-4 overflow-y-auto">
           <Button
-            className="w-full h-16 text-xl font-medium dark:bg-var1 dark:hover:bg-neutral-900 dark:text-white bg-var6 hover:bg-var3 hover:text-white mb-4"
+            className="w-full h-16 text-xl font-medium dark:bg-dark-60 dark:hover:bg-neutral-900 dark:text-white bg-light-30 mb-4"
             onClick={() => setShowPopup(true)}
           >
             Agregar Productos
@@ -134,7 +135,7 @@ export default function ChequePage() {
             productosAgregados.map((producto, index) => (
               <div
                 key={producto.id_producto ?? index}
-                className="w-full dark:bg-var1 dark:hover:bg-neutral-900 transition-colors rounded-lg flex items-center justify-between p-4"
+                className="w-full dark:bg-dark-10 dark:hover:bg-neutral-900 transition-colors rounded-lg flex items-center justify-between p-4"
               >
                 <span className="text-sm text-gray-400 w-[15%]">{producto.codigo_barra ?? "—"}</span>
                 <span className="text-white text-sm font-medium w-[45%]">{producto.nombre ?? "Producto sin nombre"}</span>
@@ -151,11 +152,11 @@ export default function ChequePage() {
           )}
         </div>
 
-        <div className="bg-var5 dark:bg-var2 rounded-xl p-4 drop-shadow-xl flex flex-col">
-          <div className="w-full bg-var7 dark:bg-var1 rounded-md flex flex-col items-center transition-all cursor-pointer overflow-hidden">
+        <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-4 drop-shadow-xl flex flex-col">
+          <div className="w-full bg-light-30 dark:bg-dark-30 rounded-md flex flex-col items-center transition-all cursor-pointer overflow-hidden">
             <div
               onClick={() => setShowAplicarMenu(!showAplicarMenu)}
-              className="flex justify-center items-center h-15 w-full dark:hover:bg-neutral-900 transition-colors"
+              className="flex justify-center items-center h-15 w-full dark:hover:bg-neutral-900 transition-colors dark:bg-dark-60"
             >
               <h2 className="text-foreground text-xl">Aplicar</h2>
               {showAplicarMenu ? <BiChevronUp className="size-8" /> : <BiChevronDown className="size-8" />}
@@ -171,7 +172,7 @@ export default function ChequePage() {
                   {descuentos.map((d: any) => (
                     <div
                       key={d.id_descuento ?? d.id}
-                      className={`flex items-center justify-between p-2 rounded-md cursor-pointer border ${
+                      className={`flex items-center justify-between p-2 rounded-md cursor-pointer border bg-light-10 dark:bg-dark-60 hover:bg-light-60 hover:dark:bg-neutral-800 transition-colors ${
                         appliedDescuentoId === Number(d.id_descuento ?? d.id)
                           ? "border-emerald-400 bg-emerald-50 dark:bg-emerald-900/30"
                           : "border-transparent hover:border-var3"
@@ -193,7 +194,7 @@ export default function ChequePage() {
           </div>
 
           <div
-            className={`w-full h-25 mt-4 rounded-md flex items-center justify-center transition-colors ${processing ? "bg-gray-500 cursor-not-allowed" : "bg-var7 dark:bg-var1 hover:bg-green-400 cursor-pointer"}`}
+            className={`w-full h-25 mt-4 rounded-md flex items-center justify-center transition-colors ${processing ? "bg-gray-500 cursor-not-allowed" : "bg-light-30 dark:bg-dark-60 hover:bg-green-400 cursor-pointer"}`}
             onClick={() => { if (!processing) handleCrearVenta(); }}
             aria-disabled={processing}
           >
@@ -207,9 +208,7 @@ export default function ChequePage() {
               </div>
             ) : saleSuccess ? (
               <div className="flex items-center gap-2 text-emerald-500">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                <BiCheck className="size-6"/>
                 <span>Listo</span>
               </div>
             ) : (
@@ -224,11 +223,11 @@ export default function ChequePage() {
 
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50" onClick={() => setShowPopup(false)}>
-          <div className="bg-var5 dark:bg-var2 rounded-xl p-6 w-[500px] h-[500px] shadow-2xl flex flex-col items-start justify-start relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-6 w-[500px] h-[500px] shadow-2xl flex flex-col items-start justify-start relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <Search
               id="search-producto"
               placeholder="Buscar nombre de Producto"
-              className="w-full bg-background dark:bg-background text-foreground border-0 focus:ring-0"
+              className="w-full bg-light-30 dark:bg-dark-10 text-foreground border-0 focus:ring-0"
               label=""
             />
             <div className="mt-4 w-full overflow-y-auto">
@@ -239,7 +238,7 @@ export default function ChequePage() {
                   <div
                     key={detalle.id_producto ?? index}
                     onClick={() => handleAgregarProducto(detalle)}
-                    className="w-full bg-var1 hover:bg-foreground/20 transition-colors rounded-md flex items-center justify-between p-3 mb-2 cursor-pointer"
+                    className="w-full bg-light-30 dark:bg-dark-10 hover:bg-light-10 transition-colors rounded-md flex items-center justify-between p-3 mb-2 cursor-pointer"
                   >
                     <div className="flex flex-col">
                       <span className="text-sm text-foreground">ID Producto: {detalle.id_producto}</span>
@@ -249,7 +248,7 @@ export default function ChequePage() {
                       <span className="text-sm text-foreground">${detalle.precio?.toFixed ? detalle.precio.toFixed(2) : detalle.precio}</span>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleAgregarProducto(detalle); }}
-                        className="px-3 py-1 bg-primary text-white rounded"
+                        className="px-3 py-1 bg-light-10 text-white rounded"
                       >
                         Agregar
                       </button>
