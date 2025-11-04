@@ -11,11 +11,6 @@ import {
 import StatCard from "@/components/stat-card";
 import TopCard from "@/components/top-cards";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
-
-import {
-  CardFooter,
-} from "@/components/ui/card"
-
 import {
   ChartConfig,
   ChartContainer,
@@ -36,6 +31,15 @@ const chartData = [
 
 ]
 
+let productos = [
+  {nombre: "Coca Cola Original 600 mL", precio: 1700, cantVentas: 3000},
+  {nombre: "Chocolate Rhodesia", precio: 1100, cantVentas: 500},
+  {nombre: "Alfajor de Chocolate c/Frutilla Barrigon 100g", precio: 2300, cantVentas: 1200},
+  {nombre: "Alfajor Negro", precio: 1500, cantVentas: 2}
+]
+
+productos.sort((a, b) => b.cantVentas - a.cantVentas)
+
 const chartConfig = {
   incomes: {
     label: "Ingresos",
@@ -47,15 +51,15 @@ export default function StatsPage() {
   return (
     <main className="min-h-screen flex flex-col">
       <div className="flex justify-center items-center flex-1 p-4">
-        <div className="w-full max-w-7xl bg-var5 dark:bg-[#2F363C] rounded-xl grid grid-rows-[auto_auto] gap-10 p-6 drop-shadow-xl">
+        <div className="w-full max-w-7xl bg-light-60 dark:bg-dark-60 rounded-xl grid grid-rows-[auto_auto] gap-10 p-6 drop-shadow-xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <StatCard
                 title="Ingresos Totales"
                 icon={<BiDollar className="size-7 text-white" />}
-                data={`$ ` + 1247}
+                data={`$` + 1247}
                 percentage={10}
                 description=""
-                color="dark:bg-linear-90 dark:from-green-700 dark:to-green-500 bg-green-700/50"
+                color="bg-confirm"
               />
             
 
@@ -65,7 +69,7 @@ export default function StatsPage() {
                 data={`324`}
                 percentage={12}
                 description=""
-                color="dark:bg-linear-90 dark:from-[#FF6A2A] dark:to-[#FF8F20] bg-[#FF6A2A]/60"
+                color="bg-random"
               />
             
 
@@ -75,7 +79,7 @@ export default function StatsPage() {
                 data={`156`}
                 percentage={8}
                 description=""
-                color="dark:bg-linear-90 dark:from-[#0077FF] dark:to-[#4CCFFF] bg-[#0077FF]/50"
+                color="bg-neutral"
               />
 
               <StatCard
@@ -84,7 +88,7 @@ export default function StatsPage() {
                 data={`89`}
                 percentage={3}
                 description=""
-                color="bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
+                color="bg-light-30 dark:bg-dark-30"
               />
 
               <StatCard
@@ -93,7 +97,7 @@ export default function StatsPage() {
                 data={`$3.85`}
                 percentage={31}
                 description=""
-                color="bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
+                color="bg-light-30 dark:bg-dark-30"
               />
 
               <StatCard
@@ -102,22 +106,18 @@ export default function StatsPage() {
                 data={`2:30 PM`}
                 percentage={47}
                 description=""
-                color="bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40]"
+                color="bg-light-30 dark:bg-dark-30"
               />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="w-full bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40] rounded-xl p-5 flex flex-col">
-              <p className="text-white p-2 font-bold">Productos Más Vendidos</p>
-              <TopCard puesto={1} nombreProducto="Coca Cola 500ml" cantVendidos={145} precio={290} variacion={12} />
-              <TopCard puesto={2} nombreProducto="Sándwich de Jamón" cantVendidos={89} precio={356} variacion={8} />
-              <TopCard puesto={3} nombreProducto="Galletitas Oreo" cantVendidos={65} precio={130} variacion={5} />
-              <TopCard puesto={4} nombreProducto="Agua Mineral" cantVendidos={54} precio={81} variacion={3} />
-              <TopCard puesto={5} nombreProducto="Café Americano" cantVendidos={76} precio={152} variacion={15} />
+            <div className="w-full bg-light-30 dark:bg-dark-30 rounded-xl p-5 flex flex-col gap-2">
+              <p className="dark:text-white p-2 font-bold">Productos Más Vendidos</p>
+              {productos.map((p)=>(<TopCard nombreProducto={p.nombre} cantVendidos={p.cantVentas} precio={p.precio}></TopCard>))}
             </div>
 
-              <div className="w-full h-full bg-linear-90 from-var3 to-var4 dark:bg-linear-90 dark:from-[#212529] dark:to-[#343A40] rounded-xl p-4 flex flex-col justify-between">
-                <p className="text-white font-bold p-4">Ingresos Semanales</p>
+              <div className="w-full h-full bg-light-30 dark:bg-light-30 rounded-xl p-4 flex flex-col justify-between">
+                <p className="dark:text-white font-bold p-4">Ingresos Semanales</p>
                 <ChartContainer config={chartConfig}>
                   <LineChart
                     accessibilityLayer
@@ -131,21 +131,21 @@ export default function StatsPage() {
                     <XAxis
                       dataKey="month"
                       tickLine={false}
-                      axisLine={false}
+                      axisLine={true}
                       tickMargin={8}
                       tickFormatter={(value) => value.slice(0, 3)}
                     />
                     <ChartTooltip
-                      cursor={false}
+                      cursor={true}
                       content={<ChartTooltipContent hideLabel />}
                     />
                     <Line
                       dataKey="incomes"
                       type="natural"
                       stroke="var(--positive)"
-                      strokeWidth={2}
+                      strokeWidth={3}
                       dot={{
-                        fill: "var(--variant7)",
+                        fill: "var(--dark-60)",
                       }}
                       activeDot={{
                         r: 6,
@@ -153,11 +153,6 @@ export default function StatsPage() {
                     />
                   </LineChart>
                 </ChartContainer>
-                <CardFooter className="flex-col items-start gap-2 text-sm">
-                  <div className="text-white leading-none pt-4 marker:text-white">
-                    Mostrando la cantidad de Ingresos en la semana
-                  </div>
-                </CardFooter>
             </div>
           </div> 
         </div>

@@ -47,7 +47,7 @@ export function DialogProveedor({
           <input
             type="text"
             name="nombre"
-            placeholder="Nombre"
+            placeholder="John Doe"
             value={modalForm.nombre}
             onChange={handleModalChange}
             className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
@@ -57,7 +57,7 @@ export function DialogProveedor({
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="johndoe@gmail.com"
             value={modalForm.email}
             onChange={handleModalChange}
             className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
@@ -67,7 +67,7 @@ export function DialogProveedor({
           <input
             type="text"
             name="direccion"
-            placeholder="Dirección"
+            placeholder="Saint Avenue 2500"
             value={modalForm.direccion}
             onChange={handleModalChange}
             className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
@@ -78,7 +78,7 @@ export function DialogProveedor({
               <input
                 type="text"
                 name="contacto"
-                placeholder="Contacto"
+                placeholder="Messenger"
                 value={modalForm.contacto}
                 onChange={handleModalChange}
                 className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
@@ -89,7 +89,7 @@ export function DialogProveedor({
               <input
                 type="text"
                 name="telefono"
-                placeholder="Teléfono"
+                placeholder="1122334455"
                 value={modalForm.telefono}
                 onChange={handleModalChange}
                 className="w-full px-3 py-2 rounded-lg text-sm border-none bg-light-30 dark:bg-dark-30"
@@ -98,10 +98,10 @@ export function DialogProveedor({
           </div>
 
           <DialogFooter className="mt-4">
-            <DialogClose asChild>
+            <DialogClose asChild className="flex-wrap">
               <Button
                 type="button"
-                className="dark:bg-dark-30 bg-light-30 hover:bg-light-30/70 hover:dark:bg-dark-30/70"
+                className="dark:bg-dark-30 bg-light-30 hover:bg-light-30/70 hover:dark:bg-dark-30/70 w-[50%]"
               >
                 Cancelar
               </Button>
@@ -109,7 +109,7 @@ export function DialogProveedor({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-light-30 hover:bg-light-30/70 dark:bg-dark-30 hover:dark:bg-dark-30/70"
+              className="bg-light-30 hover:bg-light-30/70 dark:bg-dark-30 hover:dark:bg-dark-30/70 w-[50%]"
             >
               {isSubmitting ? "Guardando..." : "Guardar"}
             </Button>
