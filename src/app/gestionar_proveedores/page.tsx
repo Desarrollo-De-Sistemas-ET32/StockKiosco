@@ -6,6 +6,7 @@ import CardProveedor from '@/components/gestion-card' // asegúrate que la ruta 
 import { proveedorService } from '@/app/Service/proveedor/ProveedorService'
 import type { ProveedorPayload, ProveedorWithId } from '@/app/Service/proveedor/proveedor'
 import { DialogProveedor } from '@/components/dialogProveedorCreate'
+import { DialogProveedorUpd } from '@/components/dialogProveedorUpdate'
 
 export default function ListaProveedores() {
   const [proveedores, setProveedores] = useState<ProveedorWithId[]>([])
@@ -221,44 +222,7 @@ export default function ListaProveedores() {
 
       {/* Modal Editar */}
       {isEditOpen && (
-        <div className="fixed inset-0 dark:bg-dark-30/70 bg-light-30/70 flex justify-center items-center z-50">
-          
-          <div className="bg-light-60 p-7 rounded-2xl w-full max-w-md shadow-xl dark:bg-dark-60">
-            <h2 className="mb-5 text-center text-xl font-extrabold text-gray-800 dark:text-white">
-              {loadingEditData ? 'Cargando...' : 'Editar Proveedor'}
-            </h2>
-
-            {loadingEditData ? (
-              <div className="py-6 text-center">Cargando datos...</div>
-            ) : (
-              <form onSubmit={handleUpdate} className="flex flex-col gap-4">
-                <label className="text-xs">Nombre</label>
-                <input name="nombre" value={modalForm.nombre} onChange={handleModalChange} className="w-full px-3 py-2 rounded dark:bg-dark-30 bg-light-30" />
-
-                <label className="text-xs">Email</label>
-                <input name="email" value={modalForm.email} onChange={handleModalChange} type="email" className="w-full px-3 py-2 rounded dark:bg-dark-30 bg-light-30" />
-
-                <label className="text-xs">Dirección</label>
-                <input name="direccion" value={modalForm.direccion} onChange={handleModalChange} className="w-full px-3 py-2 rounded dark:bg-dark-30 bg-light-30" />
-
-                <label className="text-xs">Contacto</label>
-                <input name="contacto" value={modalForm.contacto} onChange={handleModalChange} className="w-full px-3 py-2 rounded dark:bg-dark-30 bg-light-30" />
-
-                <label className="text-xs">Teléfono</label>
-                <input name="telefono" value={modalForm.telefono} onChange={handleModalChange} className="w-full px-3 py-2 rounded dark:bg-dark-30 bg-light-30" />
-
-                <div className="flex justify-end gap-2 mt-2">
-                  <button type="submit" disabled={submitting} className="px-4 py-2 bg-confirm text-white rounded-lg cursor-pointer">
-                    {submitting ? 'Actualizando...' : 'Actualizar'}
-                  </button>
-                  <button type="button" onClick={() => { setIsEditOpen(false); setEditingId(null); setModalForm(emptyForm); setError(null) }} className="cursor-pointer px-4 py-2 dark:bg-dark-30 bg-light-30 hover:dark:bg-dark-30/70 hover:bg-light-30/70 rounded-lg transition-colors">
-                    Cerrar
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
+        <DialogProveedorUpd isOpen={isEditOpen} onOpenChange={setIsEditOpen} isSubmitting={submitting} modalForm={modalForm} handleModalChange={handleModalChange} handleUpdate={handleUpdate}></DialogProveedorUpd>
       )}
     </main>
   )
