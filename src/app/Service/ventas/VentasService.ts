@@ -10,15 +10,17 @@ function parseNumberSafe(v: any): number | null {
 }
 
 export const ventasService = {
-  create: async (payload: NuevaVenta): Promise<{ success: true; venta: VentaDB } | { success: false; error: string; details?: any }> => {
+  create: async (
+    payload: NuevaVenta & { descuento_aplicado?: number | null }
+  ): Promise<{ success: true; venta: VentaDB } | { success: false; error: string; details?: any }> => {
     try {
       const body = {
-        ...payload,
         id_usuario: payload.id_usuario == null ? null : Number(payload.id_usuario),
         detalles: Array.isArray(payload.detalles)
           ? payload.detalles.map((d) => ({ id_producto: Number(d.id_producto), cantidad: Number(d.cantidad) }))
           : [],
         pagado: Boolean(payload.pagado),
+        ...(payload.descuento_aplicado != null ? { descuento_aplicado: Number(payload.descuento_aplicado) } : {}),
       };
 
       const resp = await api.post<CreateVentaResponse>('/ventas/ventaRealizada', body);
@@ -56,7 +58,7 @@ export const ventasService = {
 
   getAll: async (): Promise<VentaDB[]> => {
     try {
-      const resp = await api.get<VentaDB[]>('/ventas/ventaRealizada'); // ajustar endpoint según backend
+      const resp = await api.get<VentaDB[]>('/ventas/ventaRealizada');
       return resp.data ?? [];
     } catch (err) {
       console.error('Error obteniendo ventas:', err);
