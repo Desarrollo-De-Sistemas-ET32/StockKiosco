@@ -12,7 +12,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Credentials': 'true',
 };
 
-// Responder preflight OPTIONS
+
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,

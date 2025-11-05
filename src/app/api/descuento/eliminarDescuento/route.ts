@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import db from "@/lib/db";
 import { deleteDescuento } from "@/actions/deleteDescuento";
 
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000"
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': FRONTEND_ORIGIN,
-  'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Credentials': 'true',
+  "Access-Control-Allow-Origin": FRONTEND_ORIGIN,
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS,PATCH",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Credentials": "true",
 };
-
 
 export async function OPTIONS() {
   return new Response(null, {
@@ -20,7 +20,7 @@ export async function OPTIONS() {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const body = await req.json(); 
+    const body = await req.json();
     const result = await deleteDescuento(body);
 
     if (!result.success) {
@@ -29,6 +29,15 @@ export async function DELETE(req: NextRequest) {
         { status: 400, headers: CORS_HEADERS }
       );
     }
+
+    
+    await db.logs.create({
+      data: {
+        id_usuario: body.id_usuario || null,
+        accion: "Eliminación de descuento",
+        descripcion: `El descuento "${result.data?.nombre ?? "desconocido"}" fue eliminado por el usuario ${body.id_usuario || "desconocido"}.`,
+      },
+    });
 
     return NextResponse.json(
       { success: true, data: result.data },
