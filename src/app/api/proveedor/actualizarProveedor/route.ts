@@ -1,7 +1,7 @@
 import { updateProveedor } from "@/actions/updateProveedor";
 import { NextResponse } from "next/server";
 
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000"
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3001"
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": FRONTEND_ORIGIN,
@@ -29,12 +29,13 @@ export async function PATCH(req: Request) {
     }
 
     if (!result.success) {
-      return NextResponse.json({ error: result.message }, { status: 400, headers: CORS_HEADERS });
+      return NextResponse.json({ error: (result as any).message }, { status: 400, headers: CORS_HEADERS });
     }
 
     console.log("Resultado de la actualización:", result);
     return NextResponse.json(result, { status: 200, headers: CORS_HEADERS });
   } catch (err) {
+    console.error("Error al actualizar el proveedor:", err);
     console.error("API error (updateProveedor):", err);
     return NextResponse.json(
       { error: "Internal Server Error" },

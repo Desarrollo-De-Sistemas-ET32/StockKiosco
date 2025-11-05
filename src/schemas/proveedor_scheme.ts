@@ -34,10 +34,6 @@ export const actualizarProveedorSchema = z.object({
     .string()
     .min(1, "La dirección no puede estar vacía")
     .max(200, "La dirección es muy larga"),
-  fecha_actualizacion: z
-    .preprocess((arg) => {
-      if (typeof arg === "string" || arg instanceof Date) return new Date(arg);
-    }, z.date({ required_error: "Fecha inválida" })),
 });
 
 // Crear proveedor

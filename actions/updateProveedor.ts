@@ -1,49 +1,30 @@
 'use server'
 import db from "../src/lib/db";
 import { actualizarProveedorSchema } from "@/schemas/proveedor_scheme";
-import { z } from "zod"; 
 
-export const updateProveedor = async (values: z.infer<typeof actualizarProveedorSchema>) => {
-  const parsed = actualizarProveedorSchema.safeParse(values);
-
-  if (!parsed.success) {
-    return {
-      error: "Datos inválidos",
-      details: parsed.error.flatten().fieldErrors,
-    };
-  }
-
-  const data = parsed.data;
-
+export const updateProveedor = async (data: any) => {
   try {
-    await db.proveedores.update({
-      where: { id_proveedor: data.id_proveedor },
+    // Validar los datos de entrada
+    const parsedData = actualizarProveedorSchema.parse(data);
+    console.log("Datos validados:", parsedData);
+
+    const { id_proveedor, nombre, direccion, telefono, email } = parsedData;
+
+    // Actualizar el proveedor en la base de datos
+    const updatedProveedor = await db.proveedores.update({
+      where: { id_proveedor },
       data: {
-        nombre: data.nombre,
-        contacto: data.contacto,
-        telefono: data.telefono,
-        email: data.email,
-        direccion: data.direccion,
-        fecha_actualizacion: data.fecha_actualizacion ?? new Date(),
+        nombre,
+        direccion,
+        telefono,
+        email,
+        fecha_actualizacion: new Date(),
       },
     });
-
-    return {
-      success: true,
-      message: "Proveedor actualizado correctamente.",
-    };
-  } catch (err: any) {
-    if (err.code === 'P2025') {
-      return {
-        success: false,
-        message: "No se encontró el proveedor con el ID proporcionado.",
-      };
-    }
-
-    console.error("Error al actualizar el proveedor:", err);
-    return {
-      error: "Al actualizar el proveedor",
-      message: "Ocurrió un error al actualizar el proveedor.",
-    };
+    console.log("Proveedor actualizado:", updatedProveedor);
+    return { success: true, proveedor: updatedProveedor };
+  } catch (error) {
+    console.error("Error al actualizar el proveedor:", error);
+    return { success: false, error: "Error al actualizar el proveedor" };
   }
 };
