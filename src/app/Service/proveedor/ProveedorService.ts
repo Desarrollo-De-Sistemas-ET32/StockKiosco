@@ -62,18 +62,11 @@ export const proveedorService = {
    * por eso aquí incluimos id_proveedor en el payload.
    * Después intentamos devolver el proveedor actualizado llamando a getById.
    */
-  update: async (id: number, data: Partial<ProveedorPayload>): Promise<ProveedorWithId | null> => {
+  update: async (id: number, payload: ProveedorPayload): Promise<ProveedorWithId | null> => {
     try {
-      const body = { ...data, id_proveedor: id }
-      const response = await api.post<GenericResp>('/proveedor/actualizarProveedor', body)
-      // si el backend retorna success, intentar obtener el proveedor actualizado
-      if (response?.data?.success) {
-        return await proveedorService.getById(id)
-      }
-      // si backend devolvió el proveedor directamente:
-      if (response?.data?.proveedor) return response.data.proveedor
-      // fallback: intentar obtenerlo igualmente
-      return await proveedorService.getById(id)
+      await api.patch('/proveedor/actualizarProveedor', { id_proveedor: id, ...payload })
+      console.log('Proveedor actualizado')
+      return await proveedorService.getById(id);
     } catch (err) {
       console.error(`Error actualizando proveedor ${id}`, err)
       throw err
