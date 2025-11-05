@@ -89,11 +89,11 @@ model proveedores {
 
 model stock {
   id_stock            Int       @id @default(autoincrement())
-  id_producto         Int       @unique
+  id_producto         Int
   cantidad            Int?
-  fecha_actualizacion DateTime @updatedAt
+  fecha_actualizacion DateTime  @updatedAt
   cantidad_min        Int?
-  productos           productos @relation(fields: [id_producto], references: [id_producto], onDelete: Cascade)
+  productos           productos @relation(fields: [id_producto], references: [id_producto])
 }
 
 model usuarios {
