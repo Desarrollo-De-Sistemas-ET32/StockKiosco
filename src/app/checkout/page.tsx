@@ -32,7 +32,9 @@ export default function ChequePage() {
   const [loadingDescuentos, setLoadingDescuentos] = useState(false);
   const [appliedDescuentoId, setAppliedDescuentoId] = useState<number | null>(null);
 
+
   useEffect(() => {
+    document.title = "Checkout | Kiosco"
     const fetchProducts = async () => {
       setLoading(true);
       try {

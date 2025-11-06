@@ -1,4 +1,10 @@
+import { useEffect } from "react";
+
+
 export default function Gestion() {
+  useEffect(() => {
+    document.title = "Menu de Gestion | Kiosco"
+  }, []);
   return (
     <div className="w-full flex flex-col items-center px-4 py-10">
       {/* Contenedor de tarjetas */}

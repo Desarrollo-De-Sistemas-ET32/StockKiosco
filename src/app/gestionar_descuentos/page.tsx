@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Search } from "@/components/ui/search";
@@ -11,6 +11,10 @@ export default function DiscountManagement() {
   const [sortBy, setSortBy] = useState<"nombre" | "valor" | "fecha_inicio">("nombre");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    document.title = "Gestión Descuentos | Kiosco"
+  }, [])
 
   return (
     <main className="bg-var5 dark:bg-var2 rounded-xl shadow-lg p-6 sm:p-6 2xl:max-w-450 sm:max-w-200 m-auto flex flex-col items-center justify-center">

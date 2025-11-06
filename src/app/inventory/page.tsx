@@ -83,6 +83,7 @@ export default function ProductManagement() {
   };
 
   useEffect(() => {
+    document.title = "Inventario | Kiosco";
     let mounted = true;
     (async () => {
       if (!mounted) return;

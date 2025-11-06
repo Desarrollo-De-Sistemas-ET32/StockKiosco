@@ -1,4 +1,5 @@
 'use client'
+import { useEffect } from "react";
 
 import { 
   BiDollar,
@@ -47,7 +48,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+ 
+
 export default function StatsPage() {
+  useEffect(() => {
+    document.title = "Estadisticas | Kiosco";
+  }, []);
+
   return (
     <main className="min-h-screen flex flex-col">
       <div className="flex justify-center items-center flex-1 p-4">

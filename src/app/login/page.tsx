@@ -1,7 +1,7 @@
 // src/app/login/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardTitle,
@@ -74,7 +74,9 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    document.title = "Inicio de Sesion | Kiosco";
+  }, []);
   return (
     <main className="min-h-screen flex items-center justify-center overflow-hidden">
       <Image

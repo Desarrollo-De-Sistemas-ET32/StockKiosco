@@ -26,6 +26,7 @@ export default function ListaProveedores() {
   const [loadingEditData, setLoadingEditData] = useState(false)
 
   useEffect(() => {
+    document.title = "Gestión Proveedores | Kiosco"
     let mounted = true
     const load = async () => {
       try {
