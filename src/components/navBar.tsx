@@ -8,10 +8,10 @@ import {
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
 import { BiHomeAlt, BiBox, BiDetail, BiCog } from "react-icons/bi";
+import { BsBasket } from "react-icons/bs";
 import Icono from "./avatarb";
 
 type Props = {
-
   protect?: boolean;
 };
 
@@ -19,7 +19,7 @@ export function NavBar({ protect = true }: Props) {
   const content = (
     <div className="w-full flex justify-center text-sm text-muted-foreground">
       <NavigationMenu className="flex p-4 flex-col rounded-lg shadow-md bg-light-60 dark:bg-dark-60 gap-10 items-center w-full sm:w-[15vh] sm:flex-row px-15">
-        <Icono/>
+        <Icono />
         <NavigationMenuLink
           className="flex justify-center items-center flex-row dark:hover:text-shadow-md dark:hover:text-shadow-light-60 hover:text-shadow-md hover:text-shadow-dark-60/70"
           href="/main"
@@ -44,6 +44,13 @@ export function NavBar({ protect = true }: Props) {
         <NavigationMenuLink
           className="flex justify-center items-center flex-row text-foreground dark:hover:text-shadow-md dark:hover:text-shadow-light-60 hover:text-shadow-md hover:text-shadow-dark-60/70"
           href="/manage"
+        >
+          <BsBasket className="size-4 text-foreground" />
+          Ventas
+        </NavigationMenuLink>
+        <NavigationMenuLink
+          className="flex justify-center items-center flex-row text-foreground dark:hover:text-shadow-md dark:hover:text-shadow-light-60 hover:text-shadow-md hover:text-shadow-dark-60/70"
+          href="/checkout"
         >
           <BiCog className="size-4 text-foreground" />
           Gestión
