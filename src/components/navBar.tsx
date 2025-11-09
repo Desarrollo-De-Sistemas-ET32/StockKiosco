@@ -43,14 +43,14 @@ export function NavBar({ protect = true }: Props) {
         </NavigationMenuLink>
         <NavigationMenuLink
           className="flex justify-center items-center flex-row text-foreground dark:hover:text-shadow-md dark:hover:text-shadow-light-60 hover:text-shadow-md hover:text-shadow-dark-60/70"
-          href="/manage"
+          href="/checkout"
         >
           <BsBasket className="size-4 text-foreground" />
           Ventas
         </NavigationMenuLink>
         <NavigationMenuLink
           className="flex justify-center items-center flex-row text-foreground dark:hover:text-shadow-md dark:hover:text-shadow-light-60 hover:text-shadow-md hover:text-shadow-dark-60/70"
-          href="/checkout"
+          href="/manage"
         >
           <BiCog className="size-4 text-foreground" />
           Gestión

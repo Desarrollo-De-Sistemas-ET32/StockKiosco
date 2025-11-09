@@ -160,11 +160,6 @@ export default function ChequePage() {
     return descuentos.find((d) => Number(d.id_descuento ?? d.id) === Number(appliedDescuentoId)) ?? null;
   }, [appliedDescuentoId, descuentos]);
 
-  // --------------------------------------------------
-  // Regla clara: si tipo === "MONTOFIJO" -> monto fijo
-  //            si tipo === "PORCENTAJE" -> porcentaje
-  // Comparación case-insensitive por seguridad
-  // --------------------------------------------------
   const calculation = useMemo(() => {
     const subtotal = productosAgregados.reduce((acc, p) => acc + (Number(p.precio || 0) * Number(p.cantidad || 0)), 0);
     let descuentoValor = 0;
@@ -175,15 +170,12 @@ export default function ChequePage() {
       const val = Number(discountObj.valor ?? 0);
 
       const isMontoFijo = tipoStr === "MONTOFIJO";
-      const isPorcentaje = tipoStr === "PORCENTAJE";
 
       if (val > 0) {
         if (isMontoFijo) {
           descuentoValor = Math.min(subtotal, val);
           total = Math.max(0, subtotal - descuentoValor);
         } else {
-          // Por defecto (y para PORCENTAJE): interpretamos como porcentaje
-          // Si el tipo viene distinto (pero no MONTOFIJO), también lo manejamos como porcentaje
           descuentoValor = subtotal * (val / 100);
           total = Math.max(0, subtotal - descuentoValor);
         }
@@ -192,7 +184,6 @@ export default function ChequePage() {
 
     return { subtotal, descuentoValor, total };
   }, [productosAgregados, discountObj]);
-  // --------------------------------------------------
 
   const crearVenta = async () => {
     if (productosAgregados.length === 0) {
@@ -228,10 +219,8 @@ export default function ChequePage() {
         setTimeout(() => setSaleSuccess(false), 1500);
       } else {
         setError(result.error || "Error al crear la venta");
-        console.error(result.details);
       }
     } catch (err: any) {
-      console.error("Excepción al crear venta:", err);
       setError(err?.message ?? "Error al crear la venta");
     } finally {
       setProcessing(false);
@@ -249,10 +238,14 @@ export default function ChequePage() {
         input[type=number] { -moz-appearance: textfield; }
       `}</style>
 
-      <main className="h-[80vh] flex flex-col mx-25">
-        <div className="grid grid-cols-[3fr_1fr] gap-6 p-4 h-full">
-          <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-6 drop-shadow-xl flex flex-col items-center justify-start gap-4 overflow-y-auto">
-            <Button className="w-full h-16 text-xl font-medium dark:bg-dark-60 dark:hover:bg-neutral-900 dark:text-white bg-light-30 mb-4" onClick={() => setShowPopup(true)}>
+      <main className="h-[80vh] flex flex-col mx-4 lg:mx-25">
+        
+        {/* ✅ Ahora responsive */}
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-6 p-4 h-full">
+
+          {/* LISTA DE PRODUCTOS */}
+          <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-4 lg:p-6 drop-shadow-xl flex flex-col items-center justify-start gap-4 overflow-y-auto w-full">
+            <Button className="w-full min-h-14 text-lg font-medium dark:bg-dark-60 dark:hover:bg-neutral-900 dark:text-white bg-light-30 mb-4" onClick={() => setShowPopup(true)}>
               Agregar Productos
             </Button>
 
@@ -267,7 +260,6 @@ export default function ChequePage() {
                   const val = Number(discountObj.valor ?? 0);
                   const isMontoFijo = tipoStr === "MONTOFIJO";
                   if (val > 0 && !isMontoFijo) {
-                    // si NO es MONTOFIJO, tratamos como % para la vista de precio unitario
                     precioUnitConDesc = Math.max(0, precioUnit * (1 - val / 100));
                   }
                 }
@@ -275,24 +267,25 @@ export default function ChequePage() {
                 const remaining = getRemainingStock(producto.id_producto);
 
                 return (
-                  <div key={producto.id_producto ?? index} className="w-full dark:bg-dark-10 dark:hover:bg-neutral-900 transition-colors rounded-lg flex items-center justify-between p-4">
-                    <div className="flex items-center gap-4 w-[60%]">
-                      <div className="text-sm text-gray-400 w-[10%]">{producto.codigo_barra ?? "—"}</div>
-                      <div className="text-white text-sm font-medium">{producto.nombre ?? "Producto sin nombre"}</div>
-                      {typeof remaining === "number" && <div className={`text-xs ml-2 ${remaining === 0 ? "text-red-400" : "text-muted-foreground"}`}>{remaining} disponibles</div>}
+                  <div key={producto.id_producto ?? index} className="w-full flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 p-4 dark:bg-dark-10 dark:hover:bg-neutral-900 transition-colors rounded-lg">
+                    
+                    <div className="flex flex-col lg:flex-row items-start lg:items-center gap-2 w-full lg:w-[60%]">
+                      <div className="text-sm text-gray-400">{producto.codigo_barra ?? "—"}</div>
+                      <div className="text-white text-sm font-medium">{producto.nombre ?? "Producto"}</div>
+                      {typeof remaining === "number" && <div className={`text-xs ${remaining === 0 ? "text-red-400" : "text-muted-foreground"}`}>{remaining} disponibles</div>}
                     </div>
 
-                    <div className="flex items-center gap-3 w-[25%] justify-center">
-                      <button className="p-1 rounded hover:bg-light-10" onClick={() => handleChangeCantidad(producto.id_producto, Number(producto.cantidad || 0) - 1)} aria-label={`Disminuir ${producto.nombre}`}>
+                    <div className="flex items-center gap-3 w-full lg:w-[25%] justify-start lg:justify-center">
+                      <button className="p-1 rounded hover:bg-light-10" onClick={() => handleChangeCantidad(producto.id_producto, Number(producto.cantidad || 0) - 1)}>
                         <BiMinus />
                       </button>
                       <input className="w-12 text-center bg-transparent border-b" type="number" value={producto.cantidad} min={0} onChange={(e) => handleChangeCantidad(producto.id_producto, Number(e.target.value || 0))} />
-                      <button className="p-1 rounded hover:bg-light-10" onClick={() => { const rem = getRemainingStock(producto.id_producto); if (typeof rem === "number" && rem <= 0) { setError("No queda stock disponible."); setTimeout(() => setError(null), 2000); return; } handleChangeCantidad(producto.id_producto, Number(producto.cantidad || 0) + 1); }} aria-label={`Aumentar ${producto.nombre}`}>
+                      <button className="p-1 rounded hover:bg-light-10" onClick={() => { const rem = getRemainingStock(producto.id_producto); if (typeof rem === "number" && rem <= 0) { setError("No queda stock disponible."); setTimeout(() => setError(null), 2000); return; } handleChangeCantidad(producto.id_producto, Number(producto.cantidad || 0) + 1); }}>
                         <BiPlus />
                       </button>
                     </div>
 
-                    <div className="w-[15%] text-right">
+                    <div className="w-full lg:w-[15%] text-left lg:text-right">
                       {precioUnitConDesc !== precioUnit ? (
                         <div>
                           <div className="text-xs text-muted-foreground line-through">${precioUnit.toFixed(2)}</div>
@@ -303,7 +296,7 @@ export default function ChequePage() {
                       )}
                     </div>
 
-                    <button className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors ml-3 hover:cursor-pointer" onClick={() => handleEliminarProducto(producto.id_producto)}>
+                    <button className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors" onClick={() => handleEliminarProducto(producto.id_producto)}>
                       <BiTrashAlt className="size-4" />
                     </button>
                   </div>
@@ -312,8 +305,10 @@ export default function ChequePage() {
             )}
           </div>
 
+          {/* PANEL DE TOTAL / DESCUENTO */}
           <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-4 drop-shadow-xl flex flex-col">
-            <div className="w-full bg-light-30 dark:bg-dark-30 rounded-md flex flex-col items-center transition-all cursor-pointer overflow-hidden">
+            
+            <div className="w-full bg-light-30 dark:bg-dark-30 rounded-md flex flex-col items-center cursor-pointer overflow-hidden">
               <div onClick={() => setShowAplicarMenu(!showAplicarMenu)} className="flex justify-center items-center h-15 w-full dark:hover:bg-neutral-900 transition-colors dark:bg-dark-60">
                 <h2 className="text-foreground text-xl">Aplicar</h2>
                 {showAplicarMenu ? <BiChevronUp className="size-8" /> : <BiChevronDown className="size-8" />}
@@ -348,7 +343,7 @@ export default function ChequePage() {
               </div>
             </div>
 
-            <div className={`w-full h-25 mt-4 rounded-md flex items-center justify-center transition-colors ${processing ? "bg-gray-500 cursor-not-allowed" : "bg-light-30 dark:bg-dark-60 hover:bg-green-400 cursor-pointer"}`} onClick={() => { if (!processing) crearVenta(); }} aria-disabled={processing}>
+            <div className={`w-full mt-4 rounded-md flex items-center justify-center min-h-14 transition-colors ${processing ? "bg-gray-500 cursor-not-allowed" : "bg-light-30 dark:bg-dark-60 hover:bg-green-400 cursor-pointer"}`} onClick={() => { if (!processing) crearVenta(); }}>
               {processing ? (
                 <div className="flex items-center gap-2">
                   <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24" fill="none">
@@ -389,9 +384,10 @@ export default function ChequePage() {
           </div>
         </div>
 
+        {/* POPUP AGREGAR PRODUCTOS */}
         {showPopup && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50" onClick={() => setShowPopup(false)}>
-            <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-6 w-[500px] h-[500px] shadow-2xl flex flex-col items-start justify-start relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-6 w-[90%] max-w-[500px] h-[80%] max-h-[600px] shadow-2xl flex flex-col items-start justify-start relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
               <Search id="search-producto" placeholder="Buscar nombre de Producto" className="w-full bg-light-30 dark:bg-dark-10 text-foreground border-0 focus:ring-0" label="" />
               <div className="mt-4 w-full overflow-y-auto">
                 {loading ? (
