@@ -10,13 +10,12 @@ export interface ProductoPayload {
   stock_cantidad: number,
   stock_minimo: number,
   marca_id: number | null,
-  categoria_id: number | null,
+  id_categoria: number | null,
 }
 
 // Producto tal como viene del backend
 export interface ProductoWithId {
   marcas: any;
-  categoria: any;
   success: boolean;
   message: string;
   id_producto: number;
