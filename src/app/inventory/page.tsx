@@ -5,66 +5,28 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-
-// --- 1. Importa TODO lo que necesitas ---
+import { ProductoPayload, ProductoWithId } from "@/app/Service/producto/producto";
 import { productoService } from "@/app/Service/producto/ProductoService";
 import { marcaService } from "@/app/Service/marca/marcaService";
 import { categoriaService } from "@/app/Service/categoria/CategoryService";
 
 import ProductCard from "@/components/cardProduct";
-import { DialogProducto } from "@/components/dialogProducto"; // El modal de formulario
-
-// --- 2. Define tus tipos (idealmente en un archivo .ts) ---
-interface Producto {
-  id_producto: number;
-  nombre: string;
-  precio: number;
-  stock?: { id_stock: number; cantidad: number; cantidad_min: number }[];
-  codigo_barra?: string;
-  images?: string; // Corregido de 'imagen' para coincidir con tu service
-  categoria?: { id_categoria: number; nombre: string };
-  marcas?: { id_marca: number; nombre_marca: string };
-  // (Añade los IDs planos que usa el service)
-  id_marca?: number;
-  id_categoria?: number;
-}
-interface ProductoPayload {
-  // (Define tu payload aquí, como lo hicimos en el paso anterior)
-  id_producto?: number;
-  nombre: string;
-  precio: number;
-  stock_cantidad: number;
-  stock_minimo: number;
-  codigo_barra: string;
-  images: string;
-  marca_id: number | null;
-  categoria_id: number | null;
-}
-interface Marca {
-  id_marca: number;
-  nombre_marca: string;
-}
-interface Categoria {
-  id_categoria: number;
-  nombre: string;
-}
-// --- Fin de Tipos ---
+import { DialogProducto } from "@/components/dialogProducto";
+import { MarcaWithId } from "../Service/marca/marca";
+import { CategoriaWithId } from "../Service/categoria/categoria";
 
 export default function ProductManagement() {
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [marcas, setMarcas] = useState<Marca[]>([]);
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [productos, setProductos] = useState<ProductoWithId[]>([]);
+  const [marcas, setMarcas] = useState<MarcaWithId[]>([]);
+  const [categorias, setCategorias] = useState<CategoriaWithId[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter(); // Ya lo tenías
 
-  // --- 3. Estado para el Modal y Formulario ---
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // El producto que se está editando (o null si es 'Crear')
-  const [editingProduct, setEditingProduct] = useState<Producto | null>(null);
-  // El estado del formulario
+  const [editingProduct, setEditingProduct] = useState<ProductoWithId | null>(null);
   const [modalForm, setModalForm] = useState<ProductoPayload>({
+    id_producto: 0,
     nombre: "",
     precio: 0,
     codigo_barra: "",
@@ -75,12 +37,10 @@ export default function ProductManagement() {
     categoria_id: null,
   });
 
-  // --- 4. Carga TODOS los datos al inicio ---
   const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      // Cargamos todo en paralelo
       const [productosData, marcasData, categoriasData] = await Promise.all([
         productoService.getAll(),
         marcaService.getAll(),
@@ -95,18 +55,17 @@ export default function ProductManagement() {
     } finally {
       setLoading(false);
     }
-  }, []); // Dependencia vacía, se crea 1 vez
+  }, []);
 
   useEffect(() => {
     loadData();
-  }, [loadData]);
-
-  // --- 5. Define las funciones que faltaban ---
+    document.title = "Inventario | Kiosco";
+  }, [loadData]); // --- Funciones de Modal (Sin cambios) ---
 
   const openCreateModal = () => {
-    setEditingProduct(null); // 'null' significa 'Crear'
-    // Resetea el formulario
+    setEditingProduct(null);
     setModalForm({
+      id_producto: 0,
       nombre: "",
       precio: 0,
       codigo_barra: "",
@@ -119,10 +78,8 @@ export default function ProductManagement() {
     setIsDialogOpen(true);
   };
 
-  const openEditModal = (producto: Producto) => {
-    setEditingProduct(producto); // Guarda el producto
-
-    // Mapea el producto anidado al formulario plano
+  const openEditModal = (producto: ProductoWithId) => {
+    setEditingProduct(producto);
     setModalForm({
       id_producto: producto.id_producto,
       nombre: producto.nombre ?? "",
@@ -134,49 +91,37 @@ export default function ProductManagement() {
       marca_id: producto.marcas?.id_marca ?? null,
       categoria_id: producto.categoria?.id_categoria ?? null,
     });
-
-    setIsDialogOpen(true); // Abre el modal
+    setIsDialogOpen(true);
   };
 
-  const handleDelete = (producto: Producto) => {
-    toast.promise(
-      productoService.delete(producto.id_producto).then(loadData), // Recarga al éxito
-      {
-        loading: `Eliminando ${producto.nombre}...`,
-        success: "Producto eliminado",
-        error: "Error al eliminar",
-      }
-    );
+  const handleDelete = (producto: ProductoWithId) => {
+    toast.promise(productoService.delete(producto.id_producto).then(loadData), {
+      loading: `Eliminando ${producto.nombre}...`,
+      success: "Producto eliminado",
+      error: "Error al eliminar",
+    });
   };
 
-  // Función para el 'onSubmit' del modal
   const handleSubmit = async (formData: ProductoPayload) => {
     setIsSubmitting(true);
 
-    // 1. Re-arma el payload para la API (con stock anidado, etc.)
     const payload = {
-      id_producto: formData.id_producto, // Será 'undefined' al crear
+      id_producto: formData.id_producto,
       nombre: formData.nombre,
       precio: formData.precio,
       codigo_barra: formData.codigo_barra,
       images: formData.images,
-      stock: [
-        {
-          cantidad: formData.stock_cantidad,
-          cantidad_min: formData.stock_minimo,
-        },
-      ],
+      stock: formData.stock_cantidad,
+      stock_minimo: formData.stock_minimo,
       id_marca: formData.marca_id,
       id_categoria: formData.categoria_id,
     };
 
     try {
       if (editingProduct) {
-        // --- Lógica de ACTUALIZAR ---
-        await productoService.updatePatch(payload as any); // (Asegúrate que updatePatch acepte esto)
+        await productoService.updatePatch(payload as any);
         toast.success("Producto actualizado");
       } else {
-        // --- Lógica de CREAR ---
         const response = await productoService.create(payload as any);
         if (response.error) throw new Error(String(response.error));
         toast.success("Producto creado");
@@ -184,25 +129,33 @@ export default function ProductManagement() {
 
       setIsDialogOpen(false);
       setEditingProduct(null);
-      loadData(); // Recargamos la lista
+      loadData();
     } catch (err: any) {
-      toast.error(err?.message ?? "Error al guardar");
+      console.error("handleSubmit error:", err.response?.data ?? err);
+      let errorMessage = "Error al guardar";
+      if (
+        err.response?.data?.details &&
+        Array.isArray(err.response.data.details)
+      ) {
+        const detail = err.response.data.details[0];
+        errorMessage = `Error en '${detail.field}': ${detail.message}`;
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  // --- 6. Renderizado ---
-
   if (loading) {
     return (
       <main className="flex items-center justify-center h-[80vh]">
-               {" "}
         <div className="flex flex-col items-center gap-5 p-5 bg-light-60 dark:bg-dark-30 rounded-md">
-                    <p>Cargando Productos</p>
-                    <Spinner className="size-10" />       {" "}
+          <p>Cargando Productos</p>
+          <Spinner className="size-10" />
         </div>
-             {" "}
       </main>
     );
   }
@@ -212,7 +165,6 @@ export default function ProductManagement() {
 
   return (
     <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-6 lg:mx-auto max-w-5xl">
-      {/* 7. Renderiza el Modal (estará oculto) */}
       <DialogProducto
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
@@ -224,15 +176,12 @@ export default function ProductManagement() {
         categoriasList={categorias}
         title={editingProduct ? "Editar Producto" : "Crear Producto"}
       />
-           {" "}
       <div className="flex flex-col gap-6 w-full">
-               {" "}
         {productos.length > 0 ? (
           productos.map((prod) => (
             <ProductCard
               key={prod.id_producto}
               producto={prod}
-              // 8. Ahora estas funciones SÍ existen
               onEdit={() => openEditModal(prod)}
               onDelete={() => handleDelete(prod)}
             />
@@ -242,21 +191,15 @@ export default function ProductManagement() {
             No hay productos disponibles.
           </p>
         )}
-             {" "}
-      </div>
-           {" "}
+        </div>
       <div className="w-full flex justify-center">
-               {" "}
         <Button
-          // 9. Conecta el botón de 'Agregar'
           onClick={openCreateModal}
           className="w-full sm:w-auto bg-light-30 dark:bg-dark-30 text-foreground hover:bg-light-30/70 dark:hover:bg-dark-30/70 text-lg px-6 py-3 rounded-2xl"
         >
-                    Agregar producto{" "}
+          Agregar producto
         </Button>
-             {" "}
       </div>
-         {" "}
     </main>
   );
 }

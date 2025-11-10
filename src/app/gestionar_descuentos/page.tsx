@@ -44,6 +44,7 @@ export default function ListaDescuentos() {
 
   useEffect(() => {
     loadDescuentos();
+    document.title = "Gestionar Descuentos | Kiosco"
   }, [loadDescuentos]);
 
   const descuentosFiltrados = useMemo(() => {

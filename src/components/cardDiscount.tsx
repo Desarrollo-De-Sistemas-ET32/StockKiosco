@@ -51,7 +51,7 @@ export default function CardDescuento({
   const fechaFinFormateada = formatFecha(fecha_fin);
 
   return (
-    <div className="flex items-center justify-between p-4 bg-light-60 dark:bg-dark-30 rounded-lg shadow-sm w-full">
+    <div className="flex items-center justify-between p-4 bg-light-30 dark:bg-dark-30 rounded-lg shadow-sm w-full">
       {/* Sección de Información */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ export default function CardDescuento({
       <div className="flex gap-2">
         <Button
           size="icon"
-          className="text-primary hover:text-primary/80 dark:bg-dark-60"
+          className="text-primary hover:text-primary/80 bg-light-10 dark:bg-dark-10"
           onClick={() => onEdit(id_descuento)}
           aria-label="Editar"
         >
@@ -89,7 +89,7 @@ export default function CardDescuento({
         </Button>
         <Button
           size="icon"
-          className="text-danger hover:text-danger/80 dark:bg-dark-60"
+          className="text-danger hover:text-danger/80 bg-light-10 dark:bg-dark-10"
           onClick={() => onDelete(id_descuento)}
           aria-label="Eliminar"
         >

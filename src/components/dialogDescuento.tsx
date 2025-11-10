@@ -149,11 +149,11 @@ isOpen,
             onChange={(e) => handleChange("descripcion", e.target.value)}
             placeholder="Opcional: detalles sobre el descuento..."
           ></FieldTextarea>
-          <DialogFooter>
-            <Button type="button" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+          <DialogFooter className="w-full gap-0">
+            <Button className="bg-light-30 dark:bg-dark-30 w-full" type="button" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button className="bg-light-30 dark:bg-dark-30 w-full" type="submit" disabled={isSubmitting}>
               {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Guardar
             </Button>

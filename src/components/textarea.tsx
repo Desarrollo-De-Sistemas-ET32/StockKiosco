@@ -40,7 +40,7 @@ export function FieldTextarea({
               onChange={onChange}
               placeholder={placeholder}
               rows={rows}
-              className="border-none bg-dark-30 focus-visible:shadow-md"
+              className="border-none bg-light-30 dark:bg-dark-30 focus-visible:shadow-md"
             />
             {/* 6. Mostramos el texto de ayuda solo si existe */}
             {description && (

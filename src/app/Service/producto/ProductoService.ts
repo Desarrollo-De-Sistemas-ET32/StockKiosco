@@ -40,10 +40,8 @@ const normalizeProducto = (p: any): ProductoWithId => {
     stock,
     marcas,
     categoria,
-    // Devolvemos los IDs planos para que 'openEditModal' los use
     id_marca: marcas.id_marca,
     id_categoria: categoria.id_categoria,
-    // Convertimos fechas a string ISO (más estándar que objetos Date)
     fecha_creacion: String(p.fecha_creacion ?? ""),
     fecha_actualizacion: String(p.fecha_actualizacion ?? ""),
     id_proveedor: Number(p.id_proveedor ?? 0),
