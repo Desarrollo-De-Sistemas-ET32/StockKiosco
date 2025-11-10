@@ -136,6 +136,7 @@ export default function ChequePage() {
   const handleEliminarProducto = (id_producto: number) => {
     setProductosAgregados((prev) => prev.filter((p) => p.id_producto !== id_producto));
   };
+  
 
   const handleChangeCantidad = (id_producto: number, nuevaCantidad: number) => {
     if (!Number.isFinite(nuevaCantidad)) return;
@@ -239,11 +240,7 @@ export default function ChequePage() {
       `}</style>
 
       <main className="h-[80vh] flex flex-col mx-4 lg:mx-25">
-        
-        {/* ✅ Ahora responsive */}
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-6 p-4 h-full">
-
-          {/* LISTA DE PRODUCTOS */}
           <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-4 lg:p-6 drop-shadow-xl flex flex-col items-center justify-start gap-4 overflow-y-auto w-full">
             <Button className="w-full min-h-14 text-lg font-medium dark:bg-dark-60 dark:hover:bg-neutral-900 dark:text-white bg-light-30 mb-4" onClick={() => setShowPopup(true)}>
               Agregar Productos
@@ -267,12 +264,12 @@ export default function ChequePage() {
                 const remaining = getRemainingStock(producto.id_producto);
 
                 return (
-                  <div key={producto.id_producto ?? index} className="w-full flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 p-4 dark:bg-dark-10 dark:hover:bg-neutral-900 transition-colors rounded-lg">
+                  <div key={producto.id_producto ?? index} className="w-full bg-light-30 dark:bg-dark-60 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 p-4 dark:hover:bg-neutral-900 transition-colors rounded-lg">
                     
                     <div className="flex flex-col lg:flex-row items-start lg:items-center gap-2 w-full lg:w-[60%]">
-                      <div className="text-sm text-gray-400">{producto.codigo_barra ?? "—"}</div>
-                      <div className="text-white text-sm font-medium">{producto.nombre ?? "Producto"}</div>
-                      {typeof remaining === "number" && <div className={`text-xs ${remaining === 0 ? "text-red-400" : "text-muted-foreground"}`}>{remaining} disponibles</div>}
+                      <div className="text-sm text-blue-500">{producto.codigo_barra ?? "—"}</div>
+                      <div className="text-black dark:text-white text-sm font-medium">{producto.nombre ?? "Producto"}</div>
+                      {typeof remaining === "number" && <div className={`text-sm text-black dark:text-white ${remaining === 0 ? "text-red-400" : "text-muted-foreground"}`}>{remaining} disponibles</div>}
                     </div>
 
                     <div className="flex items-center gap-3 w-full lg:w-[25%] justify-start lg:justify-center">
@@ -289,14 +286,14 @@ export default function ChequePage() {
                       {precioUnitConDesc !== precioUnit ? (
                         <div>
                           <div className="text-xs text-muted-foreground line-through">${precioUnit.toFixed(2)}</div>
-                          <div className="text-white">${(precioUnitConDesc * producto.cantidad).toFixed(2)}</div>
+                          <div className="dark:text-white">${(precioUnitConDesc * producto.cantidad).toFixed(2)}</div>
                         </div>
                       ) : (
-                        <div className="text-white">${(precioUnit * producto.cantidad).toFixed(2)}</div>
+                        <div className="dark:text-white">${(precioUnit * producto.cantidad).toFixed(2)}</div>
                       )}
                     </div>
 
-                    <button className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors" onClick={() => handleEliminarProducto(producto.id_producto)}>
+                    <button className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors cursor-pointer" onClick={() => handleEliminarProducto(producto.id_producto)}>
                       <BiTrashAlt className="size-4" />
                     </button>
                   </div>
@@ -305,7 +302,6 @@ export default function ChequePage() {
             )}
           </div>
 
-          {/* PANEL DE TOTAL / DESCUENTO */}
           <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-4 drop-shadow-xl flex flex-col">
             
             <div className="w-full bg-light-30 dark:bg-dark-30 rounded-md flex flex-col items-center cursor-pointer overflow-hidden">
@@ -343,7 +339,7 @@ export default function ChequePage() {
               </div>
             </div>
 
-            <div className={`w-full mt-4 rounded-md flex items-center justify-center min-h-14 transition-colors ${processing ? "bg-gray-500 cursor-not-allowed" : "bg-light-30 dark:bg-dark-60 hover:bg-green-400 cursor-pointer"}`} onClick={() => { if (!processing) crearVenta(); }}>
+            <div className={`w-full h-25 mt-4 rounded-md flex items-center justify-center min-h-14 transition-colors ${processing ? "bg-gray-500 cursor-not-allowed" : "bg-light-30 dark:bg-dark-60 hover:bg-green-400 cursor-pointer"}`} onClick={() => { if (!processing) crearVenta(); }}>
               {processing ? (
                 <div className="flex items-center gap-2">
                   <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24" fill="none">
@@ -384,11 +380,10 @@ export default function ChequePage() {
           </div>
         </div>
 
-        {/* POPUP AGREGAR PRODUCTOS */}
         {showPopup && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50" onClick={() => setShowPopup(false)}>
             <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-6 w-[90%] max-w-[500px] h-[80%] max-h-[600px] shadow-2xl flex flex-col items-start justify-start relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
-              <Search id="search-producto" placeholder="Buscar nombre de Producto" className="w-full bg-light-30 dark:bg-dark-10 text-foreground border-0 focus:ring-0" label="" />
+              <Search id="search-producto" placeholder="Buscar nombre de Producto" className="w-full bg-light-30 dark:bg-dark-60 text-foreground border-0 focus:ring-0" label="" />
               <div className="mt-4 w-full overflow-y-auto">
                 {loading ? (
                   <p className="text-foreground text-sm">Cargando...</p>
@@ -399,7 +394,7 @@ export default function ChequePage() {
                     const remaining = getRemainingStock(detalle.id_producto);
                     const disabled = typeof remaining === "number" && remaining <= 0;
                     return (
-                      <div key={detalle.id_producto} onClick={() => { if (disabled) return; handleAgregarProducto(detalle); }} className={`w-full bg-light-30 dark:bg-dark-10 hover:bg-light-10 transition-colors rounded-md flex items-center justify-between p-3 mb-2 cursor-pointer ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}>
+                      <div key={detalle.id_producto} onClick={() => { if (disabled) return; handleAgregarProducto(detalle); }} className={`w-full bg-light-30 dark:bg-dark-60 hover:dark:bg-neutral-800 hover:bg-light-10 transition-colors rounded-md flex items-center justify-between p-3 mb-2 cursor-pointer ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}>
                         <div className="flex flex-col">
                           <span className="text-sm text-foreground">ID Producto: {detalle.id_producto}</span>
                           <span className="text-sm font-medium text-foreground">{detalle.nombre}</span>
@@ -407,7 +402,7 @@ export default function ChequePage() {
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="text-sm text-foreground">${detalle.precio?.toFixed ? detalle.precio.toFixed(2) : detalle.precio}</span>
-                          <button onClick={(e) => { e.stopPropagation(); if (!disabled) handleAgregarProducto(detalle); }} className={`px-3 py-1 text-white rounded ${disabled ? "bg-gray-400" : "bg-light-10"}`} disabled={disabled}>
+                          <button onClick={(e) => { e.stopPropagation(); if (!disabled) handleAgregarProducto(detalle); }} className={`px-3 py-1 text-white rounded ${disabled ? "bg-gray-400" : "bg-green-500 cursor-pointer"}`} disabled={disabled}>
                             Agregar
                           </button>
                         </div>

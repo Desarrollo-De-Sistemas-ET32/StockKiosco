@@ -63,6 +63,7 @@ export default function GestionarProductos() {
   }, []);
 
   useEffect(() => {
+    document.title = "Gestionar Productos | Kiosco"
     loadData();
   }, [loadData]);
 
@@ -226,6 +227,7 @@ export default function GestionarProductos() {
   return (
     <main>
       <div className="flex flex-col items-center gap-4 mx-auto my-5 font-sans max-w-[900px]">
+        <h2 className=" font-bold text-2xl text-white"> Lista Productos</h2>
         <DialogProducto
           isOpen={isCreateOpen}
           onOpenChange={setIsCreateOpen}

@@ -42,6 +42,7 @@ export default function MainPage() {
   const [loadingVentas, setLoadingVentas] = useState<boolean>(false);
 
   useEffect(() => {
+    document.title = "Pagina Principal | Kiosco";
     const fetchData = async () => {
       setLoading(true);
       try {

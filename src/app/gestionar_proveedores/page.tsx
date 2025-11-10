@@ -42,6 +42,7 @@ export default function ListaProveedores() {
   }, []);
 
   useEffect(() => {
+    document.title = "Gestionar Proveedores | Kiosco";
     loadProveedores();
   }, [loadProveedores]);
 
