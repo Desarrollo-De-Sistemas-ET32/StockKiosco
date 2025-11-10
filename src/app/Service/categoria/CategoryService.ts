@@ -1,29 +1,32 @@
 // app/Service/CategoryService.ts
 import api from '../API';
 import { CategoriaPayload, CategoriaWithId } from './categoria';
+const normalizeCategoria = (data: any): CategoriaWithId => {
+  return {
+    id_categoria: Number(data.id_categoria ?? 0),
+    nombre: String(data.nombre ?? ""),
+  };
+};
 
 export const categoriaService = {
-  // Obtener todas las categorías
   getAll: async (): Promise<CategoriaWithId[]> => {
     try {
       const response = await api.get('/categoria/leerCategoria');
       const data = response.data;
 
-      // Normalizar: la API puede devolver directamente un array o un objeto { categorias: [] }
+      // Aplicamos la normalización a cualquier array que encontremos
       if (Array.isArray(data)) {
-        return data;
+        return data.map(normalizeCategoria); // <-- CORREGIDO
       }
 
       if (Array.isArray(data.categorias)) {
-        return data.categorias;
+        return data.categorias.map(normalizeCategoria); // <-- CORREGIDO
       }
 
-      // Caso fallback: si viene { message, categoria } (un solo objeto), devolver arreglo con ese objeto
       if (data && data.categoria && typeof data.categoria === 'object') {
-        return [data.categoria];
+        return [normalizeCategoria(data.categoria)]; // <-- CORREGIDO
       }
 
-      // Si no hay nada reconocible, devolver array vacío
       return [];
     } catch (error) {
       console.error('Error obteniendo categorías', error);
@@ -35,7 +38,8 @@ export const categoriaService = {
   getById: async (id: number): Promise<CategoriaWithId | null> => {
     try {
       const response = await api.get(`/categoria/${id}`);
-      return response.data ?? null;
+      // Aplicamos normalización si la respuesta no es nula
+      return response.data ? normalizeCategoria(response.data) : null; // <-- CORREGIDO
     } catch (error) {
       console.error(`Error obteniendo categoría ${id}`, error);
       throw error;
@@ -45,11 +49,15 @@ export const categoriaService = {
   // Crear una nueva categoría
   create: async (data: CategoriaPayload): Promise<{ message: string; categoria: CategoriaWithId }> => {
     try {
-      const response = await api.post<{ message: string; categoria: CategoriaWithId }>(
+      const response = await api.post<{ message: string; categoria: any }>( // Recibimos 'any'
         '/categoria/crearCategoria',
         data
       );
-      return response.data; // { message, categoria }
+      // Devolvemos la categoría normalizada
+      return {
+        message: response.data.message,
+        categoria: normalizeCategoria(response.data.categoria) // <-- CORREGIDO
+      };
     } catch (error) {
       console.error('Error creando categoría', error);
       throw error;
@@ -59,15 +67,15 @@ export const categoriaService = {
   // Actualizar categoría por id
   update: async (id: number, data: Partial<CategoriaPayload>): Promise<CategoriaWithId> => {
     try {
-      const response = await api.put<CategoriaWithId>(`/categoria/${id}`, data);
-      return response.data;
+      const response = await api.put<any>(`/categoria/${id}`, data); // Recibimos 'any'
+      return normalizeCategoria(response.data); // <-- CORREGIDO
     } catch (error) {
       console.error(`Error actualizando categoría ${id}`, error);
       throw error;
     }
   },
 
-  // Eliminar categoría por id
+  // Eliminar categoría por id (esta función está bien, no devuelve datos)
   delete: async (id: number): Promise<void> => {
     try {
       await api.delete(`/categoria/${id}`);

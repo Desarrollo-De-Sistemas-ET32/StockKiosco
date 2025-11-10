@@ -24,7 +24,7 @@ export default function Gestion() {
             className="w-full h-full object-cover rounded-[15px]"
           ></img>
           <div className="flex justify-center">
-            <span className="text-foreground font-semibold text-xl tracking-wide"><a href="main">DESCUENTOS</a></span>
+            <span className="text-foreground font-semibold text-xl tracking-wide"><a href="gestionar_descuentos">DESCUENTOS</a></span>
           </div>
         </div>
       </div>

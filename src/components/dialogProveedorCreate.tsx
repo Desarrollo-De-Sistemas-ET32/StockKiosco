@@ -37,7 +37,7 @@ export function DialogProveedor({
       <DialogContent className="border-none shadow-lg sm:max-w-lg bg-light-60 dark:bg-dark-60">
         <DialogHeader>
           <DialogTitle>Crear Proveedor</DialogTitle>
-          <DialogDescription className="">
+          <DialogDescription>
             Completa los datos para crear un nuevo proveedor.{<br></br>} Al ingresar número de telefono {<b>hagalo sin espacios ni ' - '.</b>}
           </DialogDescription>
         </DialogHeader>

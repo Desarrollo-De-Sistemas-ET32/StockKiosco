@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { productoService } from "@/app/Service/producto/ProductoService";
 import ventasService from "@/app/Service/ventas/VentasService";
+import DialogMainUpdate from "@/components/DialogMain";
 
 type Producto = {
   id: number;
@@ -193,9 +194,9 @@ export default function MainPage() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50">
-      <div className="grid w-full gap-5 grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 justify-items-center">
-        <InfoCard
+    <main className="flex flex-col items-center justify-center gap-10 px-4 sm:px-6 lg:px-10 py-3 lg:mx-50 flex-wrap">
+      <div className="w-fit gap-15 grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 justify-items-center inline-grid">
+        <InfoCard 
           title="Inventario total"
           icon={<BiBox className="size-7 text-neutral" />}
           data={totalInventario}
@@ -225,13 +226,10 @@ export default function MainPage() {
         />
       </div>
 
-      <div className="flex flex-col xl:flex-row gap-5 w-full justify-center items-start">
+      <div className="flex flex-col xl:flex-row gap-4 justify-between h-full w-full">
         <div className="w-full xl:w-3/5 bg-light-60 dark:bg-dark-30 p-5 rounded-2xl">
           <div className="flex justify-end mb-5">
-            <Button className="bg-light-30 dark:bg-dark-60 text-foreground hover:bg-light-30/70 dark:hover:bg-dark-60/70 border-0 w-full sm:w-auto">
-              <BiPlus className="size-5 text-foreground" />
-              Agregar Productos
-            </Button>
+            <DialogMainUpdate></DialogMainUpdate>
           </div>
 
           <div className="flex flex-col gap-4">
@@ -249,8 +247,7 @@ export default function MainPage() {
             )}
           </div>
         </div>
-
-        <div className="w-full xl:w-2/5 bg-light-60 dark:bg-dark-30 p-5 rounded-2xl">
+        <div className="flex flex-col w-full md:w-[45%] bg-light-60 dark:bg-dark-30 p-5 rounded-2xl">
           <div className="flex flex-col justify-start mb-5 gap-1">
             <p className="flex items-center text-2xl gap-3">
               <BiCart className="text-confirm size-7" />
@@ -259,7 +256,7 @@ export default function MainPage() {
             <p className="text-sm text-muted-foreground">Últimas transacciones del día</p>
           </div>
 
-          <div className="flex flex-col h-fit">
+          <div className="flex flex-col">
             {ventas.length === 0 ? (
               <div className="text-sm text-muted-foreground">No hay ventas registradas.</div>
             ) : (
@@ -276,24 +273,6 @@ export default function MainPage() {
               ))
             )}
           </div>
-        </div>
-      </div>
-
-      <div className="w-full bg-light-60 dark:bg-dark-30 rounded-2xl p-5 flex flex-col gap-5">
-        <div className="flex items-center gap-3">
-          <BiMedal className="text-random size-7" />
-          <p className="text-2xl font-medium">Acciones principales</p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Button className="bg-light-30 dark:bg-dark-60 w-full text-lg text-foreground hover:bg-light-30/70 dark:hover:bg-dark-60/70">
-            <BiPlus className="size-6" />
-            Nuevo Producto
-          </Button>
-          <Button className="bg-light-30 dark:bg-dark-60 w-full text-lg text-foreground hover:bg-light-30/70 dark:hover:bg-dark-60/70">
-            <BiCart className="size-6" />
-            Nueva Venta
-          </Button>
         </div>
       </div>
     </main>

@@ -18,8 +18,8 @@ export interface DescuentoDB {
   descripcion?: string | null;
   tipo: TipoDescuento;
   valor: number;
-  fecha_inicio?: string | null; // ISO
-  fecha_fin?: string | null; // ISO
+  fecha_inicio?: string | null;
+  fecha_fin?: string | null;
   fecha_creacion: string;
   fecha_actualizacion: string;
   activo: boolean;

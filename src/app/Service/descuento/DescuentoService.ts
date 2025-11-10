@@ -1,6 +1,10 @@
 // app/Service/DescuentoService.ts
 import api from "../API";
-import type { DescuentoPayload, DescuentoDB, CreateDescuentoResponse } from "./descuento";
+import type {
+  DescuentoPayload,
+  DescuentoDB,
+  CreateDescuentoResponse,
+} from "./descuento";
 
 function parseNumberSafe(v: any): number {
   if (v == null) return 0;
@@ -38,7 +42,9 @@ export const descuentoService = {
         descripcion: d.descripcion ?? null,
         tipo: String(d.tipo ?? "PORCENTAJE") as DescuentoDB["tipo"],
         valor: parseNumberSafe(d.valor ?? d.value ?? 0),
-        fecha_inicio: d.fecha_inicio ? new Date(d.fecha_inicio).toISOString() : null,
+        fecha_inicio: d.fecha_inicio
+          ? new Date(d.fecha_inicio).toISOString()
+          : null,
         fecha_fin: d.fecha_fin ? new Date(d.fecha_fin).toISOString() : null,
         fecha_creacion: d.fecha_creacion
           ? new Date(d.fecha_creacion).toISOString()
@@ -51,7 +57,7 @@ export const descuentoService = {
             ? d.activo
             : d.activo === 1 || d.activo === "1"
             ? true
-            : true,
+            : false, // <-- CORREGIDO
       }));
     } catch (err: any) {
       console.error("descuentoService.getAll error", err);
@@ -77,7 +83,9 @@ export const descuentoService = {
         descripcion: d.descripcion ?? null,
         tipo: String(d.tipo ?? "PORCENTAJE") as DescuentoDB["tipo"],
         valor: parseNumberSafe(d.valor ?? 0),
-        fecha_inicio: d.fecha_inicio ? new Date(d.fecha_inicio).toISOString() : null,
+        fecha_inicio: d.fecha_inicio
+          ? new Date(d.fecha_inicio).toISOString()
+          : null,
         fecha_fin: d.fecha_fin ? new Date(d.fecha_fin).toISOString() : null,
         fecha_creacion: d.fecha_creacion
           ? new Date(d.fecha_creacion).toISOString()
@@ -100,7 +108,9 @@ export const descuentoService = {
   },
 
   // 🔹 Crear descuento
-  create: async (payload: DescuentoPayload): Promise<CreateDescuentoResponse> => {
+  create: async (
+    payload: DescuentoPayload
+  ): Promise<CreateDescuentoResponse> => {
     try {
       const body = {
         nombre: payload.nombre,
@@ -135,21 +145,32 @@ export const descuentoService = {
 
   // 🔹 Editar descuento
   updatePatch: async (
-    data: Partial<DescuentoPayload> & { id_descuento: number }
+    id: number, // <-- Argumento 1: El ID
+    payload: Partial<DescuentoPayload> // <-- Argumento 2: El formulario
   ): Promise<DescuentoDB> => {
     try {
-      const body: any = { ...data };
-      if (body.valor !== undefined) body.valor = parseNumberSafe(body.valor);
-      if (body.fecha_inicio !== undefined)
-        body.fecha_inicio = toISODate(body.fecha_inicio as any);
-      if (body.fecha_fin !== undefined)
-        body.fecha_fin = toISODate(body.fecha_fin as any);
-      if (body.activo !== undefined) body.activo = Boolean(body.activo);
+      // Creamos el body a partir del payload
+      const body: any = { ...payload }; // Transformamos los campos que vinieron en el payload
+
+      if (body.valor !== undefined) {
+        body.valor = parseNumberSafe(body.valor);
+      }
+      if (body.fecha_inicio !== undefined) {
+        body.fecha_inicio = toISODate(body.fecha_inicio);
+      }
+      if (body.fecha_fin !== undefined) {
+        body.fecha_fin = toISODate(body.fecha_fin);
+      }
+      if (body.activo !== undefined) {
+        body.activo = Boolean(body.activo);
+      } // Agregamos el ID al body, que es lo que tu API espera
+
+      body.id_descuento = id; // La URL parece ser no-RESTful, así que la mantenemos
 
       const resp = await api.patch("/descuento/editarDescuento", body);
       return resp.data as DescuentoDB;
     } catch (err: any) {
-      console.error("descuentoService.updatePatch error", err);
+      console.error(`descuentoService.updatePatch(${id}) error`, err); // Mejor log
       const resp = err?.response;
       if (resp?.data) {
         const server = resp.data;

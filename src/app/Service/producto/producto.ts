@@ -2,25 +2,24 @@
 
 // Payload que envías a la API externa
 export interface ProductoPayload {
-  nombre: string;
-  codigo_barra: string | bigint;
-  precio: number;
-  stock: { id_stock: number; cantidad: number ; cantidad_min: number }[];
-  categoria: string; // nombre de la categoría (el backend busca por nombre)
-  images?: string;
-  stock_minimo?: number;
-  fecha_creacion?: Date | string;
-  fecha_actualizacion?: Date | string;
-  id_proveedor: number;
-  id_marca?: number;
-  marca: string; // nombre de la marca (el backend busca por nombre)
+  id_producto: number | null,
+  nombre: string,
+  codigo_barra: string,
+  precio: number,
+  images: string,
+  stock_cantidad: number,
+  stock_minimo: number,
+  marca_id: number | null,
+  categoria_id: number | null,
 }
 
 // Producto tal como viene del backend
 export interface ProductoWithId {
+  marcas: any;
+  categoria: any;
   success: boolean;
   message: string;
-  id_producto?: number;
+  id_producto: number;
   nombre: string;
   codigo_barra: string;
   precio: number;
@@ -30,7 +29,7 @@ export interface ProductoWithId {
   id_proveedor: number;
   id_marca?: number | null;
   id_categoria: number;
-  images?: string | null;
+  images: string;
 }
 
 // Respuesta de la API al crear producto
