@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import {
@@ -48,6 +48,10 @@ export default function RegisterPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+      document.title = "Registrar | Kiosco";
+    }, []);
 
   return (
     <main className="flex h-screen items-center justify-center overflow-hidden">

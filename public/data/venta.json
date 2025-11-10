@@ -1,8 +1,0 @@
-{
-  "id_usuario": 14,
-  "pagado": true,
-  "detalles": [
-    { "id_producto": 1, "cantidad": 2 },
-    { "id_producto": 2, "cantidad": 1 }
-  ]
-}

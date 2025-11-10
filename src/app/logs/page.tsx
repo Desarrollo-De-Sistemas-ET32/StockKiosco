@@ -14,6 +14,7 @@ export default function LogsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    document.title = "Registros | Kiosco";
     setLoading(true);
     logService
       .getAll()
