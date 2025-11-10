@@ -10,7 +10,6 @@ import {
   BiPlus,
 } from "react-icons/bi";
 import InfoCard from "@/components/info-card";
-import { Button } from "@/components/ui/button";
 import Venta from "@/components/sale-box";
 import StockBajo from "@/components/product-box";
 import { useEffect, useState } from "react";
