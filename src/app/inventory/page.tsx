@@ -34,7 +34,7 @@ export default function ProductManagement() {
     stock_cantidad: 0,
     stock_minimo: 0,
     marca_id: null,
-    categoria_id: null,
+    id_categoria: 0,
   });
 
   const loadData = useCallback(async () => {
@@ -73,7 +73,7 @@ export default function ProductManagement() {
       stock_cantidad: 0,
       stock_minimo: 0,
       marca_id: null,
-      categoria_id: null,
+      id_categoria: 0,
     });
     setIsDialogOpen(true);
   };
@@ -89,7 +89,7 @@ export default function ProductManagement() {
       stock_cantidad: producto.stock?.[0]?.cantidad ?? 0,
       stock_minimo: producto.stock?.[0]?.cantidad_min ?? 0,
       marca_id: producto.marcas?.id_marca ?? null,
-      categoria_id: producto.categoria?.id_categoria ?? null,
+      id_categoria: producto.id_categoria ?? 0,
     });
     setIsDialogOpen(true);
   };
@@ -114,7 +114,7 @@ export default function ProductManagement() {
       stock: formData.stock_cantidad,
       stock_minimo: formData.stock_minimo,
       id_marca: formData.marca_id,
-      id_categoria: formData.categoria_id,
+      id_categoria: formData.id_categoria,
     };
 
     try {
