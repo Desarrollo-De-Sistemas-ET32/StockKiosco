@@ -2,79 +2,58 @@
 import db from "@/lib/db";
 import { updateProductSchema } from "@/schemas/producto_scheme";
 import { serializePrismaObject } from "@/lib/utils";
-import { z } from "zod"; // Asegúrate de importar 'z'
+import { z } from "zod";
 
 export const updateProduct = async (values: unknown) => {
   try {
     const validatedData = updateProductSchema.parse(values);
+    console.log("--- DATOS VALIDADOS POR ZOD (BACKEND) ---:", validatedData); // --- 1. ESTA ES LA CORRECCIÓN ---
 
-    // ¡AÑADE ESTA LÍNEA DE DEBUGGING!
-    console.log("Datos DESPUÉS de Zod:", validatedData);
+    // Los nombres deben coincidir EXACTAMENTE con tu log
+    const {
+      id_producto,
+      stock,
+      stock_minimo,
+      id_categoria, // 👈 CORREGIDO (antes 'categoria_id')
+      id_marca, // 👈 CORREGIDO (antes 'marca_id')
+      ...productData
+    } = validatedData;
 
-    // 1. DESESTRUCTURACIÓN CORREGIDA:
-    //    Cambiamos 'stock_min' por 'stock_minimo' para que coincida con tus datos
-    const { id_producto, stock, categoria, stock_minimo, ...productData } =
-      validatedData;
+    const updateData: any = { ...productData }; // 2. Convertir BigInt (esto está bien)
 
-    const updateData: any = { ...productData };
-
-    // 2. Convertir BigInt (String -> BigInt)
     if (updateData.codigo_barra) {
       updateData.codigo_barra = BigInt(updateData.codigo_barra);
+    } // 3. Asignar fecha de actualización (esto está bien)
+
+    updateData.fecha_actualizacion = new Date(); // 4. ❌ BORRASTE EL BLOQUE if(categoria) {...} (¡MUY BIEN!)
+
+    // 5. ✅ ASIGNAR IDs DIRECTAMENTE
+    // Esta parte ahora funcionará porque las variables SÍ existen
+    if (id_categoria) {
+      updateData.id_categoria = id_categoria;
     }
+    if (id_marca) {
+      updateData.id_marca = id_marca;
+    } // 6. Lógica de Stock (esto está bien)
 
-    // 3. AÑADIR FECHA DE ACTUALIZACIÓN (para la tabla 'productos')
-    //    Tu schema 'productos' lo requiere y no tiene @updatedAt
-    updateData.fecha_actualizacion = new Date();
-
-
-    // 4. Resolver Categoría
-    if (categoria) {
-      const categoriaRecord = await db.categorias.findUnique({
-        where: { nombre: categoria.toLowerCase() },
-      });
-      if (!categoriaRecord) {
-        return {
-          success: false,
-          message: `La categoría "${categoria}" no existe`,
-        };
-      }
-      updateData.id_categoria = categoriaRecord.id_categoria;
-    }
-
-    // 5. Preparar actualización de Stock (anidada)
     const stockUpdatePayload: any = {};
-    if (stock !== undefined) {
-      stockUpdatePayload.cantidad = stock;
-    }
-
-    // 6. CORRECCIÓN CLAVE: Usar las variables correctas
-    if (stock_minimo !== undefined) {
-      // 'cantidad_min' es el nombre del campo en tu BD (según tu 2da imagen)
-      // 'stock_minimo' es la variable que viene de validatedData
+    if (stock !== undefined) stockUpdatePayload.cantidad = stock;
+    if (stock_minimo !== undefined)
       stockUpdatePayload.cantidad_min = stock_minimo;
-    }
 
-    // 7. Lógica del upsert (Solo si hay algo que actualizar en stock)
     if (Object.keys(stockUpdatePayload).length > 0) {
       updateData.stock = {
-        upsert: {
+        updateMany: {
           where: { id_producto: id_producto },
-          update: stockUpdatePayload,
-          create: stockUpdatePayload,
+          data: stockUpdatePayload,
         },
       };
-    }
+    } // 7. Ejecutar la transacción
 
-    // 8. Ejecutar la transacción (una sola llamada a la BD)
     const updatedProduct = await db.productos.update({
       where: { id_producto: id_producto },
-      data: updateData,
-      include: {
-        stock: true,
-        marcas: true,
-        categoria: true,
-      },
+      data: updateData, // 'updateData' ahora tiene { id_categoria: 7, id_marca: 1 }
+      include: { stock: true, categoria: true, marcas: true },
     });
 
     return {
@@ -83,7 +62,7 @@ export const updateProduct = async (values: unknown) => {
       product: serializePrismaObject(updatedProduct),
     };
   } catch (err: any) {
-    if (err instanceof z.ZodError) { // Manejo de ZodError
+    if (err instanceof z.ZodError) {
       return {
         success: false,
         message: "Error de validación en los datos enviados",

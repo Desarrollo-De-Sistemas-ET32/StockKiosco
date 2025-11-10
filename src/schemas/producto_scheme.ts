@@ -8,7 +8,7 @@ export const updateProductSchema = z.object({
   precio: z.number().int().positive("El precio debe ser mayor a 0").optional(),
   stock: z.number().int().nonnegative("El stock no puede ser negativo").optional(),
   stock_minimo: z.number().int().nonnegative("La cantidad mínima no puede ser negativa").optional(),
-  categoria: z.string().min(1, "La categoría es requerida").optional(),
+  id_categoria: z.number().min(1, "La categoría es requerida").optional(),
   images: z.string().optional(),
   id_proveedor: z.number().int().positive("ID de proveedor inválido").optional(),
   id_marca: z.number().int().positive("ID de marca inválido").optional(),
@@ -38,7 +38,6 @@ export const createProductSchema = z.object({
     return val;
   }, z.date()).optional().default(new Date()),
   id_proveedor: z.number().int().positive(),
-  id_marca: z.number().int().positive().optional(),
 });
 
 // Eliminar producto
