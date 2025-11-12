@@ -229,16 +229,6 @@ export default function ChequePage() {
   };
 
   return (
-    <>
-      <style>{`
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=number]::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
-        input[type=number] { -moz-appearance: textfield; }
-      `}</style>
-
       <main className="h-[80vh] flex flex-col mx-4 lg:mx-25">
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-6 p-4 h-full">
           <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-4 lg:p-6 drop-shadow-xl flex flex-col items-center justify-start gap-4 overflow-y-auto w-full">
@@ -381,7 +371,7 @@ export default function ChequePage() {
         </div>
 
         {showPopup && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50" onClick={() => setShowPopup(false)}>
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40" onClick={() => setShowPopup(false)}>
             <div className="bg-light-60 dark:bg-dark-30 rounded-xl p-6 w-[90%] max-w-[500px] h-[80%] max-h-[600px] shadow-2xl flex flex-col items-start justify-start relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
               <Search id="search-producto" placeholder="Buscar nombre de Producto" className="w-full bg-light-30 dark:bg-dark-60 text-foreground border-0 focus:ring-0" label="" />
               <div className="mt-4 w-full overflow-y-auto">
@@ -414,7 +404,6 @@ export default function ChequePage() {
             </div>
           </div>
         )}
-      </main>
-    </>
+    </main>
   );
 }

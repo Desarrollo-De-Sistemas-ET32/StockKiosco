@@ -10,7 +10,7 @@ export default function Gestion() {
 
   return (
     <div className="w-full flex flex-col items-center px-4 py-10">
-      <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-3 gap-8">
+      <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-8">
         <div className="flex flex-col gap-5 bg-light-60 dark:bg-dark-60 rounded-[40px] overflow-hidden shadow-lg hover:scale-[1.02] transition-transform cursor-pointer p-[25px]">
           <img
             src={"/img/proveedor.jpg"}
@@ -32,17 +32,6 @@ export default function Gestion() {
           ></img>
           <div className="flex justify-center">
             <span className="text-foreground font-semibold text-xl tracking-wide"><a href="gestionar_descuentos">DESCUENTOS</a></span>
-          </div>
-        </div>
-
-         <div className="flex flex-col gap-5 bg-light-60 dark:bg-dark-60 rounded-[40px] overflow-hidden shadow-lg hover:scale-[1.02] transition-transform cursor-pointer p-[25px]">
-          <img
-            src={"/img/productos.jpg"}
-            alt="Productos"
-            className="w-full h-full object-cover rounded-[15px]"
-          ></img>
-          <div className="flex justify-center">
-            <span className="text-foreground font-semibold text-xl tracking-wide"><a href="gestionar_productos">PRODUCTOS</a></span>
           </div>
         </div>
 
