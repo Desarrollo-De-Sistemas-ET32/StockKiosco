@@ -7,59 +7,91 @@ import { z } from "zod";
 export const updateProduct = async (values: unknown) => {
   try {
     const validatedData = updateProductSchema.parse(values);
-    console.log("--- DATOS VALIDADOS POR ZOD (BACKEND) ---:", validatedData); // --- 1. ESTA ES LA CORRECCIÓN ---
+    const { id_producto, stock, id_categoria, stock_minimo, ...productData } =
+      validatedData;
 
-    // Los nombres deben coincidir EXACTAMENTE con tu log
-    const {
-      id_producto,
-      stock,
-      stock_minimo,
-      id_categoria, // 👈 CORREGIDO (antes 'categoria_id')
-      id_marca, // 👈 CORREGIDO (antes 'marca_id')
-      ...productData
-    } = validatedData;
-
-    const updateData: any = { ...productData }; // 2. Convertir BigInt (esto está bien)
+    const updateData: any = { ...productData };
 
     if (updateData.codigo_barra) {
       updateData.codigo_barra = BigInt(updateData.codigo_barra);
-    } // 3. Asignar fecha de actualización (esto está bien)
+    }
 
-    updateData.fecha_actualizacion = new Date(); // 4. ❌ BORRASTE EL BLOQUE if(categoria) {...} (¡MUY BIEN!)
+    updateData.fecha_actualizacion = new Date();
 
-    // 5. ✅ ASIGNAR IDs DIRECTAMENTE
-    // Esta parte ahora funcionará porque las variables SÍ existen
     if (id_categoria) {
+      const categoriaRecord = await db.categorias.findUnique({
+        where: { id_categoria },
+      });
+      if (!categoriaRecord) {
+        return {
+          success: false,
+          message: `La categoría con ID ${id_categoria} no existe`,
+        };
+      }
       updateData.id_categoria = id_categoria;
     }
-    if (id_marca) {
-      updateData.id_marca = id_marca;
-    } // 6. Lógica de Stock (esto está bien)
 
     const stockUpdatePayload: any = {};
-    if (stock !== undefined) stockUpdatePayload.cantidad = stock;
-    if (stock_minimo !== undefined)
+    if (stock !== undefined) {
+      stockUpdatePayload.cantidad = stock;
+    }
+
+    if (stock_minimo !== undefined) {
       stockUpdatePayload.cantidad_min = stock_minimo;
+    }
 
     if (Object.keys(stockUpdatePayload).length > 0) {
       updateData.stock = {
-        updateMany: {
-          where: { id_producto: id_producto },
-          data: stockUpdatePayload,
+        upsert: {
+          where: { id_producto },
+          update: stockUpdatePayload,
+          create: stockUpdatePayload,
         },
       };
-    } // 7. Ejecutar la transacción
+    }
 
-    const updatedProduct = await db.productos.update({
-      where: { id_producto: id_producto },
-      data: updateData, // 'updateData' ahora tiene { id_categoria: 7, id_marca: 1 }
-      include: { stock: true, categoria: true, marcas: true },
+    const result = await db.$transaction(async (tx) => {
+      const updatedProduct = await tx.productos.update({
+        where: { id_producto },
+        data: updateData,
+        include: {
+          stock: true,
+          marcas: true,
+          categoria: true,
+        },
+      });
+
+      const totalStock = await tx.stock.aggregate({
+        where: { id_producto },
+        _sum: { cantidad: true },
+      });
+
+      const cantidadTotal = totalStock._sum.cantidad ?? 0;
+      const habilitado = cantidadTotal > 0;
+
+      if (updatedProduct.habilitado !== habilitado) {
+        await tx.productos.update({
+          where: { id_producto },
+          data: { habilitado },
+        });
+      }
+
+      const finalProduct = await tx.productos.findUnique({
+        where: { id_producto },
+        include: {
+          stock: true,
+          marcas: true,
+          categoria: true,
+        },
+      });
+
+      return finalProduct;
     });
 
     return {
       success: true,
       message: "Producto actualizado correctamente",
-      product: serializePrismaObject(updatedProduct),
+      product: serializePrismaObject(result),
     };
   } catch (err: any) {
     if (err instanceof z.ZodError) {

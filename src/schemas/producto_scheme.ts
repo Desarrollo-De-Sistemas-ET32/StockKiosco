@@ -1,6 +1,6 @@
 import { z, object, string, ZodObject } from "zod"
  
-// Actualizar producto
+
 export const updateProductSchema = z.object({
   id_producto: z.number().int().positive("ID de producto inválido"),
   nombre: z.string().min(1, "El nombre es requerido").optional(),
@@ -15,7 +15,7 @@ export const updateProductSchema = z.object({
   fecha_actualizacion: z.date().optional(),
 });
 
-// Crear producto
+
 export const createProductSchema = z.object({
   nombre: z.string().min(1, "Nombre es requerido"),
   codigo_barra: z.preprocess((val) => {
@@ -40,7 +40,7 @@ export const createProductSchema = z.object({
   id_proveedor: z.number().int().positive(),
 });
 
-// Eliminar producto
+
 export const delProductSchema = object({
   name: string({ required_error: "Se necesita un nombre" })
     .min(1, "No puede estar vacío")

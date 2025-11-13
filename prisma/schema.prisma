@@ -68,6 +68,7 @@ model productos {
   images              String?
   codigo_barra        BigInt           @unique
   id_categoria        Int?
+  habilitado          Boolean?
   detalles_venta      detalles_venta[]
   categoria           categorias?      @relation(fields: [id_categoria], references: [id_categoria])
   marcas              marcas?          @relation(fields: [id_marca], references: [id_marca])
