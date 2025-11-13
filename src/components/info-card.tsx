@@ -1,7 +1,7 @@
 export default function InfoCard({title, icon, data, percentage, description,}:
     {title: string, icon: React.ReactNode, data: number, percentage: number, description: string}) {
     return (
-        <div className={`w-xs flex flex-col bg-light-60 dark:bg-dark-30 rounded-2xl p-5 justify-between gap-5`}>
+        <div className={`w-xs flex flex-col bg-light-60 dark:bg-dark-30 rounded-lg p-5 justify-between gap-5`}>
             <div className="flex flex-row justify-between items-center">
                 <p className="text-lg font-bold">{title}</p>
                 {icon}

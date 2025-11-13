@@ -18,6 +18,7 @@ import { productoService } from "@/app/Service/producto/ProductoService";
 import ventasService from "@/app/Service/ventas/VentasService";
 import DialogMainUpdate from "@/components/DialogMain";
 
+
 type Producto = {
   id: number;
   name: string;
@@ -46,7 +47,6 @@ export default function MainPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Productos
         let prods = [];
         try {
           prods = await productoService.getAll();
@@ -56,11 +56,9 @@ export default function MainPage() {
         }
 
         const productosNormalizados: Producto[] = (prods ?? []).map((p: any) => {
-          // precio: puede venir como string o number o un objeto Decimal-like
           const precioRaw = p.precio ?? p.price ?? p.valor ?? "0";
           const precio = Number(String(precioRaw).replace(/[^0-9.-]/g, "")) || 0;
 
-          // stock puede venir como array o objeto o undefined
           const stockEntry =
             Array.isArray(p.stock) && p.stock.length > 0
               ? p.stock[0]
@@ -101,7 +99,6 @@ export default function MainPage() {
       }
     };
 
-    // Cargamos ventas por separado (para que un fallo en productos no corte todo)
     const fetchVentas = async () => {
       setLoadingVentas(true);
       try {

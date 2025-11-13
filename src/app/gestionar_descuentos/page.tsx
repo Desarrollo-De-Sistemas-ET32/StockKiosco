@@ -247,7 +247,7 @@ export default function ListaDescuentos() {
               ></CardDescuento>
             ))
           ) : (
-            <div className="flex items-center justify-center py-6 text-gray-500">
+            <div className="flex items-center justify-center py-6 dark:text-white text-black">
               No se encontraron proveedores
             </div>
           )}
