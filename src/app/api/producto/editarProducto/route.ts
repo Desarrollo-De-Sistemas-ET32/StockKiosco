@@ -36,15 +36,22 @@ export async function PATCH(req: NextRequest) {
       data: {
         id_usuario: body.id_usuario || null,
         accion: "Edición de producto",
-        descripcion: `Se actualizó el producto con ID ${result.product.id} y nombre "${result.product.nombre}" por el usuario ${body.id_usuario || "desconocido"}.`,
+        descripcion: `Se actualizó el producto con ID ${
+          body.id_producto
+        } y nombre "${body.nombre}" por el usuario ${
+          body.id_usuario || "desconocido"
+        }.`,
       },
     });
 
     console.log(
-  "Producto editado exitosamente:",
-  JSON.stringify(result, null, 2)
-);
-    return NextResponse.json(result, { status: 200, headers: CORS_HEADERS });
+      "Producto editado exitosamente:",
+      JSON.stringify(result, null, 2)
+    );
+    return NextResponse.json(
+      { success: true, message: "Producto actualizado con éxito" },
+      { status: 200, headers: CORS_HEADERS }
+    );
   } catch (err) {
     console.error("Error en API (editarProducto):", err);
     return NextResponse.json(

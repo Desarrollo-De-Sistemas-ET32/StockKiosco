@@ -18,6 +18,7 @@ export const updateProduct = async (values: unknown) => {
 
     updateData.fecha_actualizacion = new Date();
 
+    // ✅ Verificación de categoría
     if (id_categoria) {
       const categoriaRecord = await db.categorias.findUnique({
         where: { id_categoria },
@@ -25,20 +26,16 @@ export const updateProduct = async (values: unknown) => {
       if (!categoriaRecord) {
         return {
           success: false,
-          message: `La categoría con ID ${id_categoria} no existe`,
+          message: "La categoría con ID ${id_categoria} no existe",
         };
       }
       updateData.id_categoria = id_categoria;
     }
 
     const stockUpdatePayload: any = {};
-    if (stock !== undefined) {
-      stockUpdatePayload.cantidad = stock;
-    }
-
-    if (stock_minimo !== undefined) {
+    if (stock !== undefined) stockUpdatePayload.cantidad = stock;
+    if (stock_minimo !== undefined)
       stockUpdatePayload.cantidad_min = stock_minimo;
-    }
 
     await db.$transaction(async (tx) => {
       const updatedProduct = await tx.productos.update({

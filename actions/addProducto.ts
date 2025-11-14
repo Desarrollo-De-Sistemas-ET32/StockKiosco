@@ -1,62 +1,73 @@
 "use server";
 import db from "@/lib/db";
-import { createProductSchema } from "@/schemas/producto_scheme";
+import { createProductSchema, updateProductSchema } from "@/schemas/producto_scheme";
 import { z } from "zod";
-import { serializePrismaObject } from "@/lib/utils";
 
-type CreateProductValues = z.infer<typeof createProductSchema>;
-
-export const createProduct = async (values: CreateProductValues) => {
+export const createProduct = async (values: unknown) => {
   try {
-    const validatedData = createProductSchema.parse(values);
-
-    const categoriaRecord = await db.categorias.findFirst({
-      where: {
-        nombre: { equals: validatedData.categoria.toLowerCase(), mode: "insensitive" },
-      },
-    });
-
-    if (!categoriaRecord) {
-      return { error: { categoria: `La categoría "${validatedData.categoria}" no existe` } };
-    }
+    const validated = createProductSchema.parse(values);
 
     const product = await db.productos.create({
       data: {
-        nombre: validatedData.nombre,
-        precio: validatedData.precio,
-        codigo_barra: validatedData.codigo_barra,
-        fecha_actualizacion: validatedData.fecha_actualizacion,
-        id_proveedor: validatedData.id_proveedor,
-        id_marca: validatedData.id_marca ?? null,
-        id_categoria: categoriaRecord.id_categoria,
-        images: validatedData.images,
+        nombre: validated.nombre,
+        codigo_barra: validated.codigo_barra,
+        precio: validated.precio,
+        id_proveedor: validated.id_proveedor,
+        id_categoria: validated.id_categoria,
+        id_marca: validated.id_marca,
+        images: validated.images,
+        fecha_creacion: validated.fecha_creacion,
+        fecha_actualizacion: validated.fecha_actualizacion,
         stock: {
-          create: [
-            {
-              cantidad: validatedData.stock,
-              cantidad_min: validatedData.stock,
-              fecha_actualizacion: validatedData.fecha_actualizacion,
-            },
-          ],
+          create: {
+            cantidad: validated.stock,
+            cantidad_min: validated.stock_minimo,
+          },
         },
+      },
+      include: {
+        stock: true,
       },
     });
 
-    return { product: serializePrismaObject(product) };
+    return { product };
+  } catch (error: any) {
+    return { error: error?.message ?? "Error creando producto" };
+  }
+};
 
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+export const updateProduct = async (values: unknown) => {
+  try {
+    const validated = updateProductSchema.parse(values);
 
-      const formattedErrors = error.errors.reduce((acc, curr) => {
-        const key = curr.path[0] as string;
-        acc[key] = curr.message;
-        return acc;
-      }, {} as Record<string, string>);
+    const product = await db.productos.update({
+      where: { id_producto: validated.id_producto },
+      data: {
+        nombre: validated.nombre,
+        codigo_barra: validated.codigo_barra,
+        precio: validated.precio,
+        id_proveedor: validated.id_proveedor,
+        id_categoria: validated.id_categoria,
+        id_marca: validated.id_marca,
+        images: validated.images,
+        fecha_actualizacion: validated.fecha_actualizacion ?? new Date(),
+      },
+      include: { stock: true },
+    });
 
-      return { error: formattedErrors };
+    // Actualizar stock si viene
+    if (validated.stock !== undefined || validated.stock_minimo !== undefined) {
+      await db.stock.updateMany({
+        where: { id_producto: validated.id_producto },
+        data: {
+          cantidad: validated.stock,
+          cantidad_min: validated.stock_minimo,
+        },
+      });
     }
 
-    console.error("Error creating product:", error);
-    return { error: { general: (error as Error).message } };
+    return { product };
+  } catch (error: any) {
+    return { error: error?.message ?? "Error actualizando producto" };
   }
 };

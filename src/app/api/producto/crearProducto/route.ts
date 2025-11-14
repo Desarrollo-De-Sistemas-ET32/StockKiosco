@@ -1,6 +1,5 @@
-import { createProduct } from "@/actions/addProducto";
 import { NextRequest, NextResponse } from "next/server";
-import db from "@/lib/db"; 
+import { createProduct } from "@/actions/addProducto";
 
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
@@ -12,17 +11,12 @@ const CORS_HEADERS = {
 };
 
 export async function OPTIONS() {
-  return new Response(null, {
-    status: 204,
-    headers: CORS_HEADERS,
-  });
+  return new Response(null, { status: 204, headers: CORS_HEADERS });
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log(" Datos recibidos en POST /producto/crearProducto:", body);
-
     const result = await createProduct(body);
 
     if (result.error) {
@@ -32,23 +26,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-
-    await db.logs.create({
-      data: {
-        id_usuario: body.id_usuario || null,
-        accion: "Creación de producto",
-        descripcion: `Se creó un producto con nombre ${result.product?.nombre || "desconocido"} por el usuario ${body.id_usuario || "desconocido"}.`,
-      },
-    });
-
-    console.log(" Producto creado exitosamente:", result.product);
     return NextResponse.json(
-      { product: result.product },
+      { success: true, message: "Producto creado con éxito" },
       { status: 201, headers: CORS_HEADERS }
     );
-
   } catch (err) {
-    console.error(" Error en API (crearProducto):", err);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500, headers: CORS_HEADERS }

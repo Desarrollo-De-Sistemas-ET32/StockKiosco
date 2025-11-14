@@ -21,25 +21,14 @@ export async function OPTIONS() {
 
 export async function GET() {
   try {
-    const result = await readProveedor();
+    const { proveedores, error } = await readProveedor();
 
-    if (result.error) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 500, headers: CORS_HEADERS }
-      );
+    if (error) {
+      return NextResponse.json({ error }, { status: 500, headers: CORS_HEADERS });
     }
 
-    return NextResponse.json(
-      { proveedores: result.proveedores },
-      { status: 200, headers: CORS_HEADERS }
-    );
-
+    return NextResponse.json({ proveedores }, { status: 200, headers: CORS_HEADERS });
   } catch (error) {
-    console.error("Error in GET /api/proveedores:", error);
-    return NextResponse.json(
-      { error: "Error interno del servidor" },
-      { status: 500, headers: CORS_HEADERS }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500, headers: CORS_HEADERS });
   }
 }
