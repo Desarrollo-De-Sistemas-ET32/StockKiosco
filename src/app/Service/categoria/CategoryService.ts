@@ -11,6 +11,7 @@ const normalizeCategoria = (data: any): CategoriaWithId => {
 export const categoriaService = {
   getAll: async (): Promise<CategoriaWithId[]> => {
     try {
+      console.log('Obteniendo categorías...');
       const response = await api.get('/categoria/leerCategoria');
       const data = response.data;
 

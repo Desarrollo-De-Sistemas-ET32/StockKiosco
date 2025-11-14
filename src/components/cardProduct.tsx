@@ -14,25 +14,14 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-
-// 1. Definimos el tipo de Producto (puedes moverlo a un archivo .ts)
-type Producto = {
-  id_producto: number;
-  nombre: string;
-  precio: number;
-  stock?: { id_stock: number; cantidad: number; cantidad_min: number }[];
-  codigo_barra?: string;
-  imagen?: string;
-  categoria?: { id_categoria: number; nombre: string };
-  marcas?: { id_marca: number; nombre_marca: string };
-};
+import { ProductoWithId } from "@/app/Service/producto/producto";
 
 // 2. Definimos las props
 interface ProductCardProps {
-  producto: Producto;
+  producto: ProductoWithId,
   // Funciones que vienen de la página padre
-  onEdit: (producto: Producto) => void; 
-  onDelete: (producto: Producto) => void;
+  onEdit: () => void; 
+  onDelete: () => void;
 }
 
 // 3. El componente ahora es "tonto" (solo muestra datos)
@@ -41,13 +30,13 @@ export default function ProductCard({
   onEdit,
   onDelete,
 }: ProductCardProps) {
-  
-  // Extraemos los valores para que sea más fácil de leer
-  const stockInfo = producto.stock?.[0];
-  const stockQty = stockInfo?.cantidad ?? 0;
-  const stockMin = stockInfo?.cantidad_min ?? 0;
-  const categoriaNombre = producto.categoria?.nombre ?? "Sin categoría";
-  const marcaNombre = producto.marcas?.nombre_marca ?? "Sin marca";
+  const stockQty = producto.stock?.[0]?.cantidad ?? 0;
+  const stockMin = producto.stock?.[0]?.cantidad_min ?? 0;
+  const marcaNombre = producto.marcas?.nombre_marca ?? "N/A";
+  const categoriaNombre = producto.categoria?.nombre ?? "N/A";
+
+  //Lógica visual para stock bajo
+  const isLowStock = stockQty <= stockMin;
 
   return (
     <div className="flex gap-4 dark:bg-dark-30 bg-light-30 p-5 rounded-2xl w-full shadow-md">
@@ -57,10 +46,10 @@ export default function ProductCard({
         <div className="flex flex-col items-start gap-3 w-full">
           <div className="flex flex-wrap justify-start gap-3">
             <p className="text-lg font-semibold">{producto.nombre}</p>
-            <Badge>
-              {stockQty > 0 ? "En Stock" : "Sin stock"}
+            <Badge className={`${isLowStock ? 'bg-danger' : 'bg-confirm'}`} >
+              {isLowStock ? 'Stock bajo' : 'Stock suficiente'}
             </Badge>
-            <Badge variant="outline">{categoriaNombre}</Badge>
+            <Badge className="bg-neutral">{categoriaNombre}</Badge>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 justify-items-start gap-2 text-sm text-muted-foreground">
@@ -78,7 +67,7 @@ export default function ProductCard({
           {/* Botón de Editar */}
           <Button
             className="dark:bg-dark-60 dark:hover:bg-dark-60/70 bg-light-60 hover:bg-light-60/70 p-2"
-            onClick={() => onEdit(producto)} // 4. Avisa a la página que abra el modal
+            onClick={onEdit}
           >
             <BiEdit className="h-5 w-5" />
           </Button>
@@ -100,7 +89,7 @@ export default function ProductCard({
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={() => onDelete(producto)} // 5. Avisa a la página que borre
+                  onClick={onDelete}
                   className="bg-danger hover:bg-danger/80"
                 >
                   Eliminar

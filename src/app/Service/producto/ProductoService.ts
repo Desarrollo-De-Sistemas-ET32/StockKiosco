@@ -36,17 +36,13 @@ const normalizeProducto = (p: any): ProductoWithId => {
     nombre,
     precio,
     codigo_barra,
-    images: p.images ?? p.imagen ?? null,
+    images,
     stock,
     marcas,
     categoria,
     id_marca: marcas.id_marca,
     id_categoria: categoria.id_categoria,
-    fecha_creacion: String(p.fecha_creacion ?? ""),
-    fecha_actualizacion: String(p.fecha_actualizacion ?? ""),
     id_proveedor: Number(p.id_proveedor ?? 0),
-    success: Boolean(p.success ?? false),
-    message: String(p.message ?? ""),
   };
 };
 
@@ -55,6 +51,7 @@ export const productoService = {
   // Obtener todos los productos
   getAll: async (): Promise<ProductoWithId[]> => {
     try {
+      console.log('Obteniendo productos...');
       const response = await api.get('/producto/leerProducto');
       const data = response.data;
 

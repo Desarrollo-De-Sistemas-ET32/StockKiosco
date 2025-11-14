@@ -1,28 +1,25 @@
 "use client";
 
-import {
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-  SetStateAction,
-} from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { productoService } from "../Service/producto/ProductoService";
-import { ProductoWithId, ProductoPayload } from "../Service/producto/producto";
+import { ProductoPayload, ProductoWithId } from "../Service/producto/producto";
 import { DialogProducto } from "@/components/dialogProducto";
-import CardProducto from "@/components/cardProduct";
+import ProductCard from "@/components/cardProduct";
 import { marcaService } from "@/app/Service/marca/marcaService";
 import { categoriaService } from "@/app/Service/categoria/CategoryService";
+import { proveedorService } from "@/app/Service/proveedor/ProveedorService";
 import { CategoriaWithId } from "@/app/Service/categoria/categoria";
-import { MarcaWithId } from "../Service/marca/marca";
-import { string } from "zod";
+import { MarcaWithId } from "@/app/Service/marca/marca";
+import { ProveedorWithId } from "@/app/Service/proveedor/proveedor";
 
-export default function GestionarProductos() {
+export default function ListaProductos() {
   const [productos, setProductos] = useState<ProductoWithId[]>([]);
   const [marcas, setMarcas] = useState<MarcaWithId[]>([]);
   const [categorias, setCategorias] = useState<CategoriaWithId[]>([]);
+  const [proveedores, setProveedores] = useState<ProveedorWithId[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -33,27 +30,31 @@ export default function GestionarProductos() {
   const emptyForm: ProductoPayload = {
     id_producto: 0,
     nombre: "",
-    precio: 0,
     codigo_barra: "",
+    precio: 0,
     images: "",
     stock_cantidad: 0,
     stock_minimo: 0,
-    marca_id: null,
-    categoria_id: null,
+    id_marca: null,
+    id_categoria: null,
+    id_proveedor: null,
   };
   const [modalForm, setModalForm] = useState<ProductoPayload>(emptyForm);
-
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [productosData, marcasData, categoriasData] = await Promise.all([
-        productoService.getAll(),
-        marcaService.getAll(),
-        categoriaService.getAll(),
-      ]);
+      const [productosData, marcasData, categoriasData, proveedoresData] =
+        await Promise.all([
+          productoService.getAll(),
+          marcaService.getAll(),
+          categoriaService.getAll(),
+          proveedorService.getAll(),
+        ]);
+      console.log("PROVEEDORES DESDE API:", proveedoresData);
       setProductos(productosData ?? []);
       setMarcas(marcasData ?? []);
       setCategorias(categoriasData ?? []);
+      setProveedores(proveedoresData ?? []);
     } catch (err) {
       console.error("Error cargando datos", err);
       toast.error("Error al cargar datos");
@@ -63,8 +64,8 @@ export default function GestionarProductos() {
   }, []);
 
   useEffect(() => {
-    document.title = "Inventario | Kiosco"
     loadData();
+    document.title = "Gestionar Productos | Kiosco";
   }, [loadData]);
 
   const productosFiltrados = useMemo(() => {
@@ -74,23 +75,35 @@ export default function GestionarProductos() {
       : productos;
   }, [productos, search]);
 
-  const handleCreate = async () => {
+  const validarCampos = () => {
+    if (!modalForm.nombre || !modalForm.codigo_barra) {
+      toast.error("Nombre y código de barra son requeridos");
+      return false;
+    }
+    return true;
+  };
+
+  const handleCreate = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!validarCampos()) return;
+
     const payload = {
       nombre: modalForm.nombre,
-      precio: modalForm.precio,
       codigo_barra: modalForm.codigo_barra,
+      precio: modalForm.precio,
       images: modalForm.images,
       stock: modalForm.stock_cantidad,
       stock_minimo: modalForm.stock_minimo,
-      id_marca: modalForm.marca_id,
-      id_categoria: modalForm.categoria_id,
+      id_marca: modalForm.id_marca,
+      id_categoria: modalForm.id_categoria,
+      id_proveedor: modalForm.id_proveedor,
     };
-
-    console.log("Enviando para CREAR:", payload);
-
+    // --- DEBUG: MIRA LA CONSOLA DEL NAVEGADOR ---
+    console.log("Enviando para CREAR:", modalForm);
+    // ----------------------------------------------
     try {
       setSubmitting(true);
-      const response = await productoService.create(payload as any);
+      const response = await productoService.create(payload as any); // (usamos 'as any' para que coincida con el service)
 
       if (response.error) {
         throw new Error(String(response.error));
@@ -99,28 +112,10 @@ export default function GestionarProductos() {
       await loadData();
       toast.success(`Producto creado con éxito`);
       setIsCreateOpen(false);
-      setModalForm(emptyForm); // Resetea el form
+      setModalForm(emptyForm);
     } catch (err: any) {
-      console.error(
-        "Error creando producto (página):",
-        err.response?.data ?? err
-      );
-      let errorMessage = "Error al crear el producto";
-
-      // Buscamos el error detallado (como el que nos mostraste de 'stock')
-      if (
-        err.response?.data?.details &&
-        Array.isArray(err.response.data.details)
-      ) {
-        const detail = err.response.data.details[0];
-        errorMessage = `Error en '${detail.field}': ${detail.message}`;
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error;
-      } else if (err.message) {
-        errorMessage = err.message;
-      }
-      toast.error(errorMessage);
-      // -------------------------------
+      console.error("Error creando producto (página):", err);
+      toast.error(err?.message ?? "Error creando producto");
     } finally {
       setSubmitting(false);
     }
@@ -139,72 +134,59 @@ export default function GestionarProductos() {
       setEditingId(numericId);
       setIsEditOpen(true);
       setModalForm({
-        id_producto: data.id_producto,
+        id_producto: data.id_producto ?? 0,
         nombre: data.nombre ?? "",
+        codigo_barra: data.codigo_barra ?? "",
         precio: data.precio ?? 0,
+        images: data.images ?? "",
         stock_cantidad: data.stock?.[0]?.cantidad ?? 0,
         stock_minimo: data.stock?.[0]?.cantidad_min ?? 0,
-        codigo_barra: data.codigo_barra ?? "",
-        images: data.images ?? "",
-        marca_id: data.marcas?.id_marca ?? null,
-        categoria_id: data.categoria?.id_categoria ?? null,
+        id_marca: data.id_marca ?? null,
+        id_categoria: data.id_categoria ?? null,
+        id_proveedor: data.id_proveedor ?? null,
       });
+      // --------------------
     } catch (err) {
       console.error("Error al procesar datos para editar", err);
       toast.error("Error al cargar datos para editar");
     }
   };
 
-  const handleUpdate = async () => {
-    if (!editingId) return; // if (!editingId || !validarCampos()) return;
+  const handleUpdate = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!editingId || !validarCampos()) return;
 
-    // 1. "Re-armamos" el payload para la API
+    // 1. Mapeamos los campos también aquí
     const payload = {
-      id_producto: editingId, // Importante: el ID del producto
+      id_producto: editingId, // Importante
       nombre: modalForm.nombre,
       precio: modalForm.precio,
       codigo_barra: modalForm.codigo_barra,
       images: modalForm.images,
 
-      // La API espera 'stock' como número
+      // AQUÍ ESTÁ LA CORRECCIÓN:
       stock: modalForm.stock_cantidad,
       stock_minimo: modalForm.stock_minimo,
 
-      // La API espera los IDs con estos nombres
-      id_marca: modalForm.marca_id,
-      id_categoria: modalForm.categoria_id,
+      id_marca: modalForm.id_marca,
+      id_categoria: modalForm.id_categoria,
+      id_proveedor: modalForm.id_proveedor,
     };
 
-    console.log("Enviando para ACTUALIZAR:", payload);
     try {
       setSubmitting(true);
-      // 2. Enviamos el 'payload' re-armado
+
+      // 2. Enviamos el payload corregido
       await productoService.updatePatch(payload as any);
 
       await loadData();
       toast.success(`Producto actualizado con éxito`);
       setIsEditOpen(false);
       setEditingId(null);
-      setModalForm(emptyForm); // Resetea el form
+      setModalForm(emptyForm);
     } catch (err: any) {
-      // (Bloque catch mejorado para mostrar detalles)
-      console.error(
-        "Error actualizando producto (página):",
-        err.response?.data ?? err
-      );
-      let errorMessage = "Error al actualizar el producto";
-      if (
-        err.response?.data?.details &&
-        Array.isArray(err.response.data.details)
-      ) {
-        const detail = err.response.data.details[0];
-        errorMessage = `Error en '${detail.field}': ${detail.message}`;
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error;
-      } else if (err.message) {
-        errorMessage = err.message;
-      }
-      toast.error(errorMessage);
+      console.error("Error actualizando producto", err);
+      toast.error(err?.message ?? "Error actualizando producto");
     } finally {
       setSubmitting(false);
     }
@@ -227,41 +209,29 @@ export default function GestionarProductos() {
   return (
     <main>
       <div className="flex flex-col items-center gap-4 mx-auto my-5 font-sans max-w-[900px]">
-        <h2 className=" font-bold text-2xl text-white"> Lista Productos</h2>
+        <h1 className="text-2xl font-semibold dark:text-white">
+          Lista Productos
+        </h1>
         <DialogProducto
           isOpen={isCreateOpen}
           onOpenChange={setIsCreateOpen}
           onSubmit={handleCreate}
           title="Crear Producto"
+          modalForm={modalForm}
           isSubmitting={submitting}
+          setModalForm={setModalForm}
           marcasList={marcas}
           categoriasList={categorias}
-          setModalForm={setModalForm}
-          modalForm={modalForm}
-        />
-
-        {/* 11. Modal de Edición */}
-        {isEditOpen && (
-          <DialogProducto
-            title="Editar Producto"
-            isOpen={isEditOpen}
-            onOpenChange={setIsEditOpen}
-            onSubmit={handleUpdate}
-            isSubmitting={submitting}
-            marcasList={marcas}
-            categoriasList={categorias}
-            setModalForm={setModalForm}
-            modalForm={modalForm}
-          />
-        )}
-
+          proveedorList={proveedores}
+        ></DialogProducto>
         <div className="flex items-center w-full gap-4">
           <input
             type="text"
-            placeholder="Buscar producto..." // Texto CORREGIDO
+            placeholder="Buscar producto..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm transition focus:border-blue-500 focus:outline-none focus:shadow-md"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm transition
+                       focus:border-blue-500 focus:outline-none focus:shadow-md"
           />
           <Button
             onClick={() => {
@@ -273,6 +243,18 @@ export default function GestionarProductos() {
             Agregar
           </Button>
         </div>
+        <DialogProducto
+          title="Editar Producto"
+          isOpen={isEditOpen}
+          onOpenChange={setIsEditOpen}
+          onSubmit={handleUpdate}
+          isSubmitting={submitting}
+          modalForm={modalForm}
+          setModalForm={setModalForm}
+          marcasList={marcas}
+          categoriasList={categorias}
+          proveedorList={proveedores}
+        ></DialogProducto>
 
         <div className="w-full bg-light-60 overflow-y-auto p-4 rounded-xl flex flex-col gap-3 dark:bg-dark-60">
           {loading ? (
@@ -281,12 +263,12 @@ export default function GestionarProductos() {
             </div>
           ) : productosFiltrados.length ? (
             productosFiltrados.map((p) => (
-              <CardProducto
-                key={p.id_producto}
+              <ProductCard
+                key={p.id_producto ?? p.nombre}
                 producto={p}
                 onEdit={() => openEditModal(p.id_producto)}
                 onDelete={() => handleDelete(p.id_producto)}
-              />
+              ></ProductCard>
             ))
           ) : (
             <div className="flex items-center justify-center py-6 text-gray-500">

@@ -5,6 +5,7 @@ export const marcaService = {
     // Obtener todas las marcas
     getAll: async (): Promise<MarcaWithId[]> => {
         try {
+            console.log('Obteniendo marcas...');
             const response = await api.get('/marcas/leerMarcas');
             const data = response.data;
             let marcas: any[] = [];
