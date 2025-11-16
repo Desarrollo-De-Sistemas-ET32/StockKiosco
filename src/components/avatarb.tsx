@@ -8,7 +8,6 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 
@@ -62,14 +61,13 @@ export default function Icono({ src, className = "" }: Props) {
     );
   }
 
-  const name = (
-    user.name ??
-    user.nombre ??
-    user.email ??
-    user.id_usuario ??
-    user.usuarios_roles ??
-    ""
-  ).toString();
+const name = (
+  user.name ??
+  user.nombre ??
+  user.email ??
+  user.usuarios_roles ??
+  ""
+).toString();
 
   const inicial = name.trim().length ? name.trim()[0].toUpperCase() : "U";
 
