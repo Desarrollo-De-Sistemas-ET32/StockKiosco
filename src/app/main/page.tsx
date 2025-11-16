@@ -185,7 +185,7 @@ export default function MainPage() {
               ? +((totalVendidoHoy / totalInventario) * 100).toFixed(1)
               : 0
           }
-          description="Productos"
+          description="Ventas concretadas"
         />
         <InfoCard
           title="Productos vendidos"
