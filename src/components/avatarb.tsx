@@ -86,7 +86,7 @@ export default function Icono({ src, className = "" }: Props) {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className={`w-full bg-light-60 dark:bg-dark-60 p-4 rounded-md shadow-md`
+        className={`z-40 w-full bg-light-60 dark:bg-dark-60 p-4 rounded-md shadow-md`
         }
       >
         <DropdownMenuLabel className="font-semibold text-foreground mb-2">
