@@ -42,9 +42,8 @@ export default function MainPage() {
         } catch (err) {
           console.error("Error obteniendo productos:", err);
           prods = [];
-        } // 4. SIMPLIFICAR: No necesitamos normalizar 'productos' aquí.
+        }
 
-        // El componente StockBajo recibe el objeto completo.
         setProductos(prods ?? []);
       } finally {
         setLoading(false);
@@ -62,7 +61,6 @@ export default function MainPage() {
           ventasRaw = [];
         }
 
-        // (Tu normalización de ventas está bien y puede quedar)
         const ventasNormalizadas: VentaInfo[] = (ventasRaw ?? []).map(
           (v: any) => {
             const rawDetalles =
@@ -86,7 +84,7 @@ export default function MainPage() {
                     (acc: number, det: any) =>
                       acc + (Number(det.cantidad) || 0) * 0,
                     0
-                  ); // fallback 0
+                  );
 
             const fecha =
               v.fecha_venta ??
@@ -129,7 +127,6 @@ export default function MainPage() {
     }
   };
 
-  // 5. ACTUALIZAR CÁLCULOS para que usen ProductoWithId
   const totalInventario = productos.reduce(
     (acc, p) => acc + (p.stock?.[0]?.cantidad ?? 0),
     0
@@ -137,7 +134,7 @@ export default function MainPage() {
   const lowStockProducts = productos.filter((p) => {
     const stock = p.stock?.[0]?.cantidad ?? 0;
     const minStock = p.stock?.[0]?.cantidad_min ?? 0;
-    return stock <= minStock; // Comparamos stock actual vs mínimo
+    return stock <= minStock;
   });
 
   const stockBajoCount = lowStockProducts.length;

@@ -86,7 +86,7 @@ export function DialogProducto({
 
   const proveedorItems =(proveedorList ?? []).map((p) => ({
     value: p.id_proveedor ?? 0,
-    label: p.nombre ?? "N/A",
+    label: p.nombre,
   }));
 
 
@@ -177,7 +177,7 @@ export function DialogProducto({
             <Label htmlFor="id_proveedor">Proveedor</Label>
             <ComboboxDemo
               items={proveedorItems}
-              value={modalForm.id_categoria ?? 0}
+              value={modalForm.id_proveedor ?? 0}
               onSelect={handleProveedorChange}
               placeholder="Seleccionar proveedor"
             />
