@@ -18,7 +18,7 @@ export const updateProduct = async (values: unknown) => {
 
     updateData.fecha_actualizacion = new Date();
 
-    // ✅ Verificación de categoría
+ 
     if (id_categoria) {
       const categoriaRecord = await db.categorias.findUnique({
         where: { id_categoria },

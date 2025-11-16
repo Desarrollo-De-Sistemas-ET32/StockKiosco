@@ -49,7 +49,9 @@ model descuentos {
   fecha_fin           DateTime
   fecha_inicio        DateTime
   nombre              String        @db.VarChar(45)
+  ventas              ventas[]
 }
+
 
 model categorias {
   id_categoria Int         @id @default(autoincrement())
@@ -112,6 +114,7 @@ model usuarios {
 model ventas {
   id_venta            Int              @id @default(autoincrement())
   id_usuario          Int
+  id_descuento        Int?
   fecha_venta         DateTime         @default(now())
   total               Decimal?         @db.Decimal(10, 2)
   pagado              Boolean?         @default(false)
@@ -120,7 +123,9 @@ model ventas {
   detalles_venta      detalles_venta[]
   pagos               pagos[]
   usuarios            usuarios         @relation(fields: [id_usuario], references: [id_usuario])
+  descuento           descuentos?      @relation(fields: [id_descuento], references: [id_descuento])
 }
+
 
 model logs {
   id_log         Int       @id @default(autoincrement())

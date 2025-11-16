@@ -1,4 +1,4 @@
-// src/actions/readProveedor.ts
+
 'use server'
 
 import db from '@/lib/db'

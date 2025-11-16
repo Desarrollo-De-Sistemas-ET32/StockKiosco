@@ -3,7 +3,7 @@ import { deleteDescuentoSchema, DeleteDescuentoInput } from "@/schemas/descuento
 
 export const deleteDescuento = async (values: unknown) => {
   try {
-    // Normalizar / castear manualmente si viene string
+
     const maybe = values as any;
     const normalized = {
       ...maybe,
@@ -17,7 +17,6 @@ export const deleteDescuento = async (values: unknown) => {
       throw new Error("id_descuento inválido o ausente");
     }
 
-    // ahora validamos con Zod estricto (espera number)
     const parsed = deleteDescuentoSchema.parse(normalized) as DeleteDescuentoInput;
 
     const deleted = await db.descuentos.delete({

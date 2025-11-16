@@ -1,4 +1,4 @@
-// src/actions/updateCategoria.ts
+
 'use server'
 import db from "@/lib/db"
 import { updateCategoriaSchema } from "@/schemas/categoria_scheme"

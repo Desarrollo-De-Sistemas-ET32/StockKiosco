@@ -1,4 +1,4 @@
-// src/actions/readProducto.ts
+
 'use server'
 
 import db from '@/lib/db'

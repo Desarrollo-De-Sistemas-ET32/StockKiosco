@@ -11,7 +11,7 @@ export const createCategoria = async (values: CreateCategoriaValues) => {
   try {
     const validatedData = createCategoriaSchema.parse(values);
 
-    // Verificar si la categoría ya existe
+
     const existingCategoria = await db.categorias.findFirst({
       where: {
         nombre: { equals: validatedData.nombre, mode: "insensitive" },

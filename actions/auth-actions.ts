@@ -35,7 +35,6 @@ export const registerAction = async (values: z3.infer<typeof registerSchema>) =>
       }
     }
 
-    //verificar si el usuario ya existe
 const user = await db.usuarios.findUnique({
   where: {
     email: data.email,

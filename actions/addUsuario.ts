@@ -1,4 +1,3 @@
-// app/actions/createUsuario.ts
 "use server";
 import db from "@/lib/db";
 
@@ -8,7 +7,7 @@ type CreateUsuarioValues = {
   password: string;
   telefono?: string | null;
   direccion?: string | null;
-  usuarios_roles?: string[]; // si el modelo no lo soporta, será ignorado al crear
+  usuarios_roles?: string[]; 
   fecha_creacion?: Date;
   fecha_actualizacion?: Date;
 };
@@ -28,14 +27,14 @@ export const createUsuario = async (values: CreateUsuarioValues) => {
     });
     if (existe) return { error: "El email ya está registrado." };
 
-    // Lista blanca de campos que sabemos que existen en el modelo (evita Unknown argument)
+  
     const allowedFields = [
       "name",
       "email",
       "password",
       "fecha_creacion",
       "fecha_actualizacion",
-      // Si tu schema tiene otros campos válidos agregalos aquí.
+  
     ] as const;
 
     const dataToCreate: any = {};
@@ -50,7 +49,7 @@ export const createUsuario = async (values: CreateUsuarioValues) => {
       data: dataToCreate,
     });
 
-    // Informar si el request traía campos extra que no se guardaron
+
     const ignored: Record<string, any> = {};
     if (values.telefono) ignored.telefono = values.telefono;
     if (values.direccion) ignored.direccion = values.direccion;

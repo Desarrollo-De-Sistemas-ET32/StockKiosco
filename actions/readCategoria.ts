@@ -1,4 +1,3 @@
-// src/actions/readCategoria.ts
 'use server'
 
 import db from '@/lib/db'

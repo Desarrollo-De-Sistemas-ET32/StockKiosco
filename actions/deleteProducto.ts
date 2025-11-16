@@ -11,7 +11,7 @@ export const deleteProduct = async (values: DeleteProduct) => {
   try {
     const idProducto = values.id_producto;
 
-    // 1. Borrar el stock primero
+
     await db.stock.deleteMany({
       where: {
         id_producto: idProducto,

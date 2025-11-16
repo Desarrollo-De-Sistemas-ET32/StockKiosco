@@ -1,4 +1,4 @@
-// src/actions/readUsuarios.ts
+
 'use server'
 
 import db from '@/lib/db'

@@ -23,7 +23,7 @@ export const agregarProveedor = async (values: z.infer<typeof crearProveedorSche
         telefono: data.telefono,
         email: data.email,
         direccion: data.direccion,
-        fecha_actualizacion: new Date(), // Se setea la fecha actual al crear
+        fecha_actualizacion: new Date(), 
       },
     });
 

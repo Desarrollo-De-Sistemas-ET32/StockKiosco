@@ -9,7 +9,6 @@ export const readDescuento = async () => {
       orderBy: { fecha_creacion: 'desc' },
     });
 
-    // Normalizamos los objetos para enviar JSON limpio
     return { descuentos: serializePrismaObject(descuentos) };
   } catch (error: any) {
     console.error("Error leyendo descuentos:", error);

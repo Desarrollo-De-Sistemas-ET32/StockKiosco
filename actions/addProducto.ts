@@ -55,7 +55,7 @@ export const updateProduct = async (values: unknown) => {
       include: { stock: true },
     });
 
-    // Actualizar stock si viene
+
     if (validated.stock !== undefined || validated.stock_minimo !== undefined) {
       await db.stock.updateMany({
         where: { id_producto: validated.id_producto },

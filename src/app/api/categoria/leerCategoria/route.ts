@@ -60,7 +60,7 @@ export async function GET() {
       );
     }
 
-    // Devuelve { categorias: [...] } — tu servicio ya normaliza ambas formas
+
     return NextResponse.json(
       {
         categorias: result.categorias

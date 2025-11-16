@@ -1,4 +1,4 @@
-// src/actions/updateDescuento.ts
+
 import db from "@/src/lib/db";
 import { updateDescuentoSchema, UpdateDescuentoInput } from "@/schemas/descuento_scheme";
 
@@ -13,7 +13,7 @@ export const updateDescuento = async (values: unknown) => {
   try {
     const parsed = updateDescuentoSchema.parse(values) as UpdateDescuentoInput;
 
-    // Construir objeto `data` sólo con campos definidos
+
     const data: any = {
       nombre: parsed.nombre,
       descripcion: parsed.descripcion,
@@ -32,7 +32,7 @@ export const updateDescuento = async (values: unknown) => {
       activo: parsed.activo,
     };
 
-    // eliminar campos undefined
+
     const clean = Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== undefined));
 
     const updated = await db.descuentos.update({

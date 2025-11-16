@@ -13,7 +13,7 @@ export const addMarca = async (nombre: string) => {
     
     const validatedData = createMarcaSchema.parse({ nombre_marca: nombre });
 
-    // Verificar si la marca ya existe
+ 
     const existingMarca = await db.marcas.findFirst({
       where: {
         nombre_marca: { equals: validatedData.nombre, mode: "insensitive" },

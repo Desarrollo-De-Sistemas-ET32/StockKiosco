@@ -1,4 +1,3 @@
-// 'use server'
 import db from "@/lib/db";
 
 type DetalleVenta = {
@@ -10,7 +9,7 @@ export type NuevaVenta = {
   id_usuario: number | string;
   detalles: DetalleVenta[];
   pagado?: boolean;
-  descuento_aplicado?: number | null; // id_descuento opcional
+  descuento_aplicado?: number | null; 
 };
 
 export const addVenta = async (values: NuevaVenta) => {
@@ -27,7 +26,7 @@ export const addVenta = async (values: NuevaVenta) => {
       return { success: false, message: "La venta debe contener al menos un detalle." };
     }
 
-    // Agrupar detalles por producto
+ 
     const pedidoMap = new Map<number, number>();
     for (const d of values.detalles) {
       const id = Number(d.id_producto);
@@ -39,7 +38,7 @@ export const addVenta = async (values: NuevaVenta) => {
     const idsProductos = Array.from(pedidoMap.keys());
     if (idsProductos.length === 0) return { success: false, message: "No se encontraron productos válidos en la venta." };
 
-    // Obtener productos
+
     const productos = await db.productos.findMany({
       where: { id_producto: { in: idsProductos } },
       select: { id_producto: true, precio: true, nombre: true },
@@ -48,7 +47,7 @@ export const addVenta = async (values: NuevaVenta) => {
     const faltantes = idsProductos.filter(id => !idsEncontrados.includes(id));
     if (faltantes.length > 0) return { success: false, message: `Productos no existen: ${faltantes.join(", ")}` };
 
-    // Stocks actuales
+
     const stocks = await db.stock.findMany({
       where: { id_producto: { in: idsProductos } },
       select: { id_producto: true, cantidad: true },
@@ -56,7 +55,7 @@ export const addVenta = async (values: NuevaVenta) => {
     const stockMap = new Map<number, number>();
     for (const s of stocks) stockMap.set(s.id_producto, s.cantidad ?? 0);
 
-    // Validar stock
+
     for (const [id, qtySolicitada] of pedidoMap.entries()) {
       const disponible = stockMap.get(id) ?? 0;
       if (disponible < qtySolicitada) {
@@ -66,7 +65,7 @@ export const addVenta = async (values: NuevaVenta) => {
       }
     }
 
-    // Calcular detalles y total bruto
+
     const detallesCalculados = Array.from(pedidoMap.entries()).map(([id, qty]) => {
       const producto = productos.find(p => p.id_producto === id)!;
       const precioUnitario = Number(producto.precio) || 0;
@@ -83,7 +82,6 @@ export const addVenta = async (values: NuevaVenta) => {
 
     let totalBruto = detallesCalculados.reduce((acc, d) => acc + d.subtotal, 0);
 
-    // Leer descuento seguro desde DB (si se pasó descuento_aplicado)
     let descuentoRecord: { tipo?: string | null; valor?: number | null } | null = null;
     if (values.descuento_aplicado != null) {
       try {
@@ -97,7 +95,7 @@ export const addVenta = async (values: NuevaVenta) => {
       }
     }
 
-    // Calcular total final con descuento si corresponde
+
     let totalFinal = totalBruto;
     if (descuentoRecord && typeof descuentoRecord.valor === "number" && Number(descuentoRecord.valor) > 0) {
       const tipo = (descuentoRecord.tipo ?? "").toString().toLowerCase();
@@ -109,8 +107,7 @@ export const addVenta = async (values: NuevaVenta) => {
       }
     }
 
-    // Transacción: crear venta y decrementar stocks (condición gte).
-    // NO metemos id_descuento directamente en el create para evitar error si la columna no existe.
+
     const nuevaVenta = await db.$transaction(async (tx) => {
       const ventaData: any = {
         id_usuario,
@@ -126,7 +123,7 @@ export const addVenta = async (values: NuevaVenta) => {
         include: { detalles_venta: true },
       });
 
-      // Intentamos actualizar id_descuento si vino descuento_aplicado.
+
       if (values.descuento_aplicado != null) {
         try {
           await tx.ventas.update({
@@ -134,18 +131,18 @@ export const addVenta = async (values: NuevaVenta) => {
             data: { id_descuento: Number(values.descuento_aplicado) },
           });
         } catch (upErr: any) {
-          // Si falla porque la columna no existe (Unknown argument 'id_descuento'), lo ignoramos.
+
           const msg = String(upErr?.message ?? upErr);
           if (msg.includes("Unknown argument") || msg.includes("Unknown field") || msg.includes("id_descuento")) {
-            // columna no existe en el esquema: no hacemos nada (no queremos rollback por esto)
+
           } else {
-            // si es otro error, lo re-lanzamos para que haga rollback
+
             throw upErr;
           }
         }
       }
 
-      // Actualizar stocks (condición gte). Si alguna updateMany afecta 0 filas -> rollback.
+
       for (const [id, qty] of pedidoMap.entries()) {
         const res = await tx.stock.updateMany({
           where: { id_producto: id, cantidad: { gte: qty } },

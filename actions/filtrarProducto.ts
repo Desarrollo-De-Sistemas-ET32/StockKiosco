@@ -12,9 +12,7 @@ export const filterProduct = async(values: filtrado) => {
     try{
         const whereClause: Prisma.productosWhereInput = {}
 
-        // Validar que al menos uno de los campos de búsqueda esté definido
-        // y no sea nulo o vacío.
-        // Si todos los campos son nulos o vacíos, retornar un mensaje de error.
+
         if(
             (values.id === undefined || values.id === null || values.id === 0) &&
             (values.codigo_barra === undefined || values.codigo_barra === null) &&

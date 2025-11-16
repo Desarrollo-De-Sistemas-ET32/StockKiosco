@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Crear log en base de datos
+
     await db.logs.create({
       data: {
         id_usuario: body.id_usuario || null,
