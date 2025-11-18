@@ -6,7 +6,7 @@ export interface DescuentoPayload {
   nombre: string;
   descripcion?: string | null;
   tipo: TipoDescuento;
-  valor: number | string; // aceptamos string por si el frontend manda input text
+  valor: number | string; 
   fecha_inicio?: Date | string | null;
   fecha_fin?: Date | string | null;
   activo?: boolean;

@@ -4,9 +4,7 @@ import type { StatsData, StatsApiResponse } from './stats';
 import { normalizeStatsPayload } from './stats';
 
 export const statsService = {
-  /**
-   * Llama a GET /stats y devuelve { success: true, data } o { success:false, error }
-   */
+
   getOverview: async (): Promise<{ success: true; data: StatsData } | { success: false; error: string; details?: any }> => {
     try {
       const resp = await api.get<StatsApiResponse>('/stats');
@@ -16,19 +14,17 @@ export const statsService = {
         return { success: false, error: 'Respuesta vacía del servidor' };
       }
 
-      // Si el action devolvió la forma { ok: true, data: { ... } }
+
       if ((payload as any).ok === true && (payload as any).data) {
         const normalized = normalizeStatsPayload(payload);
         return { success: true, data: normalized };
       }
 
-      // Si devolvió error
       if ((payload as any).ok === false || (payload as any).error) {
         const msg = (payload as any).error ?? (payload as any).message ?? 'Error en la respuesta del servidor';
         return { success: false, error: String(msg), details: (payload as any).details ?? null };
       }
 
-      // Fallback: intentar normalizar payload directo
       const normalizedFallback = normalizeStatsPayload(payload);
       return { success: true, data: normalizedFallback };
     } catch (err: any) {

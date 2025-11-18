@@ -4,10 +4,7 @@ import type { Log } from './logs';
 import { mapRawToLog } from './logs';
 
 export const logService = {
-  /**
-   * GET /api/logs/readLogs
-   * Devuelve array normalizado Log[]
-   */
+
   getAll: async (): Promise<Log[]> => {
     try {
       const resp = await api.get('/logs/readLogs');
@@ -26,7 +23,7 @@ export const logService = {
       } else if (data.log && typeof data.log === 'object') {
         rawLogs = [data.log];
       } else {
-        // fallback: tomar primer array encontrado dentro del objeto
+ 
         const keys = Object.keys(data ?? {});
         for (const k of keys) {
           if (Array.isArray((data as any)[k])) {
@@ -34,7 +31,7 @@ export const logService = {
             break;
           }
         }
-        // último recurso: si es objeto con registros indexados (valores array)
+       
         if (rawLogs.length === 0 && typeof data === 'object') {
           const vals = Object.values(data);
           if (vals.length > 0 && Array.isArray(vals[0])) rawLogs = vals[0] as any[];
@@ -43,7 +40,6 @@ export const logService = {
 
       const normalized = rawLogs.map((r: any) => mapRawToLog(r));
 
-      // ordenar por fecha descendente (siempre que haya fecha)
       normalized.sort((a, b) => {
         const ta = a.fecha ? new Date(a.fecha).getTime() : 0;
         const tb = b.fecha ? new Date(b.fecha).getTime() : 0;

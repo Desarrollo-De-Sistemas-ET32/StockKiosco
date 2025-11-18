@@ -3,14 +3,12 @@ import api from '../API';
 import { ProductoPayload, ProductoWithId, CreateProductResponse } from '@/app/Service/producto/producto';
 
 const normalizeProducto = (p: any): ProductoWithId => {
-  // 1. Aseguramos que los campos planos sean del tipo correcto
   const id_producto = Number(p.id_producto ?? p.id ?? 0);
   const nombre = String(p.nombre ?? "");
-  const precio = Number(p.precio ?? 0); // Lo convertimos a número
+  const precio = Number(p.precio ?? 0);
   const codigo_barra = String(p.codigo_barra ?? "");
-  const images = String(p.images ?? p.imagen ?? ""); // Agregamos fallback 'imagen'
+  const images = String(p.images ?? p.imagen ?? ""); 
 
-  // 2. Normalizamos el array de stock (tu lógica ya era buena)
   const stock = Array.isArray(p.stock)
     ? p.stock.map((s: any) => ({
         id_stock: Number(s.id_stock ?? s.id ?? 0),
@@ -19,7 +17,7 @@ const normalizeProducto = (p: any): ProductoWithId => {
       }))
     : [];
   
-  // 3. Normalizamos los objetos anidados 'marcas' y 'categoria'
+
   const marcas = {
     id_marca: Number(p.marcas?.id_marca ?? p.id_marca ?? 0),
     nombre_marca: String(p.marcas?.nombre_marca ?? ""),
@@ -30,7 +28,6 @@ const normalizeProducto = (p: any): ProductoWithId => {
     nombre: String(p.categoria?.nombre ?? ""),
   };
 
-  // 4. Devolvemos el objeto limpio y completo
   return {
     id_producto,
     nombre,
@@ -61,7 +58,6 @@ export const productoService = {
       else if (data && data.product && typeof data.product === 'object') productos = [data.product];
       else if (data && Array.isArray(data.productos)) productos = data.productos;
 
-      // Usamos la función de normalización
       return productos.map(normalizeProducto);
 
     } catch (error) {
@@ -74,7 +70,6 @@ export const productoService = {
   getById: async (id: number): Promise<ProductoWithId | null> => {
     try {
       const response = await api.get(`/producto/${id}`);
-      // Normalizamos la respuesta
       return response.data ? normalizeProducto(response.data) : null;
     } catch (error: any) {
       if (error?.response?.status === 404) return null;
@@ -86,10 +81,7 @@ export const productoService = {
   // Crear un nuevo producto
   create: async (data: ProductoPayload): Promise<CreateProductResponse> => {
     try {
-      // Pedimos 'any' a la API
       const response = await api.post<any>('/producto/crearProducto', data);
-      
-      // Devolvemos la respuesta, pero con el 'producto' normalizado
       return {
         ...response.data,
         producto: response.data.producto ? normalizeProducto(response.data.producto) : undefined,
@@ -106,18 +98,15 @@ export const productoService = {
   // Actualizar producto por PATCH
   updatePatch: async (data: Partial<ProductoPayload> & { id_producto: number }): Promise<ProductoWithId> => {
     try {
-      // Pedimos 'any' a la API
       const response = await api.patch<any>('/producto/editarProducto', data);
-      // Devolvemos el producto normalizado
       return normalizeProducto(response.data);
     } catch (error: any) {
-      // (Tu lógica de manejo de errores detallada se mantiene)
       console.error(`productoService.updatePatch failed`, error?.response?.data ?? error);
       throw new Error(error?.response?.data?.message ?? error?.message ?? "Error al actualizar");
     }
   },
 
-  // Eliminar producto por id (no devuelve datos, no necesita normalización)
+  // Eliminar producto por id 
   delete: async (id: number): Promise<void> => {
     try {
       await api.delete("/producto/eliminarProducto", {

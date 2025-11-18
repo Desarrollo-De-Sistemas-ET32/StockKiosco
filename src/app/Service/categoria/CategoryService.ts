@@ -15,17 +15,17 @@ export const categoriaService = {
       const response = await api.get('/categoria/leerCategoria');
       const data = response.data;
 
-      // Aplicamos la normalización a cualquier array que encontremos
+
       if (Array.isArray(data)) {
-        return data.map(normalizeCategoria); // <-- CORREGIDO
+        return data.map(normalizeCategoria); 
       }
 
       if (Array.isArray(data.categorias)) {
-        return data.categorias.map(normalizeCategoria); // <-- CORREGIDO
+        return data.categorias.map(normalizeCategoria); 
       }
 
       if (data && data.categoria && typeof data.categoria === 'object') {
-        return [normalizeCategoria(data.categoria)]; // <-- CORREGIDO
+        return [normalizeCategoria(data.categoria)]; 
       }
 
       return [];
@@ -39,7 +39,6 @@ export const categoriaService = {
   getById: async (id: number): Promise<CategoriaWithId | null> => {
     try {
       const response = await api.get(`/categoria/${id}`);
-      // Aplicamos normalización si la respuesta no es nula
       return response.data ? normalizeCategoria(response.data) : null; // <-- CORREGIDO
     } catch (error) {
       console.error(`Error obteniendo categoría ${id}`, error);
@@ -54,7 +53,6 @@ export const categoriaService = {
         '/categoria/crearCategoria',
         data
       );
-      // Devolvemos la categoría normalizada
       return {
         message: response.data.message,
         categoria: normalizeCategoria(response.data.categoria) // <-- CORREGIDO
@@ -76,7 +74,7 @@ export const categoriaService = {
     }
   },
 
-  // Eliminar categoría por id (esta función está bien, no devuelve datos)
+  // Eliminar categoría por id
   delete: async (id: number): Promise<void> => {
     try {
       await api.delete(`/categoria/${id}`);

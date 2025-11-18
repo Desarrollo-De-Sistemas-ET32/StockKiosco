@@ -1,7 +1,7 @@
 // app/Service/stats/stats.ts
 
 export type WeeklyIncomeItem = {
-  fecha: string; // "YYYY-MM-DD"
+  fecha: string;
   total: number;
 };
 
@@ -16,8 +16,8 @@ export type StatsData = {
   ingresosTotales: number;
   ventasTotales: number;
   productosVendidos: number;
-  ingresosSemanales?: WeeklyIncomeItem[]; // array asc ordenado por fecha (lo que devuelve el action)
-  productosVendidosDetalle?: TopProductItem[]; // array ordenado por ventas (lo que devuelve el action)
+  ingresosSemanales?: WeeklyIncomeItem[]; 
+  productosVendidosDetalle?: TopProductItem[]; 
 };
 
 export type StatsApiOk = {
@@ -40,7 +40,7 @@ export function parseNumberSafe(v: any): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-/**
+
  * Normaliza la carga del endpoint /stats a un StatsData consistente.
  * Soporta varias formas (payload directo, payload.data, etc.)
  */

@@ -2,16 +2,14 @@
 export interface Log {
   id_log?: number;
   id_usuario?: number | null;
-  usuario: string; // nombre legible o 'desconocido'
+  usuario: string;
   accion: string;
   descripcion?: string | null;
-  fecha?: string | null; // ISO
-  hora?: string | null; // "HH:MM"
-  // campos opcionales originales
+  fecha?: string | null; 
+  hora?: string | null; 
   raw?: any;
 }
 
-/** Convertir tipos Prisma (BigInt, Decimal, Date) a valores JS simples */
 export function normalizeValue(v: any): any {
   if (typeof v === 'bigint') return v.toString();
   if (v && v.constructor?.name === 'Decimal') return Number(v.toString());
@@ -33,11 +31,10 @@ export function deriveHoraFromFecha(fecha: any, hora?: any): string | null {
   return `${hh}:${mm}`;
 }
 
-/** Extrae un nombre de usuario legible desde distintas formas posibles */
+
 export function extractUsuario(logRaw: any): string {
   if (!logRaw) return 'desconocido';
 
-  // si ya viene como campo simple
   const direct =
     logRaw.usuario ??
     logRaw.user ??
@@ -47,7 +44,6 @@ export function extractUsuario(logRaw: any): string {
     null;
   if (direct && typeof direct === 'string' && direct.trim() !== '') return direct;
 
-  // si viene la relación `usuarios`
   const u = logRaw.usuarios ?? logRaw.usuario_obj ?? logRaw.userData ?? null;
   if (u) {
     if (Array.isArray(u) && u.length > 0) {
@@ -59,10 +55,8 @@ export function extractUsuario(logRaw: any): string {
     }
   }
 
-  // si sólo hay id_usuario, devolverlo como string (mejor que desconocido)
   if (logRaw.id_usuario != null) return String(logRaw.id_usuario);
 
-  // último recurso: buscar cualquier string que parezca nombre/email en el objeto (heurística simple)
   const stack = [logRaw];
   const seen = new Set();
   while (stack.length) {
@@ -79,11 +73,9 @@ export function extractUsuario(logRaw: any): string {
   return 'desconocido';
 }
 
-/** Mapear un registro crudo (de DB) al tipo Log */
 export function mapRawToLog(raw: any): Log {
   const r = normalizeValue(raw);
 
-  // posibles campos de fecha
   const fechaRaw =
     r.fecha ??
     r.fecha_creacion ??

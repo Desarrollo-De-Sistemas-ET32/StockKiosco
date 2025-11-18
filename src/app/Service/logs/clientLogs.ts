@@ -10,7 +10,6 @@ export async function createClientLog(accion: string, descripcion?: string) {
     descripcion: descripcion ?? null,
   };
 
-  // Llamada al route que ya tenés en backend
   const resp = await api.post('/logs/addLogs', payload);
   return resp.data;
 }

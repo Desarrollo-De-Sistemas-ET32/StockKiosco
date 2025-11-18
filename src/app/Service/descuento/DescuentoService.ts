@@ -25,7 +25,7 @@ function toISODate(v?: string | Date | null): string | null {
 }
 
 export const descuentoService = {
-  // 🔹 Leer todos los descuentos
+  //Leer todos los descuentos
   getAll: async (): Promise<DescuentoDB[]> => {
     try {
       const resp = await api.get("/descuento/leerDescuento");
@@ -57,7 +57,7 @@ export const descuentoService = {
             ? d.activo
             : d.activo === 1 || d.activo === "1"
             ? true
-            : false, // <-- CORREGIDO
+            : false, 
       }));
     } catch (err: any) {
       console.error("descuentoService.getAll error", err);
@@ -70,7 +70,7 @@ export const descuentoService = {
     }
   },
 
-  // 🔹 Obtener descuento por ID
+  //Obtener descuento por ID
   getById: async (id: number): Promise<DescuentoDB | null> => {
     try {
       const resp = await api.get(`/descuento/${id}`);
@@ -107,7 +107,7 @@ export const descuentoService = {
     }
   },
 
-  // 🔹 Crear descuento
+  //Crear descuento
   create: async (
     payload: DescuentoPayload
   ): Promise<CreateDescuentoResponse> => {
@@ -143,14 +143,13 @@ export const descuentoService = {
     }
   },
 
-  // 🔹 Editar descuento
+  //Editar descuento
   updatePatch: async (
-    id: number, // <-- Argumento 1: El ID
-    payload: Partial<DescuentoPayload> // <-- Argumento 2: El formulario
+    id: number,
+    payload: Partial<DescuentoPayload>
   ): Promise<DescuentoDB> => {
     try {
-      // Creamos el body a partir del payload
-      const body: any = { ...payload }; // Transformamos los campos que vinieron en el payload
+      const body: any = { ...payload }; 
 
       if (body.valor !== undefined) {
         body.valor = parseNumberSafe(body.valor);
@@ -163,14 +162,14 @@ export const descuentoService = {
       }
       if (body.activo !== undefined) {
         body.activo = Boolean(body.activo);
-      } // Agregamos el ID al body, que es lo que tu API espera
+      }
 
-      body.id_descuento = id; // La URL parece ser no-RESTful, así que la mantenemos
+      body.id_descuento = id; 
 
       const resp = await api.patch("/descuento/editarDescuento", body);
       return resp.data as DescuentoDB;
     } catch (err: any) {
-      console.error(`descuentoService.updatePatch(${id}) error`, err); // Mejor log
+      console.error(`descuentoService.updatePatch(${id}) error`, err);
       const resp = err?.response;
       if (resp?.data) {
         const server = resp.data;
@@ -181,7 +180,7 @@ export const descuentoService = {
     }
   },
 
-  // 🔹 Eliminar descuento
+  //Eliminar descuento
   delete: async (
     id: number
   ): Promise<{ success: true } | { success: false; error: string }> => {
